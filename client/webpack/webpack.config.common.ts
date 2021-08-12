@@ -10,11 +10,16 @@ const commonConfig: Configuration = {
     path: path.resolve(__dirname, '../build'),
     filename: '[name].js',
     clean: true,
+    publicPath: '/',
   },
   resolve: {
     extensions: ['.js', '.jsx', '.ts', '.tsx', '.css', '.scss'],
     alias: {
       '@components': path.resolve(__dirname, '../src/components'),
+      '@hooks': path.resolve(__dirname, '../src/hooks'),
+      '@context': path.resolve(__dirname, '../src/context'),
+      '@pages': path.resolve(__dirname, '../src/pages'),
+      '@': path.resolve(__dirname, '../src'),
     },
   },
   module: {
