@@ -19,6 +19,7 @@ const commonConfig: Configuration = {
       '@hooks': path.resolve(__dirname, '../src/hooks'),
       '@context': path.resolve(__dirname, '../src/context'),
       '@pages': path.resolve(__dirname, '../src/pages'),
+      '@lib': path.resolve(__dirname, '../src/lib'),
       '@': path.resolve(__dirname, '../src'),
     },
   },

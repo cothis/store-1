@@ -1,4 +1,5 @@
-import { css, DefaultTheme } from 'styled-components';
+import { DefaultTheme } from 'woowa-styled-component';
+import { css } from '@lib/styled-components/';
 
 const theme: DefaultTheme = {
   color: {
@@ -15,9 +16,9 @@ const theme: DefaultTheme = {
     inputBorder: '#c0c0c0',
   },
   opacityHover: css`
-    opacity: 0.9;
+    opacity: 1;
     &:hover {
-      opacity: 1;
+      opacity: 0.9;
     }
   `,
 };

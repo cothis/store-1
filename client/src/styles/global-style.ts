@@ -1,8 +1,6 @@
-import { createGlobalStyle } from 'styled-components';
-import reset from 'styled-reset';
+import { createGlobalStyle } from '@lib/styled-components';
 
 export default createGlobalStyle`
-  ${reset};
   @font-face {
     font-family: 'NotoSans';
     src: url(${require('./fonts/NotoSansCJKkr-Regular.otf')});

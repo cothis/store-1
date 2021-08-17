@@ -17,7 +17,13 @@
   },
 
   // Add the IDs of extensions you want installed when the container is created.
-  "extensions": ["editorconfig.editorconfig", "esbenp.prettier-vscode", "jpoissonnier.vscode-styled-components"],
+  "extensions": [
+    "editorconfig.editorconfig",
+    "esbenp.prettier-vscode",
+    "jpoissonnier.vscode-styled-components",
+    "ms-vsliveshare.vsliveshare",
+    "eamodio.gitlens"
+  ],
 
   // Use 'forwardPorts' to make a list of ports inside the container available locally.
   // "forwardPorts": [],

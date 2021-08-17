@@ -1,6 +1,6 @@
 import Link from '@/router/Link';
 import { MouseEventHandler } from 'react';
-import styled from 'styled-components';
+import styled from '@lib/styled-components';
 
 const Singin = () => {
   const loginClickHandler: MouseEventHandler = (e) => {

@@ -18,10 +18,9 @@
       "@hooks/*": ["src/hooks/*"],
       "@context": ["src/context/"],
       "@pages/*": ["src/pages/*"],
+      "@lib/*": ["src/lib/*"],
       "@/*": ["src/*"]
     },
     "typeRoots": ["./node_modules/@types", "src/types"]
-  },
-  "include": ["src/**/*"],
-  "exclude": ["node_modules"]
+  }
 }

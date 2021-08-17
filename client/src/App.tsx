@@ -6,7 +6,7 @@ import User from '@pages/User';
 import Signin from '@pages/Signin';
 import SignupMethod from '@pages/SignupMethod';
 import Error404 from '@pages/Error404';
-import { ThemeProvider } from 'styled-components';
+import { ThemeProvider } from '@lib/styled-components';
 import GlobalStyle from '@/styles/global-style';
 import styleTheme from '@/styles/theme';
 

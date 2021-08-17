@@ -1,5 +1,5 @@
 import Link from '@/router/Link';
-import styled from 'styled-components';
+import styled from '@lib/styled-components';
 
 const SignupMethod = () => {
   return (

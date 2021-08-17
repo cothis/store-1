@@ -1,7 +1,5 @@
-import 'styled-components';
-
-declare module 'styled-components' {
-  export interface DefaultTheme {
+declare module 'woowa-styled-component' {
+  interface DefaultTheme {
     color: {
       red: string;
       green: string;
@@ -15,6 +13,6 @@ declare module 'styled-components' {
       borderColor: string;
       inputBorder: string;
     };
-    opacityHover: FlattenSimpleInterpolation;
+    opacityHover: string;
   }
 }
