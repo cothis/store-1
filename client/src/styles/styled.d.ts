@@ -10,6 +10,11 @@ declare module 'styled-components' {
       yellow: string;
       baeminPrimary: string;
       baeminDark: string;
+      lightblack: string;
+      kakao: string;
+      borderColor: string;
+      inputBorder: string;
     };
+    opacityHover: FlattenSimpleInterpolation;
   }
 }

@@ -30,6 +30,13 @@ const commonConfig: Configuration = {
         exclude: /node_modules/,
         use: { loader: 'babel-loader' },
       },
+      {
+        test: /\.(woff|woff2|eot|ttf|otf)$/,
+        loader: 'file-loader',
+        options: {
+          esModule: false,
+        },
+      },
     ],
   },
   plugins: [
