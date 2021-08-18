@@ -19,8 +19,8 @@
       "@context": ["src/context/"],
       "@pages/*": ["src/pages/*"],
       "@lib/*": ["src/lib/*"],
-      "@/*": ["src/*"]
-    },
-    "typeRoots": ["./node_modules/@types", "src/types"]
+      "@constants/*": ["src/constants/*"],
+      "@assets/*": ["src/assets/*"]
+    }
   }
 }

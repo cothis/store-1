@@ -1,7 +1,7 @@
 import useHistory from '@hooks/useHistory';
 import useRouter from '@hooks/useRouter';
 import { MouseEvent, CSSProperties, ReactNode } from 'react';
-import { createHref } from '@/router/history';
+import { createHref } from './history';
 
 interface NavLinkProps {
   exact?: boolean;

@@ -1,5 +1,6 @@
 import { DefaultTheme } from 'woowa-styled-component';
 import { css } from '@lib/styled-components/';
+import size from '@constants/size';
 
 const theme: DefaultTheme = {
   color: {
@@ -21,6 +22,9 @@ const theme: DefaultTheme = {
       opacity: 0.9;
     }
   `,
+  media: {
+    mobile: `${size.mobile}px`,
+  },
 };
 
 export default theme;

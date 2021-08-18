@@ -1,4 +1,4 @@
-import Link from '@/router/Link';
+import Link from '@lib/router/Link';
 import styled from '@lib/styled-components';
 
 const SignupMethod = () => {
@@ -21,19 +21,22 @@ const SignupMethod = () => {
 };
 
 const Wrapper = styled.div`
-  width: 460px;
+  width: 100%;
+  max-width: 460px;
+  padding: 0 1rem;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   margin: 70px auto;
   > * {
+    width: 100%;
     margin-bottom: 20px;
   }
 `;
 
 const SignupButton = styled.button`
-  width: 460px;
+  width: 100%;
   height: 89px;
   background-color: ${({ theme }) => theme.color.lightblack};
   color: white;
@@ -43,7 +46,7 @@ const SignupButton = styled.button`
 `;
 
 const OAuthSignupButton = styled.button`
-  width: 460px;
+  width: 100%;
   height: 55px;
   background-color: ${({ theme }) => theme.color.kakao};
   color: black;
@@ -52,12 +55,17 @@ const OAuthSignupButton = styled.button`
   ${({ theme }) => theme.opacityHover};
 `;
 
-const MemberGuide = styled.div``;
+const MemberGuide = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
 
 const Span = styled.span`
   font-size: 12px;
   color: #666666;
   margin-right: 5px;
+  text-align: center;
 `;
 
 const Login = styled.span`

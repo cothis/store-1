@@ -1,6 +1,6 @@
 import React, { useEffect, ReactNode, useContext } from 'react';
 import { compile, serialize, stringify } from 'stylis';
-import { generatorHashName } from './utils';
+import { v4 as uuidv4 } from 'uuid';
 import type { DefaultTheme } from 'woowa-styled-component';
 import TagNames from './tag-names';
 
@@ -40,12 +40,12 @@ const constructWithTag = (tag?: string) => {
     strings: TemplateStringsArray,
     ...args: StyledTagedTemplateArg[]
   ): StyledComponent => {
-    const NewComponent = (props: StyledComponentProps) => {
-      const suffix = generatorHashName();
-      // tag가 없을 경우 global로 처리
-      const className = tag && tag + '-' + suffix;
-      const theme = useContext(ThemeContext)!;
+    const suffix = uuidv4();
+    // tag가 없을 경우 global로 처리
+    const className = tag && tag + '-' + suffix;
 
+    const NewComponent = (props: StyledComponentProps) => {
+      const theme = useContext(ThemeContext)!;
       // Lazy Evalution!! 와! 대단해!
       useEffect(() => {
         const css = strings
@@ -70,14 +70,14 @@ const constructWithTag = (tag?: string) => {
       const domProps: { [key: string]: any } = {};
       if (tag) {
         Object.keys(props).forEach((prop) => {
-          if (prop in HTMLElement.prototype) {
+          if (prop in HTMLElement.prototype || prop.startsWith('on') || prop === 'ref') {
             domProps[prop] = props[prop];
           }
         });
       }
 
       return (
-        <CustomTag {...domProps} className={className}>
+        <CustomTag {...domProps} className={`${className}${props.className ? ' ' + props.className : ''}`}>
           {props.children}
         </CustomTag>
       );

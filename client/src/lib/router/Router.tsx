@@ -1,4 +1,4 @@
-import { useState, useContext, useEffect, ReactNode, ReactElement } from 'react';
+import { useState, useContext, useEffect, ReactElement } from 'react';
 import { createHistory } from './history';
 import { RouterContext, HistoryContext } from '@context';
 import Route, { RouteProps } from './Route';

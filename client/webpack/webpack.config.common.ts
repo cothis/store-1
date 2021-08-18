@@ -20,7 +20,8 @@ const commonConfig: Configuration = {
       '@context': path.resolve(__dirname, '../src/context'),
       '@pages': path.resolve(__dirname, '../src/pages'),
       '@lib': path.resolve(__dirname, '../src/lib'),
-      '@': path.resolve(__dirname, '../src'),
+      '@constants': path.resolve(__dirname, '../src/constants'),
+      '@assets': path.resolve(__dirname, '../src/assets'),
     },
   },
   module: {
@@ -36,6 +37,13 @@ const commonConfig: Configuration = {
         loader: 'file-loader',
         options: {
           esModule: false,
+        },
+      },
+      {
+        test: /\.(png|svg|jpg|jpeg|gif)$/i,
+        type: 'asset/resource',
+        generator: {
+          filename: 'assets/images/[hash][ext]',
         },
       },
     ],

@@ -1,6 +1,6 @@
 import useHistory from '@hooks/useHistory';
 import { MouseEvent, ReactNode } from 'react';
-import { createHref } from '@/router/history';
+import { createHref } from './history';
 
 interface LinkProps {
   to: To;

@@ -1,4 +1,4 @@
-import Link from '@/router/Link';
+import Link from '@lib/router/Link';
 import { MouseEventHandler } from 'react';
 import styled from '@lib/styled-components';
 
