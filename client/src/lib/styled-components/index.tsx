@@ -69,11 +69,9 @@ const constructWithTag = (tag?: string) => {
 
       const domProps: { [key: string]: any } = {};
       if (tag) {
-        Object.keys(props).forEach((prop) => {
-          if (prop in HTMLElement.prototype || prop.startsWith('on') || prop === 'ref') {
-            domProps[prop] = props[prop];
-          }
-        });
+        Object.keys(props)
+          .filter((prop) => prop.charAt(0) !== '$')
+          .forEach((prop) => (domProps[prop] = props[prop]));
       }
 
       return (
