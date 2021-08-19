@@ -4,7 +4,7 @@ services:
     image: nginx:latest
     volumes:
       - ./deploy/config/nginx.conf:/etc/nginx/conf.d/default.conf
-      - ./build:/usr/share/nginx/html
+      - ./client/build:/usr/share/nginx/html
     depends_on:
       - app
     ports:

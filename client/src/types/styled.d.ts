@@ -2,6 +2,7 @@ declare module 'woowa-styled-component' {
   interface DefaultTheme {
     color: {
       red: string;
+      redSecondary: string;
       green: string;
       gray: string;
       blue: string;
@@ -15,7 +16,9 @@ declare module 'woowa-styled-component' {
     };
     opacityHover: string;
     media: {
+      mobileSmall: string;
       mobile: string;
+      medium: string;
     };
   }
 }

@@ -5,6 +5,7 @@ import size from '@constants/size';
 const theme: DefaultTheme = {
   color: {
     red: '#dc3545',
+    redSecondary: '#d36566',
     green: '#198754',
     gray: '#adb5bd',
     blue: '#0d6efd',
@@ -23,7 +24,9 @@ const theme: DefaultTheme = {
     }
   `,
   media: {
+    mobileSmall: `${size.mobileSmall}px`,
     mobile: `${size.mobile}px`,
+    medium: `${size.medium}px`,
   },
 };
 
