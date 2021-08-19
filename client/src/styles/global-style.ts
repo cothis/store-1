@@ -32,7 +32,7 @@ export default createGlobalStyle`
   }
   body {
     line-height: 1;
-    font-family: 'NotoSans', 'DoHyeon', sans-serif;
+    font-family: 'Noto Sans KR', sans-serif;
   }
   menu, ol, ul {
     list-style: none;
@@ -48,14 +48,6 @@ export default createGlobalStyle`
   table {
     border-collapse: collapse;
     border-spacing: 0;
-  }
-  @font-face {
-    font-family: 'NotoSans';
-    src: url(${require('../assets/fonts/NotoSansCJKkr-Regular.otf')});
-  }
-  @font-face {
-    font-family: 'DoHyeon';
-    src: url(${require('../assets/fonts/BMDOHYEON_otf.otf')});
   }
   * {
     box-sizing: border-box;

@@ -81,7 +81,7 @@ const AuthBox = styled.div`
     }
   }
   p.dohyeon {
-    font-family: 'DoHyeon', sans-serif;
+    font-family: 'Do Hyeon', sans-serif;
   }
   > .box-content {
     width: 100%;
