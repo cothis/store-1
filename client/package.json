@@ -44,6 +44,7 @@
     "jest-watch-typeahead": "^0.6.1",
     "mini-css-extract-plugin": "^2.2.0",
     "react-app-polyfill": "^2.0.0",
+    "react-daum-postcode": "^2.0.6",
     "sass-loader": "^12.1.0",
     "style-loader": "^3.2.1",
     "ts-node": "^10.2.0",

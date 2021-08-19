@@ -32,6 +32,7 @@ export default createGlobalStyle`
   }
   body {
     line-height: 1;
+    font-family: 'NotoSans', 'DoHyeon', sans-serif;
   }
   menu, ol, ul {
     list-style: none;
@@ -58,7 +59,6 @@ export default createGlobalStyle`
   }
   * {
     box-sizing: border-box;
-    font-family: 'NotoSans', 'DoHyeon', sans-serif;
   }
   #app {
     min-height: 100vh;

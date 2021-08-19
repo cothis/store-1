@@ -2,7 +2,7 @@ import Link from '@lib/router/Link';
 import { MouseEventHandler } from 'react';
 import styled from '@lib/styled-components';
 
-const Singin = () => {
+const Signin = () => {
   const loginClickHandler: MouseEventHandler = (e) => {
     e.preventDefault();
   };
@@ -14,7 +14,7 @@ const Singin = () => {
         <Input placeholder="비밀번호" type="password" />
         <CheckboxArea>
           <Checkbox type="checkbox" />
-          <Span>아이디 저장</Span>
+          <span>아이디 저장</span>
         </CheckboxArea>
         <LoginButton onClick={loginClickHandler}>로그인</LoginButton>
       </Form>
@@ -73,10 +73,6 @@ const Checkbox = styled.input`
   margin-right: 8px;
 `;
 
-const Span = styled.span`
-  font-family: NotoSans, nanumgothic, '나눔고딕', Malgun Gothic, '맑은 고딕', AppleGothic, Dotum, '돋움', sans-serif;
-`;
-
 const LoginButton = styled.button`
   height: 55px;
   background-color: ${({ theme }) => theme.color.lightblack};
@@ -108,4 +104,4 @@ const Button = styled.button`
   ${({ theme }) => theme.opacityHover};
 `;
 
-export default Singin;
+export default Signin;

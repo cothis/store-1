@@ -5,6 +5,7 @@ import Home from '@pages/Home';
 import User from '@pages/User';
 import Signin from '@pages/Signin';
 import SignupMethod from '@pages/SignupMethod';
+import Signup from '@pages/Signup';
 import Error404 from '@pages/Error404';
 import styled, { ThemeProvider } from '@lib/styled-components';
 import GlobalStyle from './styles/global-style';
@@ -34,6 +35,9 @@ const App = () => {
             </Route>
             <Route exact path="/signup-method">
               <SignupMethod />
+            </Route>
+            <Route exact path="/signup">
+              <Signup />
             </Route>
             <Error404 />
           </Switch>
