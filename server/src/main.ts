@@ -15,9 +15,6 @@ async function bootstrap() {
     }),
   );
 
-  app.setBaseViewsDir(`${__dirname}/../views`);
-  app.setViewEngine('hbs');
-
   const appConfig: AppConfigService = app.get(AppConfigService);
   await app.listen(appConfig.port);
 }
