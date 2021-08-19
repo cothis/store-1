@@ -1,31 +1,35 @@
 import styled from '@lib/styled-components';
+import Carousel, { ICarouselItem } from '@components/Carousel';
+import bannerOne from '@assets/images/banner_one.gif';
+import bannerTwo from '@assets/images/banner_two.gif';
+import bannerThree from '@assets/images/banner_three.gif';
 
-const Div = styled.div`
-  color: ${({ theme }) => theme.color.red};
-`;
-
-const Button = styled.button`
-  ${({ theme }) => theme.opacityHover}
-`;
-
-const H1 = styled.h1`
-  background-color: black;
-  &:hover {
-    background-color: white;
-  }
-  color: ${({ props }) => props.color};
-`;
+const slideBanner: ICarouselItem[] = [
+  {
+    imageUrl: bannerOne,
+    url: '/products/1',
+    title: '텀블러백',
+  },
+  {
+    imageUrl: bannerTwo,
+    url: '/products/2',
+    title: '맥주짠 세트',
+  },
+  {
+    imageUrl: bannerThree,
+    url: '/products/3',
+    title: '흑심있어요',
+  },
+];
 
 const Home = () => {
   return (
-    <div>
-      <Div>
-        <H1 color={'yellow'}>home 입니당</H1>
-      </Div>
-
-      <Button>어어어</Button>
-    </div>
+    <HomeContents>
+      <Carousel items={slideBanner} carouselWidth={'100vw'} />
+    </HomeContents>
   );
 };
+
+const HomeContents = styled.div``;
 
 export default Home;
