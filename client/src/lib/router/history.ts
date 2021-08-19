@@ -25,6 +25,7 @@ function parseSearch(query: string) {
     .split('&')
     .map<[string, string]>((s) => s.split('=') as [string, string])
     .reduce<Search>((acc, [key, value]) => {
+      if (!key) return acc;
       acc[key] = value;
       return acc;
     }, {});
@@ -104,6 +105,10 @@ class BrowserHistory implements IHistory {
       hash,
       ...state,
     };
+
+    if (Object.keys(state).length === 0) {
+      this.replace(this.currentPath);
+    }
   }
 
   getNextPathAndUrl(to: To): [Path, string] {
