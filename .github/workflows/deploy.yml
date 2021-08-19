@@ -24,7 +24,7 @@ jobs:
         working-directory: './client'
 
       - name: compose
-        run: zip -r ./dist.zip ./server ./appspec.yml ./client/build/ ./deploy
+        run: zip -r ./dist.zip ./server ./appspec.yml ./client/build/ ./deploy ./docker-compose.yml
 
       - name: aws credentail
         uses: aws-actions/configure-aws-credentials@v1
