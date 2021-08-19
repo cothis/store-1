@@ -1,4 +1,4 @@
-import React, { useEffect, ReactNode, useContext } from 'react';
+import React, { useEffect, ReactNode, useContext, LegacyRef } from 'react';
 import { compile, serialize, stringify } from 'stylis';
 import { v4 as uuidv4 } from 'uuid';
 import type { DefaultTheme } from 'woowa-styled-component';
@@ -6,15 +6,13 @@ import TagNames from './tag-names';
 
 type TagName = typeof TagNames[number];
 
-export interface StyledComponentProps {
-  children?: ReactNode;
-  [key: string]: any;
-}
-
 type StyledTagedTemplateLambda = (args: { theme: DefaultTheme; props: Record<string, any> }) => string;
 type StyledTagedTemplateArg = StyledTagedTemplateLambda | string;
-
-type StyledComponent = (props: StyledComponentProps) => JSX.Element;
+type StyledComponent = React.ForwardRefExoticComponent<
+  Pick<React.PropsWithChildren<any>, string | number> & React.RefAttributes<HTMLElement>
+>;
+// type StyledComponentProps = { [key: string]: any };
+type StyledComponentProps = { [key: string]: any };
 type StyledTagedTemplate = (strings: TemplateStringsArray, ...args: StyledTagedTemplateArg[]) => StyledComponent;
 type Styled = Record<TagName, StyledTagedTemplate>;
 
@@ -33,6 +31,9 @@ const stylis = (content: string, className?: string) => {
   }
 };
 
+const $styleTag = document.createElement('style');
+document.querySelector('head')!.appendChild($styleTag);
+
 const constructWithTag = (tag?: string) => {
   const CustomTag = `${tag ?? 'div'}` as keyof JSX.IntrinsicElements;
 
@@ -43,8 +44,7 @@ const constructWithTag = (tag?: string) => {
     const suffix = uuidv4();
     // tag가 없을 경우 global로 처리
     const className = tag && tag + '-' + suffix;
-
-    const NewComponent = (props: StyledComponentProps) => {
+    const NewComponent: StyledComponent = React.forwardRef<HTMLElement, StyledComponentProps>((props, ref) => {
       const theme = useContext(ThemeContext)!;
       // Lazy Evalution!! 와! 대단해!
       useEffect(() => {
@@ -58,9 +58,8 @@ const constructWithTag = (tag?: string) => {
           })
           .join('');
         const classString = stylis(css, className);
-        const $style = document.createElement('style');
-        $style.innerHTML = classString;
-        document.querySelector<HTMLHeadElement>('head')!.appendChild($style);
+        const $style = document.createTextNode(classString);
+        $styleTag.appendChild($style);
         return () => {
           $style.remove();
         };
@@ -75,11 +74,15 @@ const constructWithTag = (tag?: string) => {
       }
 
       return (
-        <CustomTag {...domProps} className={`${className}${props.className ? ' ' + props.className : ''}`}>
+        <CustomTag
+          ref={ref as LegacyRef<any>}
+          {...domProps}
+          className={`${className}${props.className ? ' ' + props.className : ''}`}
+        >
           {props.children}
         </CustomTag>
       );
-    };
+    });
     return NewComponent;
   };
 

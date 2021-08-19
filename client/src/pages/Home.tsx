@@ -16,16 +16,11 @@ const H1 = styled.h1`
   color: ${({ props }) => props.color};
 `;
 
-const InvisibleButton = styled.button`
-  display: ${({ props }) => (props.$invisible ? 'none' : 'true')};
-`;
-
 const Home = () => {
   return (
     <div>
       <Div>
         <H1 color={'yellow'}>home 입니당</H1>
-        <InvisibleButton $invisible>안보여야된다.</InvisibleButton>
       </Div>
 
       <Button>어어어</Button>
