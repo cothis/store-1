@@ -1,6 +1,8 @@
 import useHistory from '@hooks/useHistory';
-import useRouter from '@hooks/useRouter';
+import usePath from '@hooks/usePath';
 import { MouseEvent, CSSProperties, ReactNode } from 'react';
+
+import type { To } from './history';
 import { createHref } from './history';
 
 interface NavLinkProps {
@@ -16,7 +18,7 @@ export default function NavLink(props: NavLinkProps) {
   const { exact, to, replace, children, activeClassName = 'active', activeStyle = {} } = props;
 
   const history = useHistory();
-  const { pathname } = useRouter();
+  const { pathname } = usePath();
   const href = createHref(to);
 
   const clickHandler = (e: MouseEvent<HTMLAnchorElement>) => {

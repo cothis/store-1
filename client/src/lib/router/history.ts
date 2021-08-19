@@ -1,3 +1,25 @@
+export type Search = Record<string, string>;
+
+export interface Path {
+  pathname: string;
+  search: Search;
+  hash: string;
+}
+
+export type To = string | Partial<Path>;
+
+export type HistoryEventHandler = (path: Path) => void;
+
+export interface IHistory {
+  listen: (listener: HistoryEventHandler) => () => void;
+  push: (to: To) => void;
+  replace: (to: To) => void;
+  forward: () => void;
+  back: () => void;
+  go: (delta: number) => void;
+  get path(): Path;
+}
+
 function parseSearch(query: string) {
   return query
     .split('&')
@@ -70,6 +92,11 @@ class BrowserHistory implements IHistory {
     const { pathname, search, hash } = window.location;
     const state = this.globalHistory.state || {};
 
+    window.addEventListener('popstate', (e) => {
+      const prevPath = e.state as Path;
+      this.listeners.call(prevPath);
+    });
+
     this.listeners = createEvents();
     this.currentPath = {
       pathname,
@@ -98,7 +125,7 @@ class BrowserHistory implements IHistory {
 
   push(to: To) {
     const [nextPath, url] = this.getNextPathAndUrl(to);
-    this.globalHistory.pushState({ nextPath }, '', url);
+    this.globalHistory.pushState(nextPath, '', url);
     this.currentPath = nextPath;
     this.listeners.call(nextPath);
   }
@@ -108,6 +135,18 @@ class BrowserHistory implements IHistory {
     this.globalHistory.replaceState(nextPath, '', url);
     this.currentPath = nextPath;
     this.listeners.call(nextPath);
+  }
+
+  go(delta: number) {
+    this.globalHistory.go(delta);
+  }
+
+  forward() {
+    this.go(1);
+  }
+
+  back() {
+    this.go(-1);
   }
 
   get path() {

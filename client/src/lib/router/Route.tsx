@@ -1,11 +1,22 @@
-export interface RouteProps {
+import { useContext } from 'react';
+import { RouterContext } from '@context';
+
+import type { MatchPath } from './match-path';
+
+export interface Props {
   exact?: boolean;
   path: string;
-  children: JSX.Element;
+  children: JSX.Element | JSX.Element[];
+  match?: MatchPath;
 }
 
-const Route = ({ children }: RouteProps) => children;
+export default function Route({ children, match }: Props): JSX.Element {
+  const router = useContext(RouterContext);
 
-Route.displayName = 'Route';
+  const routerValue = {
+    ...router,
+    match: match || {},
+  };
 
-export default Route;
+  return <RouterContext.Provider value={routerValue}>{children}</RouterContext.Provider>;
+}

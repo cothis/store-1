@@ -1,4 +1,9 @@
 import { createContext } from 'react';
+import type { Path, IHistory } from '@lib/router/history';
+import type { MatchPath } from '@lib/router/match-path';
 
-export const RouterContext = createContext<{ path: Path }>({ path: { pathname: '/', search: {}, hash: '' } });
-export const HistoryContext = createContext<{ history: IHistory }>({} as { history: IHistory });
+export const RouterContext = createContext<{ path: Path; match: MatchPath }>({
+  path: {} as Path,
+  match: {},
+});
+export const HistoryContext = createContext<IHistory>({} as IHistory);
