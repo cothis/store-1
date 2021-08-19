@@ -1,0 +1,45 @@
+name: WoowaStore-1
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14.x'
+
+      - name: install yarn
+        run: npm i -g yarn
+
+      - name: client build
+        run: |
+          yarn install
+          yarn build
+        working-directory: './client'
+
+      - name: compose
+        run: zip -r ./dist.zip ./server ./appspec.yml ./client/build/ ./deploy
+
+      - name: aws credentail
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
+          aws-region: ap-northeast-2
+
+      - name: upload to S3
+        run: |
+          aws s3 cp \
+            --region ap-northeast-2 \
+            ./dist.zip s3://store-1-production/dist.zip
+
+      - name: deploy to ec2
+        run: aws deploy create-deployment --application-name store-1 --deployment-config-name CodeDeployDefault.OneAtATime --deployment-group-name store-1 --s3-location bucket=store-1-production,bundleType=zip,key=dist.zip

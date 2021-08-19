@@ -1,0 +1,22 @@
+version: '3.8'
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        VARIANT: 14
+    volumes:
+      - ../../:/workspace/store-1
+    command: sleep infinity
+    network_mode: service:db
+    environment:
+      TZ: 'Asia/Seoul'
+  db:
+    image: mysql:latest
+    environment:
+      MYSQL_DATABASE: 'store'
+      MYSQL_USER: 'woowa'
+      MYSQL_PASSWORD: 'woowa'
+      MYSQL_RANDOM_ROOT_PASSWORD: 'yes'
+      TZ: 'Asia/Seoul'

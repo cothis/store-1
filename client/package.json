@@ -1,0 +1,108 @@
+{
+  "name": "woowa-stationery-store-1",
+  "version": "1.0.0",
+  "description": "배민 문방구 1팀",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/woowa-techcamp-2021/store-1.git"
+  },
+  "license": "MIT",
+  "scripts": {
+    "type-check": "tsc",
+    "type-check:watch": "npm run type-check -- --watch",
+    "dev": "NODE_ENV=development webpack serve --config webpack.config.ts",
+    "build": "npm run type-check && NODE_ENV=production webpack",
+    "test": "node test/index.js"
+  },
+  "dependencies": {
+    "core-js": "^3.16.1",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "stylis": "^4.0.10"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.15.0",
+    "@babel/preset-env": "^7.15.0",
+    "@babel/preset-react": "^7.14.5",
+    "@babel/preset-typescript": "^7.15.0",
+    "@testing-library/jest-dom": "^5.11.4",
+    "@testing-library/react": "^11.1.0",
+    "@types/jest": "^26.0.15",
+    "@types/mini-css-extract-plugin": "^2.2.0",
+    "@types/node": "^16.4.13",
+    "@types/react": "^17.0.16",
+    "@types/react-dom": "^17.0.9",
+    "@types/stylis": "^4.0.1",
+    "@types/uuid": "^8.3.1",
+    "@types/webpack-dev-server": "^3.11.5",
+    "babel-jest": "^26.6.0",
+    "babel-loader": "^8.2.2",
+    "babel-preset-react-app": "^10.0.0",
+    "css-loader": "^6.2.0",
+    "file-loader": "^6.2.0",
+    "html-webpack-plugin": "^5.3.2",
+    "jest": "^26.6.0",
+    "jest-circus": "^26.6.0",
+    "jest-watch-typeahead": "^0.6.1",
+    "mini-css-extract-plugin": "^2.2.0",
+    "react-app-polyfill": "^2.0.0",
+    "react-daum-postcode": "^2.0.6",
+    "sass-loader": "^12.1.0",
+    "style-loader": "^3.2.1",
+    "ts-node": "^10.2.0",
+    "typescript": "^4.3.5",
+    "uuid": "^8.3.2",
+    "webpack": "^5.49.0",
+    "webpack-cli": "^4.7.2",
+    "webpack-dev-server": "^3.11.2"
+  },
+  "jest": {
+    "roots": [
+      "<rootDir>"
+    ],
+    "collectCoverageFrom": [
+      "src/**/*.{js,jsx,ts,tsx}",
+      "!src/**/*.d.ts"
+    ],
+    "setupFiles": [
+      "react-app-polyfill/jsdom"
+    ],
+    "testMatch": [
+      "<rootDir>/test/**/__tests__/**/*.{js,jsx,ts,tsx}",
+      "<rootDir>/test/*.{spec,test}.{js,jsx,ts,tsx}"
+    ],
+    "testEnvironment": "jsdom",
+    "testRunner": "<rootDir>/node_modules/jest-circus/runner.js",
+    "transform": {
+      "^.+\\.(js|jsx|mjs|cjs|ts|tsx)$": "<rootDir>/test/transform/babelTransform.js",
+      "^.+\\.css$": "<rootDir>/test/transform/cssTransform.js",
+      "^(?!.*\\.(js|jsx|mjs|cjs|ts|tsx|css|json)$)": "<rootDir>/test/transform/fileTransform.js"
+    },
+    "transformIgnorePatterns": [
+      "[/\\\\]node_modules[/\\\\].+\\.(js|jsx|mjs|cjs|ts|tsx)$",
+      "^.+\\.module\\.(css|sass|scss)$"
+    ],
+    "modulePaths": [],
+    "moduleNameMapper": {
+      "^react-native$": "react-native-web",
+      "^.+\\.module\\.(css|sass|scss)$": "identity-obj-proxy"
+    },
+    "moduleFileExtensions": [
+      "web.js",
+      "js",
+      "web.ts",
+      "ts",
+      "web.tsx",
+      "tsx",
+      "json",
+      "web.jsx",
+      "jsx",
+      "node"
+    ],
+    "watchPlugins": [
+      "jest-watch-typeahead/filename",
+      "jest-watch-typeahead/testname"
+    ],
+    "resetMocks": true
+  }
+}
