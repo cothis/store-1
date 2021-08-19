@@ -28,7 +28,7 @@ jobs:
           touch config.yaml
           cat << EOF >> config.yaml
           ${{ secrets.CONFIG }}
-        working-directory: './server/config'
+        working-directory: './server/src/config'
 
       - name: compose
         run: zip -r ./dist.zip ./server ./appspec.yml ./client/build/ ./deploy ./docker-compose.yml
