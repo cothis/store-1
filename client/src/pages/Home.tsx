@@ -1,6 +1,7 @@
 import styled from '@lib/styled-components';
 import Carousel, { ICarouselItem } from '@components/Carousel';
-import ProductList, { ProductListItem, Tag } from '@components/ProductList';
+import ProductList from '@components/ProductList';
+import { ProductListItem } from '@components/ProductListItem';
 import ProductBannerList, { IBanner } from '@components/ProductBannerList';
 import bannerOne from '@assets/images/banner_one.gif';
 import bannerTwo from '@assets/images/banner_two.gif';

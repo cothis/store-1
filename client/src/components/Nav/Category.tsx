@@ -283,6 +283,7 @@ const CategoryMenu = styled.div`
       color: black;
     }
     .parent {
+      min-height: calc(100vh - 48px);
       background-color: white;
       > li {
         border-bottom: 1px solid #ddd;
