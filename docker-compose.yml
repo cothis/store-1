@@ -13,28 +13,30 @@ services:
   app:
     build:
       context: .
-      dockerfile: deploy/docker/server.Dockerfile
+      dockerfile: deploy/docker/Dockerfile
     depends_on:
       - db
     environment:
       TZ: 'Asia/Seoul'
-    volumes:
-      - ./server:/app
     working_dir: /app
-    command: sh -c "yarn install && yarn build && pm2-runtime start dist/main.js"
+    command: node dist/main
     networks:
       default:
         aliases:
           - app
 
   db:
-    image: mysql:latest
+    image: mysql:8.0.26
     environment:
       MYSQL_DATABASE: 'store'
       MYSQL_USER: 'woowa'
       MYSQL_PASSWORD: 'woowa'
       MYSQL_RANDOM_ROOT_PASSWORD: 'yes'
       TZ: 'Asia/Seoul'
+    cap_add:
+      - SYS_NICE
+    volumes:
+      - ./deploy/data/mysql:/var/lib/mysql
     networks:
       default:
         aliases:
