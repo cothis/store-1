@@ -21,6 +21,10 @@ import Category from '@pages/Category';
 import MyPage from '@pages/MyPage/MyPage';
 import MyPageEdit from '@pages/MyPage/MyPageEdit';
 import MyPageConfirm from '@pages/MyPage/MyPageConfirm';
+import Terms from '@pages/Terms';
+
+// etc
+import { AGREEMENT_STRING, PRIVACY_STRING } from '@constants/terms';
 
 const AppContent = styled.div`
   padding-top: 100px;
@@ -58,6 +62,12 @@ const App = () => {
             </Route>
             <Route path="/categories/:id?">
               <Category />
+            </Route>
+            <Route exact path="/agreement">
+              <Terms title="이용약관" context={AGREEMENT_STRING} />
+            </Route>
+            <Route exact path="/privacy">
+              <Terms title="개인정보처리방침" context={PRIVACY_STRING} />
             </Route>
             <Error404 />
           </Switch>
