@@ -2,7 +2,7 @@ import { BoardComment } from 'src/models/board-comment/entities/board-comment.en
 import { BoardContent } from 'src/models/board-content/entities/board-content.entity';
 import { Cart } from 'src/models/cart/entities/cart.entity';
 import { Review } from 'src/models/review/entities/review.entity';
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToMany } from 'typeorm';
 import { IUser } from '../interfaces/user.interface';
 
 @Entity({ name: 'users' })
@@ -37,15 +37,15 @@ export class User implements IUser {
   @Column({ type: 'text' })
   addressDetail: string;
 
-  @ManyToOne(() => BoardContent)
+  @OneToMany(() => BoardContent, (boardContent) => boardContent.user)
   contents: BoardContent[];
 
-  @ManyToOne(() => BoardComment)
+  @OneToMany(() => BoardComment, (boardComment) => boardComment.user)
   comments: BoardComment[];
 
-  @ManyToOne(() => Review)
+  @OneToMany(() => Review, (review) => review.user)
   reviews: Review[];
 
-  @ManyToOne(() => Cart)
+  @OneToMany(() => Cart, (cart) => cart.user)
   carts: Cart[];
 }

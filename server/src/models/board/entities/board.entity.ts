@@ -1,5 +1,5 @@
 import { BoardContent } from 'src/models/board-content/entities/board-content.entity';
-import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 import { IBoard } from '../interfaces/board.interface';
 
 @Entity({ name: 'board' })
@@ -16,6 +16,6 @@ export class Board implements IBoard {
   @UpdateDateColumn({ name: 'updated_at', type: 'timestamp' })
   updatedAt: Date;
 
-  @ManyToOne((type) => BoardContent)
+  @OneToMany(() => BoardContent, (boardContent) => boardContent.board)
   contents: BoardContent[];
 }

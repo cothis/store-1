@@ -1,8 +1,8 @@
 import { CartHasProduct } from 'src/models/cart-has-product/entities/cart-has-product.entity';
-import { Category } from 'src/models/category/entities/category';
+import { Category } from 'src/models/category/entities/category.entity';
 import { OrderHasProduct } from 'src/models/order-has-product/entities/order-has-product.entity';
 import { Review } from 'src/models/review/entities/review.entity';
-import { Column, Entity, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 export enum ProductTag {
   BEST = 'best',
@@ -38,15 +38,15 @@ export class Product {
   @Column({ type: 'text', nullable: true })
   content: string;
 
-  @Column({ type: 'enum', enum: ProductTag, nullable: true, array: true })
+  @Column({ type: 'set', enum: ProductTag, nullable: true })
   tags: ProductTag[];
 
-  @ManyToOne(() => Review)
+  @OneToMany(() => Review, (review) => review.product)
   reviews: Review[];
 
-  @ManyToOne(() => OrderHasProduct)
+  @OneToMany(() => OrderHasProduct, (orderHasProduct) => orderHasProduct.product)
   orderHasProducts: OrderHasProduct[];
 
-  @ManyToOne(() => CartHasProduct)
+  @OneToMany(() => CartHasProduct, (cartHasProduct) => cartHasProduct.product)
   cartHasProducts: CartHasProduct[];
 }

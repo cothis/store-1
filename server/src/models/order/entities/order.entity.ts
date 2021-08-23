@@ -1,6 +1,6 @@
 import { OrderHasProduct } from 'src/models/order-has-product/entities/order-has-product.entity';
 import { OrderHistory } from 'src/models/order-history/entities/order-history.entity';
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 export enum OrderStatus {
   READY = 'ready',
@@ -19,9 +19,9 @@ export class Order {
   @Column({ type: 'enum', enum: OrderStatus, default: OrderStatus.READY })
   status: OrderStatus;
 
-  @ManyToOne(() => OrderHasProduct)
+  @OneToMany(() => OrderHasProduct, (orderhasProduct) => orderhasProduct.order)
   orderHasProducts: OrderHasProduct[];
 
-  @ManyToOne(() => OrderHistory)
+  @OneToMany(() => OrderHistory, (orderHistory) => orderHistory.order)
   orderHistories: OrderHistory[];
 }
