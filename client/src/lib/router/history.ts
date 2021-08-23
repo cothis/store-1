@@ -22,6 +22,7 @@ export interface IHistory {
 
 function parseSearch(query: string) {
   return query
+    .substr(1)
     .split('&')
     .map<[string, string]>((s) => s.split('=') as [string, string])
     .reduce<Search>((acc, [key, value]) => {
@@ -113,13 +114,21 @@ class BrowserHistory implements IHistory {
 
   getNextPathAndUrl(to: To): [Path, string] {
     const path = typeof to === 'string' ? parsePath(to) : to;
-    return [
-      {
+    let nextPath: Path;
+    if (path.pathname && path.pathname !== this.currentPath.pathname) {
+      nextPath = {
+        search: {},
+        hash: '',
+        pathname: path.pathname,
+      };
+    } else {
+      nextPath = {
         ...this.currentPath,
         ...path,
-      },
-      createHref(path),
-    ];
+      };
+    }
+
+    return [nextPath, createHref(nextPath)];
   }
 
   listen(listener: HistoryEventHandler) {
