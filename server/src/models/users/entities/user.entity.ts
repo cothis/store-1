@@ -1,4 +1,8 @@
-import { Entity, Column, CreateDateColumn, UpdateDateColumn, PrimaryGeneratedColumn } from 'typeorm';
+import { BoardComment } from 'src/models/board-comment/entities/board-comment.entity';
+import { BoardContent } from 'src/models/board-content/entities/board-content.entity';
+import { Cart } from 'src/models/cart/entities/cart.entity';
+import { Review } from 'src/models/review/entities/review.entity';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
 import { IUser } from '../interfaces/user.interface';
 
 @Entity({ name: 'users' })
@@ -32,4 +36,16 @@ export class User implements IUser {
 
   @Column({ type: 'text' })
   addressDetail: string;
+
+  @ManyToOne(() => BoardContent)
+  contents: BoardContent[];
+
+  @ManyToOne(() => BoardComment)
+  comments: BoardComment[];
+
+  @ManyToOne(() => Review)
+  reviews: Review[];
+
+  @ManyToOne(() => Cart)
+  carts: Cart[];
 }
