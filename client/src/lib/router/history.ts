@@ -61,8 +61,15 @@ const mergeSearch = (search: Search) =>
     .map(([key, value]) => `${key}=${value}`)
     .join('&');
 
-const createPath = ({ pathname = '/', search = {}, hash = '' }: Partial<Path>) =>
-  `${pathname}${Object.keys(search).length ? '?' : ''}${mergeSearch(search)}${hash ? '#' : ''}${hash}`;
+function createPath({ pathname = '/', search = {}, hash = '' }: Partial<Path>): string {
+  const _search: Search = {};
+  Object.entries(search).forEach(([key, value]) => {
+    if (value.trim() !== '') {
+      _search[key] = value.trim();
+    }
+  });
+  return `${pathname}${Object.keys(_search).length ? '?' : ''}${mergeSearch(_search)}${hash ? '#' : ''}${hash}`;
+}
 
 export const createHref = (to: To) => (typeof to === 'string' ? to : createPath(to));
 
@@ -96,6 +103,7 @@ class BrowserHistory implements IHistory {
 
     window.addEventListener('popstate', (e) => {
       const prevPath = e.state as Path;
+      this.currentPath = prevPath;
       this.listeners.call(prevPath);
     });
 
