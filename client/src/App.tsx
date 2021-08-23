@@ -10,6 +10,7 @@ import Route from '@lib/router/Route';
 
 // components
 import Nav from '@components/Nav/Nav';
+import Error from '@components/Error';
 
 // pages
 import Home from '@pages/Home';
@@ -26,6 +27,14 @@ import Terms from '@pages/Terms';
 // etc
 import { AGREEMENT_STRING, PRIVACY_STRING } from '@constants/terms';
 
+// react-query
+import { QueryClient, QueryClientProvider, QueryErrorResetBoundary } from 'react-query';
+
+// react-error-boundary
+import { ErrorBoundary } from 'react-error-boundary';
+
+const queryClient = new QueryClient();
+
 const AppContent = styled.div`
   padding-top: 100px;
 `;
@@ -33,47 +42,60 @@ const AppContent = styled.div`
 const App = () => {
   const theme = styleTheme;
   return (
-    <ThemeProvider theme={theme}>
-      <GlobalStyle />
-      <BrowseRouter>
-        <Nav />
-        <AppContent>
-          <Switch>
-            <Route exact path="/">
-              <Home />
-            </Route>
-            <Route exact path="/my-page">
-              <MyPage />
-            </Route>
-            <Route exact path="/my-page/confirm">
-              <MyPageConfirm />
-            </Route>
-            <Route exact path="/my-page/edit">
-              <MyPageEdit />
-            </Route>
-            <Route exact path="/signin">
-              <Signin />
-            </Route>
-            <Route exact path="/signup-method">
-              <SignupMethod />
-            </Route>
-            <Route exact path="/signup">
-              <Signup />
-            </Route>
-            <Route path="/categories/:id?">
-              <Category />
-            </Route>
-            <Route exact path="/agreement">
-              <Terms title="이용약관" context={AGREEMENT_STRING} />
-            </Route>
-            <Route exact path="/privacy">
-              <Terms title="개인정보처리방침" context={PRIVACY_STRING} />
-            </Route>
-            <Error404 />
-          </Switch>
-        </AppContent>
-      </BrowseRouter>
-    </ThemeProvider>
+    <QueryClientProvider client={queryClient}>
+      <ThemeProvider theme={theme}>
+        <GlobalStyle />
+        <QueryErrorResetBoundary>
+          {({ reset }) => (
+            <ErrorBoundary
+              onReset={reset}
+              fallbackRender={({ resetErrorBoundary, error }) => (
+                <Error resetErrorBoundary={resetErrorBoundary} error={error} />
+              )}
+            >
+              <BrowseRouter>
+                <Nav />
+                <AppContent>
+                  <Switch>
+                    <Route exact path="/">
+                      <Home />
+                    </Route>
+                    <Route exact path="/my-page">
+                      <MyPage />
+                    </Route>
+                    <Route exact path="/my-page/confirm">
+                      <MyPageConfirm />
+                    </Route>
+                    <Route exact path="/my-page/edit">
+                      <MyPageEdit />
+                    </Route>
+                    <Route exact path="/signin">
+                      <Signin />
+                    </Route>
+                    <Route exact path="/signup-method">
+                      <SignupMethod />
+                    </Route>
+                    <Route exact path="/signup">
+                      <Signup />
+                    </Route>
+                    <Route path="/categories/:id?">
+                      <Category />
+                    </Route>
+                    <Route exact path="/agreement">
+                      <Terms title="이용약관" context={AGREEMENT_STRING} />
+                    </Route>
+                    <Route exact path="/privacy">
+                      <Terms title="개인정보처리방침" context={PRIVACY_STRING} />
+                    </Route>
+                    <Error404 />
+                  </Switch>
+                </AppContent>
+              </BrowseRouter>
+            </ErrorBoundary>
+          )}
+        </QueryErrorResetBoundary>
+      </ThemeProvider>
+    </QueryClientProvider>
   );
 };
 
