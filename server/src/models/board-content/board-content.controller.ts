@@ -3,7 +3,7 @@ import { BoardContentService } from './board-content.service';
 import { CreateBoardContentDto } from './dto/create-board-content.dto';
 import { BoardContent } from './entities/board-content.entity';
 
-@Controller('api/board-contents')
+@Controller('api/v1/board-contents')
 export class BoardContentController {
   constructor(private readonly boardContentService: BoardContentService) {}
 

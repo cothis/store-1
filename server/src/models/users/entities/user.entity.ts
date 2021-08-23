@@ -2,11 +2,10 @@ import { BoardComment } from 'src/models/board-comment/entities/board-comment.en
 import { BoardContent } from 'src/models/board-content/entities/board-content.entity';
 import { Cart } from 'src/models/cart/entities/cart.entity';
 import { Review } from 'src/models/review/entities/review.entity';
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToMany } from 'typeorm';
-import { IUser } from '../interfaces/user.interface';
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 
 @Entity({ name: 'users' })
-export class User implements IUser {
+export class User {
   @PrimaryGeneratedColumn({ type: 'bigint', unsigned: true })
   id: string;
 

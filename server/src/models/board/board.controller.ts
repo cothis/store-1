@@ -16,7 +16,7 @@ import { EditBoardDto } from './dto/edit.board.dto';
 import { BoardEntity } from './serializers/board.serializer';
 import { defaultGroup } from './serializers/board.serializer';
 
-@Controller('api/boards')
+@Controller('api/v1/boards')
 @SerializeOptions({ groups: defaultGroup })
 export class BoardController {
   constructor(private readonly boardService: BoardService) {}
