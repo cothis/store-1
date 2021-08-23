@@ -13,12 +13,14 @@ import Nav from '@components/Nav/Nav';
 
 // pages
 import Home from '@pages/Home';
-import User from '@pages/User';
 import Signin from '@pages/Signin';
-import SignupMethod from '@pages/SignupMethod';
-import Signup from '@pages/Signup';
+import SignupMethod from '@pages/Signup/SignupMethod';
+import Signup from '@pages/Signup/Signup';
 import Error404 from '@pages/Error404';
 import Category from '@pages/Category';
+import MyPage from '@pages/MyPage/MyPage';
+import MyPageEdit from '@pages/MyPage/MyPageEdit';
+import MyPageConfirm from '@pages/MyPage/MyPageConfirm';
 
 const AppContent = styled.div`
   padding-top: 100px;
@@ -36,8 +38,14 @@ const App = () => {
             <Route exact path="/">
               <Home />
             </Route>
-            <Route exact path="/user">
-              <User />
+            <Route exact path="/my-page">
+              <MyPage />
+            </Route>
+            <Route exact path="/my-page/confirm">
+              <MyPageConfirm />
+            </Route>
+            <Route exact path="/my-page/edit">
+              <MyPageEdit />
             </Route>
             <Route exact path="/signin">
               <Signin />

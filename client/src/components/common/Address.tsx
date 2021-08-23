@@ -3,10 +3,16 @@ import { ChangeEventHandler, useState, CSSProperties } from 'react';
 import DaumPostcode, { AddressData } from 'react-daum-postcode';
 import useModal from '@hooks/useModal';
 
-const Address = () => {
-  const [addressDetail, setAddressDetail] = useState('');
-  const [zipcode, setZipcode] = useState('');
-  const [address, setAddress] = useState('');
+interface AddressProps {
+  initialZipcode?: string;
+  initialAddress?: string;
+  initialAddressDetail?: string;
+}
+
+const Address = function ({ initialZipcode, initialAddress, initialAddressDetail }: AddressProps) {
+  const [zipcode, setZipcode] = useState(initialZipcode || '');
+  const [address, setAddress] = useState(initialAddress || '');
+  const [addressDetail, setAddressDetail] = useState(initialAddressDetail || '');
   const [modal, setModal] = useModal();
   const changeHandler: ChangeEventHandler<HTMLInputElement> = (e) => {
     setAddressDetail(e.target.value);

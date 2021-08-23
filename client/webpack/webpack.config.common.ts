@@ -22,6 +22,7 @@ const commonConfig: Configuration = {
       '@lib': path.resolve(__dirname, '../src/lib'),
       '@constants': path.resolve(__dirname, '../src/constants'),
       '@assets': path.resolve(__dirname, '../src/assets'),
+      '@styles': path.resolve(__dirname, '../src/styles'),
     },
   },
   module: {

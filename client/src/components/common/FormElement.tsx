@@ -6,10 +6,12 @@ interface FormElementProps {
   inputName?: string;
   type: string;
   isLong?: boolean;
+  initialInputValue?: string;
+  readonly?: boolean;
 }
 
-const FormElement = ({ elementName, inputName, type, isLong }: FormElementProps) => {
-  const [inputValue, setInputValue] = useState('');
+const FormElement = function ({ elementName, inputName, type, isLong, initialInputValue, readonly }: FormElementProps) {
+  const [inputValue, setInputValue] = useState(initialInputValue || '');
   const changeHandler: ChangeEventHandler<HTMLInputElement> = (e) => {
     setInputValue(e.target.value);
   };
@@ -17,9 +19,9 @@ const FormElement = ({ elementName, inputName, type, isLong }: FormElementProps)
     <Div>
       <Span>{elementName}</Span>
       {isLong ? (
-        <LongInput name={inputName} type={type} value={inputValue} onChange={changeHandler} />
+        <LongInput name={inputName} type={type} value={inputValue} onChange={changeHandler} readOnly={readonly} />
       ) : (
-        <ShortInput name={inputName} type={type} value={inputValue} onChange={changeHandler} />
+        <ShortInput name={inputName} type={type} value={inputValue} onChange={changeHandler} readOnly={readonly} />
       )}
     </Div>
   );

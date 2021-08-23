@@ -1,8 +1,8 @@
 import styled from '@lib/styled-components';
 import Agreement from '@components/Signup/Agreement';
 import { MouseEventHandler } from 'react';
-import FormElement from '@components/Signup/FormElement';
-import Address from '@components/Signup/Address';
+import FormElement from '@components/common/FormElement';
+import Address from '@components/common/Address';
 import useHistory from '@hooks/useHistory';
 
 const Signup = () => {
@@ -19,11 +19,11 @@ const Signup = () => {
       <Title>회원 가입</Title>
       <P>기본정보</P>
       <Form>
-        <FormElement elementName={'아이디'} inputName={'loginid'} type={'text'} isLong />
-        <FormElement elementName={'비밀번호'} inputName={'password'} type={'password'} />
-        <FormElement elementName={'비밀번호 확인'} type={'password'} />
-        <FormElement elementName={'이름'} inputName={'realname'} type={'text'} isLong />
-        <FormElement elementName={'이메일'} inputName={'email'} type={'email'} />
+        <FormElement elementName="아이디" inputName="loginid" type="text" isLong />
+        <FormElement elementName="비밀번호" inputName="password" type="password" />
+        <FormElement elementName="비밀번호 확인" type="password" />
+        <FormElement elementName="이름" inputName="realname" type="text" isLong />
+        <FormElement elementName="이메일" inputName="email" type="email" />
         <Address />
         <Agreement clickHandler={submitHandler} />
       </Form>
