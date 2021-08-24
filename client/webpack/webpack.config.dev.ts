@@ -70,7 +70,7 @@ const devConfig: Configuration = {
         if (!data['currentPage']) data['currentPage'] = 1;
         setTimeout(() => {
           res.json(data);
-        }, 1000);
+        }, 2000);
       });
     },
   },

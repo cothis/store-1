@@ -4,6 +4,7 @@ import { useProductList } from '@hooks/query/products';
 import ProductList from '@components/ProductList';
 import Sort from '@components/Sort';
 import Pagination from '@components/Pagination';
+import Loading from '@components/Loading';
 import styled from '@lib/styled-components';
 
 // 목업용
@@ -17,7 +18,7 @@ export default function Category() {
   const path = usePath();
   const { isLoading, isError, data, error } = useProductList(path, id);
   if (isLoading) {
-    return <p>loading...</p>;
+    return <Loading />;
   }
   if (isError) throw error;
   if (!data) return <div></div>;
