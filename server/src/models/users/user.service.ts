@@ -27,4 +27,12 @@ export class UserService {
   async deleteEntity(id: string): Promise<boolean> {
     return await this.userRepository.deleteEntity(id);
   }
+
+  async findByLoginId(loginId: string): Promise<User> {
+    return await this.userRepository.findByLoginId(loginId);
+  }
+
+  async findByOauthId(id: string): Promise<User> {
+    return await this.userRepository.findByOauthId(id);
+  }
 }

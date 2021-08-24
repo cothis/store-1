@@ -4,7 +4,7 @@ import { Cart } from 'src/models/cart/entities/cart.entity';
 import { Review } from 'src/models/review/entities/review.entity';
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 
-@Entity({ name: 'users' })
+@Entity({ name: 'user' })
 export class User {
   @PrimaryGeneratedColumn({ type: 'bigint', unsigned: true })
   id: string;

@@ -6,12 +6,19 @@ export class JwtConfigService {
   constructor(private configService: ConfigService) {}
 
   get accessSecret(): Buffer {
-    const secret = this.configService.get<string>('jwt.secret.access');
-    return Buffer.from(secret, 'base64');
+    const secret = this.configService.get<string>('jwt.secret');
+    const secretkey = Buffer.from(secret, 'base64');
+    console.log('heheh', secretkey);
+    return secretkey;
   }
 
-  get refreshSecret(): Buffer {
-    const secret = this.configService.get<string>('jwt.secret.refresh');
-    return Buffer.from(secret, 'base64');
-  }
+  // get accessSecret(): Buffer {
+  //   const secret = this.configService.get<string>('jwt.secret.access');
+  //   return Buffer.from(secret, 'base64');
+  // }
+
+  // get refreshSecret(): Buffer {
+  //   const secret = this.configService.get<string>('jwt.secret.refresh');
+  //   return Buffer.from(secret, 'base64');
+  // }
 }

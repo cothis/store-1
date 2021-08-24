@@ -1,5 +1,7 @@
 app:
   port: 8080
+  client: http://localhost:9000
+  server: http://localhost:8080
 
 typeorm:
   host: localhost
@@ -11,6 +13,7 @@ typeorm:
   logging: true
 
 jwt:
-  secret:
-    access: 128bit_base64_encoded
-    refresh: 128bit_base64_encoded
+  secret: 128bit_base64_encoded
+
+auth:
+  kakao_client_id: kakao_api

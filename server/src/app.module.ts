@@ -16,6 +16,7 @@ import { OrderHistoryModule } from './models/order-history/order-history.module'
 import { ProductModule } from './models/product/product.module';
 import { ReviewModule } from './models/review/review.module';
 import { UserModule } from './models/users/user.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { UserModule } from './models/users/user.module';
     ProductModule,
     ReviewModule,
     UserModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],

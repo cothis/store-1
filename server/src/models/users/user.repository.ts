@@ -24,4 +24,12 @@ export class UserRepository extends Repository<User> {
   async deleteEntity(id: string): Promise<boolean> {
     return (await this.delete(id)).affected > 0;
   }
+
+  async findByLoginId(loginId: string): Promise<User> {
+    return await this.findOne({ where: { loginId } });
+  }
+
+  async findByOauthId(code: string): Promise<User> {
+    return await this.findOne({ where: { oAuthId: code } });
+  }
 }
