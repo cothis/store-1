@@ -11,6 +11,7 @@ import Route from '@lib/router/Route';
 // components
 import Nav from '@components/Nav/Nav';
 import Error from '@components/Error';
+import ToastifyContainer from '@components/Toastify/ToastifyContainer';
 
 // pages
 import Home from '@pages/Home';
@@ -103,6 +104,7 @@ const App = () => {
           )}
         </QueryErrorResetBoundary>
       </ThemeProvider>
+      <ToastifyContainer />
     </QueryClientProvider>
   );
 };
