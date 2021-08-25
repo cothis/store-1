@@ -164,9 +164,21 @@ function CartForm() {
         ))}
       </form>
       <div className="cart__result">
-        <div className="cart__result--total-price">
-          <p>총 합계금액</p>
-          <p>{totalPrice.toLocaleString()}원</p>
+        <div className="cart__result--price">
+          <div className="cart__result--price-item">
+            <p>상품가격</p>
+            <p>{totalPrice.toLocaleString()}원</p>
+          </div>
+          <div className="cart__result--price-item">
+            <p>배송비</p>
+            <p>{totalPrice >= 30000 ? '0' : '2,500'}원</p>
+          </div>
+          <div className="cart__result--price-item">
+            <p>총 합계금액</p>
+            <p className="cart__result--total-price">
+              {totalPrice >= 30000 ? totalPrice.toLocaleString() : (totalPrice + 2500).toLocaleString()}원
+            </p>
+          </div>
         </div>
         <button disabled={totalPrice === 0} className="cart__result--pay-btn">
           결제하기
@@ -271,18 +283,24 @@ const CartPageWrapper = styled.div`
     margin: 1rem 0;
     > * {
       width: 300px;
-      padding: 1rem;
     }
-    .cart__result--total-price {
+    .cart__result--price {
+      background-color: #fcfcf7;
+    }
+    .cart__result--price-item {
       display: flex;
       justify-content: space-between;
-      background-color: #fcfcf7;
+      padding: 1rem;
       > p:nth-of-type(2) {
         font-family: 'Do Hyeon', sans-serif;
         color: ${({ theme }) => theme.color.baeminPrimary};
       }
     }
+    .cart__result--total-price {
+      font-size: 1.2rem;
+    }
     .cart__result--pay-btn {
+      padding: 1rem;
       font-size: 1.2rem;
       border-radius: 10px;
       background-color: ${({ theme }) => theme.color.baeminDark};
