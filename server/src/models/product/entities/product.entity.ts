@@ -1,7 +1,6 @@
-import { CartHasProduct } from 'src/models/cart-has-product/entities/cart-has-product.entity';
+import { BoardContent } from '@models/board/entities/board-content.entity';
 import { Category } from 'src/models/category/entities/category.entity';
 import { OrderHasProduct } from 'src/models/order-has-product/entities/order-has-product.entity';
-import { Review } from 'src/models/review/entities/review.entity';
 import { Column, Entity, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 export enum ProductTag {
@@ -13,9 +12,9 @@ export enum ProductTag {
   DISABLED = 'disabled',
 }
 
-@Entity('product')
+@Entity()
 export class Product {
-  @PrimaryGeneratedColumn({ type: 'bigint', unsigned: true })
+  @PrimaryGeneratedColumn('increment', { type: 'bigint', unsigned: true })
   id: string;
 
   @ManyToMany(() => Category, (category) => category.products)
@@ -27,26 +26,30 @@ export class Product {
   categories: Category[];
 
   @Column({ type: 'varchar', length: 45 })
-  name: string;
+  title: string;
 
   @Column({ type: 'text', nullable: true })
-  thumbnails: string;
+  image: string;
 
   @Column('decimal')
   price: string;
 
-  @Column({ type: 'text', nullable: true })
-  content: string;
+  @Column('decimal')
+  originalPrice: string;
+
+  @Column({ type: 'varchar', length: 255 })
+  priceText: string;
+
+  @Column('simple-array')
+  content: string[];
 
   @Column({ type: 'set', enum: ProductTag, nullable: true })
   tags: ProductTag[];
 
-  @OneToMany(() => Review, (review) => review.product)
-  reviews: Review[];
+  // 리뷰가 될 수도 있고 문의가 될 수도 있고
+  @OneToMany(() => BoardContent, (boardContent) => boardContent.product)
+  boardContents: BoardContent[];
 
   @OneToMany(() => OrderHasProduct, (orderHasProduct) => orderHasProduct.product)
   orderHasProducts: OrderHasProduct[];
-
-  @OneToMany(() => CartHasProduct, (cartHasProduct) => cartHasProduct.product)
-  cartHasProducts: CartHasProduct[];
 }

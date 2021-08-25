@@ -12,9 +12,9 @@ export class ProductRepository extends Repository<Product> {
     return await this.findOneOrFail({ where: { id } });
   }
 
-  async createEntity(createProductDto: CreateProductDto): Promise<Product> {
-    return await this.save(createProductDto);
-  }
+  // async createEntity(createProductDto: CreateProductDto): Promise<Product> {
+  //   return await this.save(createProductDto);
+  // }
 
   async updateEntity(id: string, product: Product): Promise<Product> {
     const entity = this.findById(id);

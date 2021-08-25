@@ -17,10 +17,10 @@ export class ProductController {
     return await this.productService.findById(id);
   }
 
-  @Post('/')
-  async create(@Body() createProductDto: CreateProductDto): Promise<Product> {
-    return await this.productService.createEntity(createProductDto);
-  }
+  // @Post('/')
+  // async create(@Body() createProductDto: CreateProductDto): Promise<Product> {
+  //   return await this.productService.createEntity(createProductDto);
+  // }
 
   @Put('/:id')
   async update(@Param('id') id: string, @Body() product: Product): Promise<Product> {

@@ -16,9 +16,9 @@ export class ProductService {
     return await this.productRepository.findById(id);
   }
 
-  async createEntity(createProductDto: CreateProductDto): Promise<Product> {
-    return await this.productRepository.createEntity(createProductDto);
-  }
+  // async createEntity(createProductDto: CreateProductDto): Promise<Product> {
+  //   return await this.productRepository.createEntity(createProductDto);
+  // }
 
   async updateEntity(id: string, product: Product): Promise<Product> {
     return await this.productRepository.updateEntity(id, product);

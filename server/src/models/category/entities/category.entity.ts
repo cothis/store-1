@@ -1,15 +1,15 @@
 import { Product } from 'src/models/product/entities/product.entity';
 import { Column, Entity, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn, RelationId } from 'typeorm';
 
-@Entity('category')
+@Entity()
 export class Category {
-  @PrimaryGeneratedColumn({ type: 'bigint', unsigned: true })
+  @PrimaryGeneratedColumn('increment', { type: 'bigint', unsigned: true })
   id: string;
 
-  @ManyToOne(() => Category, (category) => category.id, { nullable: true })
+  @ManyToOne(() => Category, (category) => category.children, { nullable: true })
   parent: Category;
 
-  @OneToMany(() => Category, (category) => category.id)
+  @OneToMany(() => Category, (category) => category.parent)
   children: Category[];
 
   @Column({ type: 'varchar', length: 45 })

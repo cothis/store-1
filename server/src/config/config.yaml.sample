@@ -2,17 +2,9 @@ app:
   port: 8080
   client: http://localhost:9000
   server: http://localhost:8080
-
-typeorm:
-  host: localhost
-  port: 3306
-  database: store
-  username: woowa
-  password: woowa
-  synchronize: true
-  logging: true
-
+  
 jwt:
+  # https://generate.plus/en/base64 여기서 생성 가능
   secret: 128bit_base64_encoded
 
 auth:

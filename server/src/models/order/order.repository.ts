@@ -1,5 +1,4 @@
 import { EntityRepository, Repository } from 'typeorm';
-import { CreateOrderDto } from './dto/create-order.dto';
 import { Order } from './entities/order.entity';
 
 @EntityRepository(Order)
@@ -12,9 +11,9 @@ export class OrderRepository extends Repository<Order> {
     return await this.findOneOrFail({ where: { id } });
   }
 
-  async createEntity(dto: CreateOrderDto): Promise<Order> {
-    return await this.save(dto);
-  }
+  // async createEntity(dto: CreateOrderDto): Promise<Order> {
+  //   return await this.save(dto);
+  // }
 
   async updateEntity(id: string, order: Order): Promise<Order> {
     const entity = this.findById(id);

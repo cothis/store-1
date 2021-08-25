@@ -1,21 +1,41 @@
-import { BoardContent } from 'src/models/board-content/entities/board-content.entity';
-import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
-import { IBoard } from '../interfaces/board.interface';
+import { BoardContent } from '@models/board/entities/board-content.entity';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  OneToMany,
+  JoinColumn,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 
-@Entity({ name: 'board' })
-export class Board implements IBoard {
-  @PrimaryGeneratedColumn()
+@Entity()
+export class Board {
+  @PrimaryGeneratedColumn('increment', { type: 'bigint', unsigned: true })
   id: string;
 
-  @Column({ type: 'varchar', length: 45 })
+  // board를 구분 짓기 위해서 사용하는 수단
+  @Column('varchar', { length: 255 })
+  slug: string;
+
+  @Column('varchar', { length: 45 })
   title: string;
 
-  @CreateDateColumn({ name: 'created_at' })
-  createAt: Date;
+  // 리뷰, 상품문의를 모두 board로 처리하고자 합니다.
+  @Column()
+  forProduct: boolean;
 
-  @UpdateDateColumn({ name: 'updated_at', type: 'timestamp' })
-  updatedAt: Date;
+  // 게시판 댓글 기능 여부
+  @Column()
+  commentable: boolean;
 
   @OneToMany(() => BoardContent, (boardContent) => boardContent.board)
+  @JoinColumn()
   contents: BoardContent[];
+
+  @CreateDateColumn()
+  createAt: Date;
+
+  @UpdateDateColumn()
+  updatedAt: Date;
 }

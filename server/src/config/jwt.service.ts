@@ -7,9 +7,7 @@ export class JwtConfigService {
 
   get accessSecret(): Buffer {
     const secret = this.configService.get<string>('jwt.secret');
-    const secretkey = Buffer.from(secret, 'base64');
-    console.log('heheh', secretkey);
-    return secretkey;
+    return Buffer.from(secret, 'base64');
   }
 
   // get accessSecret(): Buffer {
