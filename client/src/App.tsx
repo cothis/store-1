@@ -23,6 +23,7 @@ import MyPage from '@pages/MyPage/MyPage';
 import MyPageEdit from '@pages/MyPage/MyPageEdit';
 import MyPageConfirm from '@pages/MyPage/MyPageConfirm';
 import Terms from '@pages/Terms';
+import Cart from '@pages/Cart';
 
 // etc
 import { AGREEMENT_STRING, PRIVACY_STRING } from '@constants/terms';
@@ -86,6 +87,9 @@ const App = () => {
                     </Route>
                     <Route exact path="/privacy">
                       <Terms title="개인정보처리방침" context={PRIVACY_STRING} />
+                    </Route>
+                    <Route exact path="/cart">
+                      <Cart />
                     </Route>
                     <Error404 />
                   </Switch>

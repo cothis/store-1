@@ -5,6 +5,7 @@ import logoImg from '@assets/images/baemin_store_logo.png';
 import Category, { ICategory } from './Category';
 import Search from './Search';
 import Auth from './Auth';
+import CartButton from './CartButton';
 
 const Nav = () => {
   return (
@@ -17,16 +18,7 @@ const Nav = () => {
         <NavRight>
           <Search />
           <Auth />
-          <button className="basket">
-            <i className="fas fa-shopping-cart"></i>
-            {cart.length ? (
-              <div className="cart-length">
-                <p>{cart.length}</p>
-              </div>
-            ) : (
-              <></>
-            )}
-          </button>
+          <CartButton />
         </NavRight>
       </NavHeader>
     </StyledNav>
@@ -98,7 +90,6 @@ const NavRight = styled.div`
   }
 `;
 
-let cart = [1, 2];
 const categoriesMock: ICategory[] = [
   {
     id: 0,

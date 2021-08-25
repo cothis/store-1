@@ -15,6 +15,7 @@ declare module 'woowa-styled-component' {
       inputBorder: string;
     };
     opacityHover: string;
+    flexCenter: string;
     media: {
       mobileSmall: string;
       mobile: string;

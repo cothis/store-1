@@ -23,6 +23,11 @@ const theme: DefaultTheme = {
       opacity: 0.9;
     }
   `,
+  flexCenter: css`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  `,
   media: {
     mobileSmall: `${size.mobileSmall}px`,
     mobile: `${size.mobile}px`,

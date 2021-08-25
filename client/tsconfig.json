@@ -19,7 +19,8 @@
       "@lib/*": ["src/lib/*"],
       "@constants/*": ["src/constants/*"],
       "@assets/*": ["src/assets/*"],
-      "@styles/*": ["src/styles/*"]
+      "@styles/*": ["src/styles/*"],
+      "@types": ["src/types"]
     }
   }
 }
