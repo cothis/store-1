@@ -41,6 +41,22 @@ const productsData = {
   products,
 };
 
+const detail = {
+  id: '13',
+  title: '수건. 너 먼저 씻어',
+  tags: [],
+  price: 9000,
+  originalPrice: 10000,
+  priceText: '0원. 마음껏 쓰세요.',
+  imageUrl: 'image/13/thumbnail.jpg',
+  content: ['image/13/content/1.jpg', 'image/13/content/2.jpg', 'image/13/content/3.jpg', 'image/13/content/4.jpg'],
+  spec: [
+    ['제품명', '수건. 너 먼저 씻어'],
+    ['법에의한 인증', '허가등을 받았음을 확인할 수 있는 경우 그에 대한 사항', '해당 없음'],
+  ],
+  recommandations: ['169', '39', '115'],
+};
+
 const devConfig: Configuration = {
   mode: 'development',
   devtool: 'inline-source-map',
@@ -71,6 +87,11 @@ const devConfig: Configuration = {
         setTimeout(() => {
           res.json(data);
         }, 2000);
+      });
+      app.get('/api/v1/products/:id', (req, res) => {
+        const data = { ...detail };
+        // req.params.id
+        res.json(data);
       });
     },
   },

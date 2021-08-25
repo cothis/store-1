@@ -21,6 +21,7 @@ const Button = styled.button`
   height: 45px;
   color: white;
   background-color: black;
+  border-radius: 6px;
 `;
 
 export default ButtonNext;

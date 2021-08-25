@@ -24,6 +24,7 @@ import MyPageEdit from '@pages/MyPage/MyPageEdit';
 import MyPageConfirm from '@pages/MyPage/MyPageConfirm';
 import Terms from '@pages/Terms';
 import Cart from '@pages/Cart';
+import Product from '@pages/Product';
 
 // etc
 import { AGREEMENT_STRING, PRIVACY_STRING } from '@constants/terms';
@@ -81,6 +82,9 @@ const App = () => {
                     </Route>
                     <Route path="/categories/:id?">
                       <Category />
+                    </Route>
+                    <Route path="/products/:id">
+                      <Product />
                     </Route>
                     <Route exact path="/agreement">
                       <Terms title="이용약관" context={AGREEMENT_STRING} />
