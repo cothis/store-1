@@ -1,7 +1,6 @@
 import styled from '@lib/styled-components';
 import Carousel, { ICarouselItem } from '@components/Carousel';
 import ProductList from '@components/ProductList';
-import { ProductListItem } from '@components/ProductListItem';
 import ProductBannerList, { IBanner } from '@components/ProductBannerList';
 import bannerOne from '@assets/images/banner_one.gif';
 import bannerTwo from '@assets/images/banner_two.gif';
@@ -11,10 +10,11 @@ import productThumbTwo from '@assets/images/product_two.png';
 import productThumbThree from '@assets/images/product_three.jpeg';
 import productBannerOne from '@assets/images/product_banner_one.png';
 import productBannerTwo from '@assets/images/product_banner_two.png';
+import { IProductListItem } from '@types';
 
 interface IProductList {
   title: string;
-  products: ProductListItem[];
+  products: IProductListItem[];
 }
 
 interface IProductBanners {
@@ -39,7 +39,7 @@ const slideBanner: ICarouselItem[] = [
     title: '흑심있어요',
   },
 ];
-const productMock: ProductListItem[] = [
+const productMock: IProductListItem[] = [
   {
     id: '1',
     title: '잘나가요 세트',
@@ -51,19 +51,16 @@ const productMock: ProductListItem[] = [
   {
     id: '2',
     title: '안보이는 양말 세트',
-    price: 20000,
+    originalPrice: 20000,
     tags: ['green', 'sale'],
-    sale: {
-      percent: 5,
-      price: 19000,
-    },
+    price: 19000,
     like: true,
     imageUrl: productThumbTwo,
   },
   {
     id: '3',
     title: '피규어. 독고배달이',
-    price: 14000,
+    priceText: '0원, 마음껏 쓰세용',
     tags: ['soldout'],
     like: false,
     imageUrl: productThumbThree,

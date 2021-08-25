@@ -1,7 +1,8 @@
 import styled from '@lib/styled-components';
-import ProductItem, { ProductListItem } from './ProductListItem';
+import ProductItem from './ProductListItem';
+import { IProductListItem } from '@types';
 
-function ProductList({ products }: { products: ProductListItem[] }) {
+function ProductList({ products }: { products: IProductListItem[] }) {
   return (
     <ProductsWrapper>
       {products.map((product, idx) => (

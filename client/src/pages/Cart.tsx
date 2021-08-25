@@ -125,7 +125,7 @@ function CartForm() {
                 <i className="fas fa-check"></i>
               </div>
             </label>
-            <img src={product.thumb} />
+            <img src={product.imageUrl} />
             <Link to={`/product/${product.id}`}>{product.title}</Link>
             <div className="cart__form--product-count">
               <button

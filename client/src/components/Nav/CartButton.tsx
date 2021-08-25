@@ -31,21 +31,21 @@ export default function CartButton() {
 // 목업용 데이터
 const cartMockup: ICart[] = [
   {
-    thumb: productOneThumb,
+    imageUrl: productOneThumb,
     id: '1',
     title: '잘나가요 세트',
     price: 15000,
     count: 2,
   },
   {
-    thumb: productOneThumb,
+    imageUrl: productOneThumb,
     id: '2',
     title: '잘나가요 세트',
     price: 15000,
     count: 1,
   },
   {
-    thumb: productOneThumb,
+    imageUrl: productOneThumb,
     id: '3',
     title: '잘나가요 세트',
     price: 5000,

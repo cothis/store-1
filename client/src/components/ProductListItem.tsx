@@ -1,19 +1,7 @@
 import styled from '@lib/styled-components';
 import Link from '@lib/router/Link';
+import { IProductListItem } from '@types';
 
-export type Tag = 'best' | 'green' | 'new' | 'sale' | 'soldout' | 'disabled';
-export interface ProductListItem {
-  id: string;
-  title: string;
-  price: number;
-  tags?: Tag[];
-  sale?: {
-    percent: number;
-    price: number;
-  };
-  like: boolean;
-  imageUrl: string;
-}
 interface IThumbnail {
   imageUrl: string;
   title: string;
@@ -29,6 +17,7 @@ function Thumbnail({ imageUrl, title, tags }: IThumbnail) {
         ) : (
           <div className="tag-wrapper">
             {tags.map((tag) => {
+              if (tag === 'disabled') return;
               return (
                 <p className={tag} key={tag}>
                   {tag.toUpperCase()}
@@ -41,23 +30,19 @@ function Thumbnail({ imageUrl, title, tags }: IThumbnail) {
   );
 }
 
-function ProductItem({ product }: { product: ProductListItem }) {
+function ProductItem({ product }: { product: IProductListItem }) {
+  const { id, imageUrl, title, tags, price, originalPrice, priceText } = product;
   return (
     <Product>
-      <Link to={`/products/${product.id}`}>
-        <Thumbnail imageUrl={product.imageUrl} title={product.title} tags={product.tags} />
+      <Link to={`/products/${id}`}>
+        <Thumbnail imageUrl={imageUrl} title={title} tags={tags} />
         <div className="product-info">
-          {product.sale && <p className="sale-percent">{product.sale.percent}%</p>}
-          <p className="product-title">{product.title}</p>
+          {originalPrice && price && <p className="sale-percent">{Math.round((price / originalPrice) * 100)}%</p>}
+          <p className="product-title">{title}</p>
           <div className="price-wrapper">
-            {product.sale ? (
-              <>
-                <p className="prev-sale">{product.price.toLocaleString()}원</p>
-                <p className="price">{product.sale.price.toLocaleString()}원</p>
-              </>
-            ) : (
-              <p className="price">{product.price.toLocaleString()}원</p>
-            )}
+            {originalPrice && <p className="original-price">{originalPrice.toLocaleString()}</p>}
+            {price && <p className="price">{price.toLocaleString()}원</p>}
+            {priceText && <p className="price">{priceText}</p>}
           </div>
         </div>
       </Link>
@@ -134,7 +119,7 @@ const Product = styled.li`
       font-size: 1.3rem;
       font-weight: bold;
     }
-    .prev-sale {
+    .original-price {
       font-size: 0.7rem;
       color: #888;
       text-decoration: line-through;
