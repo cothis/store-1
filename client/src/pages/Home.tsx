@@ -2,16 +2,18 @@ import styled from '@lib/styled-components';
 import Carousel from '@components/Carousel';
 import ProductList from '@components/ProductList';
 import ProductBannerList from '@components/ProductBannerList';
+import Loading from '@components/Loading';
 import { IMainBlock } from '@types';
 import { useMainPage } from '@hooks/query/products';
 
-const mainBlock = (block: IMainBlock) => {
+const mainBlock = (block: IMainBlock, idx: number) => {
+  const sectionKey = `home-section-${idx}`;
   switch (block.type) {
     case 'slide-banner':
-      return <Carousel items={block.banners} carouselWidth={'100vw'} />;
+      return <Carousel items={block.banners} carouselWidth={'100vw'} key="home-slide" />;
     case 'product-list':
       return (
-        <section>
+        <section key={sectionKey}>
           <div className="home-product-list">
             <h3>{block.title}</h3>
             <ProductList products={block.products} />
@@ -20,7 +22,7 @@ const mainBlock = (block: IMainBlock) => {
       );
     case 'product-banner-list':
       return (
-        <section>
+        <section key={sectionKey}>
           <div className="home-product-list">
             <h3>{block.title}</h3>
             <ProductBannerList banners={block.banners} />
@@ -38,10 +40,10 @@ function Home() {
   }
 
   if (isLoading) {
-    return <div>로딩</div>;
+    return <Loading />;
   }
 
-  return <HomeContents>{data && data.map(mainBlock)}</HomeContents>;
+  return <HomeContents>{data && data.map((block, idx) => mainBlock(block, idx))}</HomeContents>;
 }
 
 const HomeContents = styled.div`

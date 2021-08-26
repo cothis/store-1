@@ -2,6 +2,7 @@ import { useTerms } from '@hooks/query/users';
 import usePath from '@hooks/usePath';
 import styled from '@lib/styled-components';
 import { Term } from '@types';
+import Loading from '@components/Loading';
 
 export default function Terms() {
   const path = usePath();
@@ -27,7 +28,7 @@ export default function Terms() {
     <Wrapper>
       <Title>{title}</Title>
       <Content>
-        {isLoading && '로드중...'}
+        {isLoading && <Loading />}
         {data &&
           data.split('\n').map((line) => {
             return (

@@ -124,7 +124,7 @@ function CartForm() {
               </div>
             </label>
             <img src={product.imageUrl} />
-            <Link to={`/product/${product.id}`}>{product.title}</Link>
+            <Link to={`/products/${product.id}`}>{product.title}</Link>
             <div className="cart__form--product-count">
               <button
                 type="button"
