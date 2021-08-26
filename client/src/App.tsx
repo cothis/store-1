@@ -28,9 +28,6 @@ import Cart from '@pages/Cart';
 import Order from '@pages/Order/Order';
 import Product from '@pages/Product';
 
-// etc
-import { AGREEMENT_STRING, PRIVACY_STRING } from '@constants/terms';
-
 // react-query
 import { QueryClient, QueryClientProvider, QueryErrorResetBoundary } from 'react-query';
 
@@ -89,10 +86,10 @@ const App = () => {
                       <Product />
                     </Route>
                     <Route exact path="/agreement">
-                      <Terms title="이용약관" context={AGREEMENT_STRING} />
+                      <Terms />
                     </Route>
                     <Route exact path="/privacy">
-                      <Terms title="개인정보처리방침" context={PRIVACY_STRING} />
+                      <Terms />
                     </Route>
                     <Route exact path="/cart">
                       <Cart />

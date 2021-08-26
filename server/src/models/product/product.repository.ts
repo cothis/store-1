@@ -1,5 +1,7 @@
 import { EntityRepository, Repository, SelectQueryBuilder } from 'typeorm';
+import { ProductBanner } from './entities/product-banner.entity';
 import { Product } from './entities/product.entity';
+import { ProductTag } from './enums/product-tag.enum';
 
 import { SortType } from './enums/sort-type.enum';
 
@@ -78,5 +80,22 @@ export class ProductRepository extends Repository<Product> {
       .where('product.id = :id', { id })
       .leftJoinAndSelect('product.recommends', 'recommend')
       .getOne();
+  }
+
+  async viewCountUp(product: Product): Promise<void> {
+    product.viewCount += 1;
+    await this.save(product);
+  }
+
+  findAllBanner(): Promise<ProductBanner[]> {
+    return this.manager.getRepository(ProductBanner).find();
+  }
+
+  findByTag(tag: ProductTag, count: number): Promise<Product[]> {
+    return this.createQueryBuilder('product')
+      .where('FIND_IN_SET(:tag, product.tags) > 0', { tag })
+      .orderBy('product.id', 'DESC')
+      .limit(count)
+      .getMany();
   }
 }

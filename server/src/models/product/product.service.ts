@@ -10,6 +10,8 @@ import { ONE_PAGE_COUNT } from './product.repository';
 import { CategoryRepository } from '@models/category/category.repository';
 import { Product } from './entities/product.entity';
 import { AppConfigService } from 'src/config/app.service';
+import { MainBlock, ProductBannerListBlock, ProductListBlock, SlideBannerBlock } from './dto/main-block.dto';
+import { ProductTag } from './enums/product-tag.enum';
 
 @Injectable()
 export class ProductService {
@@ -76,6 +78,7 @@ export class ProductService {
     if (!product) {
       throw new NotFoundException('해당 상품이 존재하지 않습니다.');
     }
+    await this.productRepository.viewCountUp(product);
 
     product.image = path.join(this.s3, product.image);
     product.content = product.content.map((i) => path.join(this.s3, i));
@@ -88,5 +91,42 @@ export class ProductService {
     });
 
     return product;
+  }
+
+  async getMain(): Promise<MainBlock[]> {
+    const banners = await this.productRepository.findAllBanner();
+    banners.forEach((b) => {
+      b.imageUrl = path.join(this.s3, b.imageUrl);
+    });
+
+    const slideBanner = new SlideBannerBlock();
+    slideBanner.banners = banners.filter((b) => b.forSlide);
+
+    const best = new ProductListBlock();
+    best.title = '잘나가요';
+    best.products = await this.productRepository.findByTag(ProductTag.BEST, 4);
+    best.products.forEach((p) => {
+      p.image = path.join(this.s3, p.image);
+    });
+
+    const news = new ProductListBlock();
+    news.title = '새로 나왔어요';
+    news.products = await this.productRepository.findByTag(ProductTag.NEW, 8);
+    news.products.forEach((p) => {
+      p.image = path.join(this.s3, p.image);
+    });
+
+    const productBanner = new ProductBannerListBlock();
+    productBanner.title = '선물하기 딱 좋아요';
+    productBanner.banners = banners.filter((b) => !b.forSlide);
+
+    const sale = new ProductListBlock();
+    sale.title = '지금은 할인 중';
+    sale.products = await this.productRepository.findByTag(ProductTag.SALE, 8);
+    sale.products.forEach((p) => {
+      p.image = path.join(this.s3, p.image);
+    });
+
+    return [slideBanner, best, news, productBanner, sale];
   }
 }

@@ -1,27 +1,46 @@
+import { useTerms } from '@hooks/query/users';
+import usePath from '@hooks/usePath';
 import styled from '@lib/styled-components';
+import { Term } from '@types';
 
-interface TermsProps {
-  title: string;
-  context: string;
-}
+export default function Terms() {
+  const path = usePath();
 
-const Agreement = ({ title, context }: TermsProps) => {
+  let title = '에러';
+
+  switch (path.pathname) {
+    case '/agreement':
+      title = '이용약관';
+      break;
+    case '/privacy':
+      title = '개인정보 수집 및 이용';
+      break;
+  }
+
+  const { isLoading, isError, error, data } = useTerms(path.pathname as Term);
+
+  if (isError) {
+    throw error;
+  }
+
   return (
     <Wrapper>
       <Title>{title}</Title>
       <Content>
-        {context.split('\n').map((line) => {
-          return (
-            <span>
-              {line}
-              <br />
-            </span>
-          );
-        })}
+        {isLoading && '로드중...'}
+        {data &&
+          data.split('\n').map((line) => {
+            return (
+              <span>
+                {line}
+                <br />
+              </span>
+            );
+          })}
       </Content>
     </Wrapper>
   );
-};
+}
 
 const Wrapper = styled.div`
   max-width: 1200px;
@@ -48,5 +67,3 @@ const Content = styled.div`
   color: #333;
   line-height: 1.5;
 `;
-
-export default Agreement;

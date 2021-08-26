@@ -15,6 +15,7 @@ import { ProductService } from './product.service';
 import { ProductListPage } from './dto/product-list-page.dto';
 import { SortType } from './enums/sort-type.enum';
 import { Product } from './entities/product.entity';
+import { MainBlock } from './dto/main-block.dto';
 
 @UseInterceptors(ClassSerializerInterceptor)
 @Controller('api/v1/products')
@@ -29,6 +30,11 @@ export class ProductController {
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
   ): Promise<ProductListPage> {
     return this.productService.search(categoryId, keyword, sort, page);
+  }
+
+  @Get('main')
+  main(): Promise<MainBlock[]> {
+    return this.productService.getMain();
   }
 
   @Get(':id')

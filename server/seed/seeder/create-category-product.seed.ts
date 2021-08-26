@@ -4,10 +4,20 @@ import { Factory, Seeder } from 'typeorm-seeding';
 import { Category } from '@models/category/entities/category.entity';
 import { Product } from '@models/product/entities/product.entity';
 import { ProductTag } from '@models/product/enums/product-tag.enum';
+import { ProductBanner } from '@models/product/entities/product-banner.entity';
 
 import categoryData from '../data/category.json';
 import categoryProductData from '../data/category-product.json';
 import productData from '../data/product.json';
+import bannerData from '../data/banner.json';
+
+interface IBanner {
+  imageUrl: string;
+  title: string;
+  description?: string;
+  productId: string;
+  forSlide: boolean;
+}
 
 interface ICategory {
   id: string;
@@ -42,6 +52,7 @@ export default class CreateCategoryProduct implements Seeder {
     const categories = categoryData as ICategory[];
     const categoryProducts = categoryProductData as ICategoryProduct[];
     const products = productData as IProduct[];
+    const banner = bannerData as IBanner[];
 
     // original to mine
     const categoryIdOriginalToMine: Record<string, string> = {};
@@ -125,5 +136,17 @@ export default class CreateCategoryProduct implements Seeder {
         );
       }
     }
+
+    await connection
+      .createQueryBuilder()
+      .insert()
+      .into(ProductBanner)
+      .values(
+        banner.map((b) => ({
+          ...b,
+          product: { id: productIdOriginalToMine[b.productId] },
+        })),
+      )
+      .execute();
   }
 }

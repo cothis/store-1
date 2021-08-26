@@ -2,6 +2,7 @@ import { QueryFunctionContext } from 'react-query';
 import axios from 'axios';
 import { Path } from '@lib/router/history';
 import { API_ENDPOINT } from '@config';
+import type { IMainBlock } from '@types';
 
 type ProductsQueryKey = [
   string,
@@ -48,4 +49,9 @@ export async function fetchProductDetail({ queryKey }: QueryFunctionContext) {
 
   const result = await axios.get(url);
   return result.data;
+}
+
+export async function fetchMainPage(): Promise<IMainBlock[]> {
+  const res = await axios.get(API_ENDPOINT + '/api/v1/products/main');
+  return res.data;
 }

@@ -50,3 +50,31 @@ export interface ICategory {
   title: string;
   children: ICategory[];
 }
+
+export interface IBanner {
+  imageUrl: string;
+  title: string;
+  description?: string;
+  productId: string;
+}
+
+export interface ISlideBanner {
+  type: 'slide-banner';
+  banners: IBanner[];
+}
+
+export interface IProductList {
+  type: 'product-list';
+  title: string;
+  products: IProductListItem[];
+}
+
+export interface IProductBannerList {
+  type: 'product-banner-list';
+  title: string;
+  banners: IBanner[];
+}
+
+export type IMainBlock = ISlideBanner | IProductList | IProductBannerList;
+
+export type Term = '/agreement' | '/privacy';

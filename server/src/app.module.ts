@@ -8,6 +8,7 @@ import { OrderModule } from './models/order/order.module';
 import { ProductModule } from './models/product/product.module';
 import { UserModule } from './models/users/user.module';
 import { AuthModule } from './auth/auth.module';
+import { AppController } from './app.controller';
 
 @Module({
   imports: [
@@ -20,5 +21,6 @@ import { AuthModule } from './auth/auth.module';
     UserModule,
     AuthModule,
   ],
+  controllers: [AppController],
 })
 export class AppModule {}

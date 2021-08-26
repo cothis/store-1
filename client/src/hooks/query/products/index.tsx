@@ -1,8 +1,10 @@
 import { useQuery } from 'react-query';
-import { IProductListItem } from '@types';
-import { fetchProductList, fetchProductDetail } from '@utils/product';
+import { IMainBlock, IProductListItem } from '@types';
+import { fetchProductList, fetchProductDetail, fetchMainPage } from '@utils/product';
 import { Path } from '@lib/router/history';
+
 type sortKeyword = 'popular' | 'latest' | 'low-price' | 'high-price ';
+
 interface ProductListPage {
   categoryId?: string;
   sort?: sortKeyword;
@@ -25,4 +27,8 @@ export function useProductList(path: Path, categoryId: string) {
 
 export function useProductDetail(params: string) {
   return useQuery<ProductDetail, Error>(['productDetail', { params }], fetchProductDetail);
+}
+
+export function useMainPage() {
+  return useQuery<IMainBlock[], Error>('main-page', fetchMainPage);
 }
