@@ -37,7 +37,9 @@ function ProductItem({ product }: { product: IProductListItem }) {
       <Link to={`/products/${id}`}>
         <Thumbnail imageUrl={imageUrl} title={title} tags={tags} />
         <div className="product-info">
-          {originalPrice && price && <p className="sale-percent">{Math.round((price / originalPrice) * 100)}%</p>}
+          {originalPrice && price && (
+            <p className="sale-percent">{Math.round(((originalPrice - price) / originalPrice) * 100)}%</p>
+          )}
           <p className="product-title">{title}</p>
           <div className="price-wrapper">
             {originalPrice && <p className="original-price">{originalPrice.toLocaleString()}</p>}

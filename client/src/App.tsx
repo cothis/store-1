@@ -19,7 +19,7 @@ import Signin from '@pages/Signin';
 import SignupMethod from '@pages/Signup/SignupMethod';
 import Signup from '@pages/Signup/Signup';
 import Error404 from '@pages/Error404';
-import Category from '@pages/Category';
+import ProductsPreview from '@pages/ProductsPreview';
 import MyPage from '@pages/MyPage/MyPage';
 import MyPageEdit from '@pages/MyPage/MyPageEdit';
 import MyPageConfirm from '@pages/MyPage/MyPageConfirm';
@@ -80,7 +80,10 @@ const App = () => {
                       <Signup />
                     </Route>
                     <Route path="/categories/:id?">
-                      <Category />
+                      <ProductsPreview />
+                    </Route>
+                    <Route path="/search">
+                      <ProductsPreview />
                     </Route>
                     <Route path="/products/:id">
                       <Product />

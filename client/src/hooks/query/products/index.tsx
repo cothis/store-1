@@ -12,6 +12,7 @@ interface ProductListPage {
   totalPage: number;
   currentPage: number;
   totalCount: number;
+  categoryName?: string;
   products: IProductListItem[];
 }
 
@@ -21,7 +22,7 @@ interface ProductDetail extends IProductListItem {
   recommends: IProductListItem[];
 }
 
-export function useProductList(path: Path, categoryId: string) {
+export function useProductList(path: Path, categoryId?: string) {
   return useQuery<ProductListPage, Error>(['products', { path, categoryId }], fetchProductList);
 }
 

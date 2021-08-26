@@ -8,7 +8,7 @@ type ProductsQueryKey = [
   string,
   {
     path: Path;
-    categoryId: string;
+    categoryId?: string;
   },
 ];
 

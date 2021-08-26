@@ -27,7 +27,7 @@ function parseSearch(query: string) {
     .map<[string, string]>((s) => s.split('=') as [string, string])
     .reduce<Search>((acc, [key, value]) => {
       if (!key) return acc;
-      acc[key] = value;
+      acc[key] = decodeURI(value);
       return acc;
     }, {});
 }
@@ -125,14 +125,16 @@ class BrowserHistory implements IHistory {
     let nextPath: Path;
     if (path.pathname && path.pathname !== this.currentPath.pathname) {
       nextPath = {
+        pathname: path.pathname,
         search: {},
         hash: '',
-        pathname: path.pathname,
+        ...path,
       };
     } else {
       nextPath = {
         ...this.currentPath,
         ...path,
+        search: { ...this.currentPath.search, ...path.search },
       };
     }
 
