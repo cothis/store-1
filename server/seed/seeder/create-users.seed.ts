@@ -20,12 +20,20 @@ export default class CreateUsers implements Seeder {
       .into(User)
       .values([
         {
-          id: '1',
           loginId: 'admin',
           isAdmin: true,
           password: hashedPasword,
           email: 'admin@example.com',
           realName: '관리자',
+          zipcode: '05544',
+          address: '서울특별시 송파구 위례성대로 2 장은빌딩',
+          addressDetail: '',
+        },
+        {
+          loginId: 'demo',
+          password: await bcrypt.hash('demo', 10),
+          email: 'demo@example.com',
+          realName: '데모유저',
           zipcode: '05544',
           address: '서울특별시 송파구 위례성대로 2 장은빌딩',
           addressDetail: '',

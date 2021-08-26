@@ -12,6 +12,7 @@ import productData from '../data/product.json';
 interface ICategory {
   id: string;
   title: string;
+  parentId?: string;
 }
 
 interface ICategoryProduct {
@@ -43,8 +44,8 @@ export default class CreateCategoryProduct implements Seeder {
     const products = productData as IProduct[];
 
     // original to mine
-    const cIdO2M: Record<string, string> = {};
-    const pIdO2M: Record<string, string> = {};
+    const categoryIdOriginalToMine: Record<string, string> = {};
+    const productIdOriginalToMine: Record<string, string> = {};
 
     const count = await connection.createQueryBuilder().select('category').from(Category, 'category').getCount();
     if (count !== 0) {
@@ -65,9 +66,20 @@ export default class CreateCategoryProduct implements Seeder {
     categoryInsertResult.identifiers
       .map<string>((x) => x.id)
       .forEach((id, index) => {
-        const oci = categories[index].id;
-        cIdO2M[oci] = id;
+        const oricialCategoryId = categories[index].id;
+        categoryIdOriginalToMine[oricialCategoryId] = id;
       });
+
+    for (const category of categories) {
+      if (category.parentId) {
+        const originalParentCategoryId = category.parentId;
+        const originalCategoryId = category.id;
+        await connection.manager.query('UPDATE `category` SET `parent_id` = ? WHERE `id` = ?', [
+          categoryIdOriginalToMine[originalParentCategoryId],
+          categoryIdOriginalToMine[originalCategoryId],
+        ]);
+      }
+    }
 
     const productInsertResult = await connection
       .createQueryBuilder()
@@ -90,26 +102,26 @@ export default class CreateCategoryProduct implements Seeder {
     productInsertResult.identifiers
       .map<string>((x) => x.id)
       .forEach((id, index) => {
-        const opi = products[index].id;
-        pIdO2M[opi] = id;
+        const originalProductId = products[index].id;
+        productIdOriginalToMine[originalProductId] = id;
       });
 
     for (const categoryProduct of categoryProducts) {
-      const oCategoryId = categoryProduct.categoryId;
-      for (const oProductId of categoryProduct.productIds) {
-        connection.manager.query('INSERT INTO `product_has_category` (`product_id`, `category_id`) VALUES (?, ?)', [
-          pIdO2M[oProductId],
-          cIdO2M[oCategoryId],
-        ]);
+      const originalCategoryId = categoryProduct.categoryId;
+      for (const originalProductId of categoryProduct.productIds) {
+        await connection.manager.query(
+          'INSERT INTO `product_has_category` (`product_id`, `category_id`) VALUES (?, ?)',
+          [productIdOriginalToMine[originalProductId], categoryIdOriginalToMine[originalCategoryId]],
+        );
       }
     }
 
     for (const product of products) {
-      const oProductId = product.id;
-      for (const oRecommendId of product.recommendIds) {
+      const originalProductId = product.id;
+      for (const originalRecommendId of product.recommendIds) {
         await connection.manager.query(
           'INSERT INTO `product_has_recommend_product` (`product_id`, `recommend_product_id`) VALUES (?, ?)',
-          [pIdO2M[oProductId], pIdO2M[oRecommendId]],
+          [productIdOriginalToMine[originalProductId], productIdOriginalToMine[originalRecommendId]],
         );
       }
     }
