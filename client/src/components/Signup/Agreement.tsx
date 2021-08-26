@@ -6,9 +6,10 @@ import ButtonNext from '@components/common/ButtonNext';
 
 interface AgreementProps {
   clickHandler: MouseEventHandler;
+  possible: boolean;
 }
 
-const Agreement = function ({ clickHandler }: AgreementProps) {
+export default function Agreement({ clickHandler, possible }: AgreementProps) {
   const [checkAgreement, setCheckAgreement] = useState(false);
   const [checkPrivacy, setCheckPrivacy] = useState(false);
   const history = useHistory();
@@ -57,11 +58,15 @@ const Agreement = function ({ clickHandler }: AgreementProps) {
       </CheckboxArea>
       <ButtonArea>
         <ButtonPrev clickHandler={cancelClickHandler} />
-        <ButtonNext $isPossible={checkAgreement && checkPrivacy} clickHandler={clickHandler} text="회원가입" />
+        <ButtonNext
+          $isPossible={checkAgreement && checkPrivacy && possible}
+          clickHandler={clickHandler}
+          text="회원가입"
+        />
       </ButtonArea>
     </Wrapper>
   );
-};
+}
 
 const Wrapper = styled.div`
   max-width: 743px;
@@ -111,5 +116,3 @@ const ANewPage = styled.a`
   text-decoration: underline;
   margin-left: 5px;
 `;
-
-export default Agreement;

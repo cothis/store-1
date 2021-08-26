@@ -1,5 +1,5 @@
 import styled from '@lib/styled-components';
-import { ChangeEventHandler, useState, CSSProperties } from 'react';
+import { ChangeEventHandler, useState, CSSProperties, Dispatch, SetStateAction, FocusEventHandler } from 'react';
 import DaumPostcode, { AddressData } from 'react-daum-postcode';
 import useModal from '@hooks/useModal';
 
@@ -7,9 +7,10 @@ interface AddressProps {
   initialZipcode?: string;
   initialAddress?: string;
   initialAddressDetail?: string;
+  setPossible: Dispatch<SetStateAction<boolean>>;
 }
 
-const Address = function ({ initialZipcode, initialAddress, initialAddressDetail }: AddressProps) {
+export default function Address({ initialZipcode, initialAddress, initialAddressDetail, setPossible }: AddressProps) {
   const [zipcode, setZipcode] = useState(initialZipcode || '');
   const [address, setAddress] = useState(initialAddress || '');
   const [addressDetail, setAddressDetail] = useState(initialAddressDetail || '');
@@ -21,6 +22,9 @@ const Address = function ({ initialZipcode, initialAddress, initialAddressDetail
     setModal(false);
     setZipcode(data.zonecode);
     setAddress(data.roadAddress);
+  };
+  const blurHandler: FocusEventHandler<HTMLInputElement> = (e) => {
+    setPossible(zipcode.length > 0 && address.length > 0 && addressDetail.length > 0);
   };
 
   return (
@@ -47,11 +51,17 @@ const Address = function ({ initialZipcode, initialAddress, initialAddressDetail
           </Modal>
         </div>
         <LongInput name="address" type="text" value={address} readOnly />
-        <LongInput name="address_detail" type="text" value={addressDetail} onChange={changeHandler} />
+        <LongInput
+          name="address_detail"
+          type="text"
+          value={addressDetail}
+          onChange={changeHandler}
+          onBlur={blurHandler}
+        />
       </InputArea>
     </Div>
   );
-};
+}
 
 const DaumPostcodeStyle: CSSProperties = {
   width: '50%',
@@ -133,5 +143,3 @@ const ModalBackground = styled.div`
   background-color: black;
   opacity: 0.5;
 `;
-
-export default Address;
