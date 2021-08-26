@@ -17,6 +17,14 @@ jobs:
       - name: install yarn
         run: npm i -g yarn
 
+      - name: client env
+        run: |
+          touch env.prod
+          cat << EOF >> env.prod
+          ${{ secrets.CLIENT_ENV_PROD }}
+          EOF
+        working-directory: './client'
+
       - name: client build
         run: |
           yarn install
@@ -30,6 +38,14 @@ jobs:
           ${{ secrets.CONFIG }}
           EOF
         working-directory: './server/src/config'
+
+      - name: create seed password.json
+        run: |
+          touch password.json
+          cat << EOF >> password.json
+          ${{ secrets.SEED_PASSWORD }}
+          EOF
+        working-directory: './server/seed/data'
 
       - name: compose
         run: zip -r ./dist.zip ./server ./appspec.yml ./client/build/ ./deploy ./docker-compose.yml
