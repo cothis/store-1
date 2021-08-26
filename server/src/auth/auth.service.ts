@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import axios from 'axios';
-import * as rs from 'randomstring';
+import rs from 'randomstring';
 import { AppConfigService } from 'src/config/app.service';
 import { AuthConfigService } from 'src/config/auth-config.service';
 import { User } from 'src/models/users/entities/user.entity';

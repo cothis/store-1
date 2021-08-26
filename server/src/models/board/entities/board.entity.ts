@@ -34,7 +34,7 @@ export class Board {
   contents: BoardContent[];
 
   @CreateDateColumn()
-  createAt: Date;
+  createdAt: Date;
 
   @UpdateDateColumn()
   updatedAt: Date;

@@ -119,3 +119,5 @@ dist
 
 build/
 deploy/data/mysql
+
+.DS_Store

@@ -1,34 +1,39 @@
-import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
+import {
+  ClassSerializerInterceptor,
+  Controller,
+  DefaultValuePipe,
+  Get,
+  Param,
+  ParseEnumPipe,
+  ParseIntPipe,
+  Query,
+  SerializeOptions,
+  UseInterceptors,
+} from '@nestjs/common';
 import { ProductService } from './product.service';
-import { CreateProductDto } from './dto/create-product.dto';
+
+import { ProductListPage } from './dto/product-list-page.dto';
+import { SortType } from './enums/sort-type.enum';
 import { Product } from './entities/product.entity';
 
+@UseInterceptors(ClassSerializerInterceptor)
 @Controller('api/v1/products')
 export class ProductController {
   constructor(private readonly productService: ProductService) {}
 
-  @Get('/')
-  async findAll(): Promise<Product[]> {
-    return await this.productService.findAll();
+  @Get()
+  search(
+    @Query('categoryId') categoryId: string,
+    @Query('keyword') keyword: string,
+    @Query('sort', new DefaultValuePipe(SortType.LATEST), new ParseEnumPipe(SortType)) sort: SortType,
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
+  ): Promise<ProductListPage> {
+    return this.productService.search(categoryId, keyword, sort, page);
   }
 
-  @Get('/:id')
-  async findById(@Param() id: string): Promise<Product> {
-    return await this.productService.findById(id);
-  }
-
-  // @Post('/')
-  // async create(@Body() createProductDto: CreateProductDto): Promise<Product> {
-  //   return await this.productService.createEntity(createProductDto);
-  // }
-
-  @Put('/:id')
-  async update(@Param('id') id: string, @Body() product: Product): Promise<Product> {
-    return await this.productService.updateEntity(id, product);
-  }
-
-  @Delete('/:id')
-  async delete(@Param('id') id: string): Promise<boolean> {
-    return await this.productService.deleteEntity(id);
+  @Get(':id')
+  @SerializeOptions({ groups: ['detail'] })
+  get(@Param('id') id: string): Promise<Product> {
+    return this.productService.getById(id);
   }
 }

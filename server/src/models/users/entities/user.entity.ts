@@ -1,4 +1,15 @@
-import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
+import { Product } from '@models/product/entities/product.entity';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  OneToMany,
+  CreateDateColumn,
+  UpdateDateColumn,
+  ManyToMany,
+  JoinColumn,
+  JoinTable,
+} from 'typeorm';
 
 @Entity()
 export class User {
@@ -14,6 +25,7 @@ export class User {
   @Column({ default: false })
   isAdmin: boolean;
 
+  // hashed by bcrypt
   @Column({ type: 'char', length: 60 })
   password: string;
 
@@ -31,4 +43,18 @@ export class User {
 
   @Column({ type: 'text' })
   addressDetail: string;
+
+  @ManyToMany(() => Product, (product) => product.likingUsers)
+  @JoinTable({
+    name: 'like',
+    joinColumn: { name: 'user_id' },
+    inverseJoinColumn: { name: 'product_id' },
+  })
+  likes: Product[];
+
+  @CreateDateColumn()
+  createdAt: Date;
+
+  @UpdateDateColumn()
+  updatedAt: Date;
 }

@@ -27,7 +27,7 @@ export class BoardComment {
   boardContent: BoardContent;
 
   @CreateDateColumn()
-  createAt: Date;
+  createdAt: Date;
 
   @UpdateDateColumn()
   updatedAt: Date;

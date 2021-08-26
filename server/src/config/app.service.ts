@@ -1,11 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-
-/**
-app:
-  port: 8080 
-  host: http://localhost:8080
-*/
 @Injectable()
 export class AppConfigService {
   constructor(private configService: ConfigService) {}
@@ -20,5 +14,9 @@ export class AppConfigService {
 
   get client(): string {
     return this.configService.get<string>('app.client');
+  }
+
+  get s3(): string {
+    return this.configService.get<string>('app.s3');
   }
 }

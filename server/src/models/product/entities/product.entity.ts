@@ -1,22 +1,24 @@
-import { BoardContent } from '@models/board/entities/board-content.entity';
+import { User } from '@models/users/entities/user.entity';
+import { Exclude, Expose } from 'class-transformer';
 import { Category } from 'src/models/category/entities/category.entity';
-import { OrderHasProduct } from 'src/models/order-has-product/entities/order-has-product.entity';
-import { Column, Entity, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  JoinTable,
+  ManyToMany,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 
-export enum ProductTag {
-  BEST = 'best',
-  GREEN = 'green',
-  NEW = 'new',
-  SALE = 'sale',
-  SOLDOUT = 'soldout',
-  DISABLED = 'disabled',
-}
+import { ProductTag } from '../enums/product-tag.enum';
 
 @Entity()
 export class Product {
   @PrimaryGeneratedColumn('increment', { type: 'bigint', unsigned: true })
   id: string;
 
+  @Exclude()
   @ManyToMany(() => Category, (category) => category.products)
   @JoinTable({
     name: 'product_has_category',
@@ -28,28 +30,52 @@ export class Product {
   @Column({ type: 'varchar', length: 45 })
   title: string;
 
-  @Column({ type: 'text', nullable: true })
+  @Expose({ name: 'imageUrl' })
+  @Column({ type: 'text' })
   image: string;
 
-  @Column('decimal')
-  price: string;
+  @Column('int', { nullable: true, unsigned: true })
+  price?: number;
 
-  @Column('decimal')
-  originalPrice: string;
+  @Column('int', { nullable: true, unsigned: true })
+  originalPrice?: number;
 
-  @Column({ type: 'varchar', length: 255 })
-  priceText: string;
+  @Column({ type: 'varchar', length: 255, nullable: true })
+  priceText?: string;
 
+  @Column({ type: 'set', enum: ProductTag, default: [] })
+  tags: ProductTag[];
+
+  @Expose({ groups: ['detail'] })
   @Column('simple-array')
   content: string[];
 
-  @Column({ type: 'set', enum: ProductTag, nullable: true })
-  tags: ProductTag[];
+  @Expose({ groups: ['detail'] })
+  @ManyToMany(() => Product)
+  @JoinTable({
+    name: 'product_has_recommend_product',
+    joinColumn: { name: 'product_id' },
+    inverseJoinColumn: { name: 'recommend_product_id' },
+  })
+  recommends: Product[];
 
-  // 리뷰가 될 수도 있고 문의가 될 수도 있고
-  @OneToMany(() => BoardContent, (boardContent) => boardContent.product)
-  boardContents: BoardContent[];
+  @Exclude()
+  @Column('int', { unsigned: true, default: 0 })
+  viewCount: number;
 
-  @OneToMany(() => OrderHasProduct, (orderHasProduct) => orderHasProduct.product)
-  orderHasProducts: OrderHasProduct[];
+  @Exclude()
+  @ManyToMany(() => User, (user) => user.likes)
+  likingUsers: User[];
+
+  @Expose({ groups: ['detail'] })
+  @Column('simple-json', { nullable: true })
+  detailInfo?: [string, string][];
+
+  @Exclude()
+  @CreateDateColumn()
+  createdAt: Date;
+
+  @Exclude()
+  @UpdateDateColumn()
+  updatedAt: Date;
 }

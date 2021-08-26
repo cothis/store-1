@@ -5,7 +5,6 @@ import { MySqlDatabaseProviderModule } from './providers/database/mysql/provider
 import { BoardModule } from './models/board/board.module';
 import { CategoryModule } from './models/category/category.module';
 import { OrderModule } from './models/order/order.module';
-import { OrderHasProductModule } from './models/order-has-product/order-has-product.module';
 import { ProductModule } from './models/product/product.module';
 import { UserModule } from './models/users/user.module';
 import { AuthModule } from './auth/auth.module';
@@ -17,7 +16,6 @@ import { AuthModule } from './auth/auth.module';
     BoardModule,
     CategoryModule,
     OrderModule,
-    OrderHasProductModule,
     ProductModule,
     UserModule,
     AuthModule,

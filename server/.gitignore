@@ -35,3 +35,6 @@ lerna-debug.log*
 !.vscode/extensions.json
 
 config.yaml
+password.json
+
+.devcontainer/mysql

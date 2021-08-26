@@ -6,14 +6,18 @@ services:
       dockerfile: Dockerfile
       args:
         VARIANT: 14
+    depends_on:
+      - db
     volumes:
-      - ../../:/workspace/store-1
+      - ../../:/workspace/store-1:cached
     command: sleep infinity
     network_mode: service:db
     environment:
       TZ: 'Asia/Seoul'
   db:
     image: mysql:latest
+    volumes:
+      - ./mysql:/var/lib/mysql:cached
     environment:
       MYSQL_DATABASE: 'store'
       MYSQL_USER: 'woowa'

@@ -1,5 +1,5 @@
-import { OrderHasProduct } from 'src/models/order-has-product/entities/order-has-product.entity';
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { OrderHasProduct } from './order-has-product.entity';
+import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
 export enum OrderStatus {
   TEMP = 'temp',
@@ -16,9 +16,15 @@ export class Order {
   @PrimaryGeneratedColumn('increment', { type: 'bigint', unsigned: true })
   id: string;
 
-  @Column({ type: 'enum', enum: OrderStatus, default: OrderStatus.READY })
+  @Column({ type: 'enum', enum: OrderStatus, default: OrderStatus.TEMP })
   status: OrderStatus;
 
-  @OneToMany(() => OrderHasProduct, (orderhasProduct) => orderhasProduct.order)
+  @OneToMany(() => OrderHasProduct, (orderHasProduct) => orderHasProduct.order)
   orderHasProducts: OrderHasProduct[];
+
+  @CreateDateColumn()
+  createdAt: Date;
+
+  @UpdateDateColumn()
+  updatedAt: Date;
 }
