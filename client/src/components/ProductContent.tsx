@@ -1,12 +1,14 @@
 import styled from '@lib/styled-components';
+import { IProductListItem } from '@types';
+import ProductList from './ProductList';
 
 interface ProductContentProps {
   content: string[];
-  spec: [string, string][];
-  recommendations: string[];
+  detailInfo: [string, string][];
+  recommends: IProductListItem[];
 }
 
-const ProductContent = function ({ content, spec, recommendations }: ProductContentProps) {
+const ProductContent = function ({ content, detailInfo, recommends }: ProductContentProps) {
   return (
     <Wrapper>
       {content && (
@@ -16,25 +18,30 @@ const ProductContent = function ({ content, spec, recommendations }: ProductCont
           })}
         </ImageContents>
       )}
-      {spec && (
-        <SpecContents>
-          <tbody>
-            {spec.map((sp, idx) => {
-              const [description, content] = sp;
-              return (
-                <tr key={`tr-${idx}`}>
-                  <th>{description}</th>
-                  <td>{content}</td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </SpecContents>
+      {detailInfo && (
+        <>
+          <SubTitle>상품필수 정보</SubTitle>
+          <DetailInfoContents>
+            <tbody>
+              {detailInfo.map((info, idx) => {
+                const [description, content] = info;
+                return (
+                  <tr key={`tr-${idx}`}>
+                    <th>{description}</th>
+                    <td>{content}</td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </DetailInfoContents>
+        </>
       )}
-      {recommendations &&
-        recommendations.map((rec, idx) => {
-          return <div key={`recommend-${idx}`}></div>;
-        })}
+      {recommends && recommends.length > 0 && (
+        <RecommendContents>
+          <SubTitle>이건 어때요?</SubTitle>
+          <ProductList products={recommends} />
+        </RecommendContents>
+      )}
     </Wrapper>
   );
 };
@@ -58,8 +65,8 @@ const ImageContents = styled.div`
   }
 `;
 
-const SpecContents = styled.table`
-  width: 50%;
+const DetailInfoContents = styled.table`
+  width: 80%;
   margin-bottom: 5%;
   @media (max-width: ${({ theme }) => theme.media.medium}) {
     width: 90%;
@@ -86,6 +93,20 @@ const SpecContents = styled.table`
         text-align: left;
       }
     }
+  }
+`;
+
+const SubTitle = styled.h2`
+  font-size: 1.2rem;
+  font-weight: 600;
+  width: 80%;
+  margin-bottom: 2%;
+`;
+
+const RecommendContents = styled.div`
+  width: 80%;
+  @media (max-width: ${({ theme }) => theme.media.medium}) {
+    width: 90%;
   }
 `;
 

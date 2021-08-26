@@ -10,10 +10,6 @@ import AddCartButton from '@components/AddCartButton';
 import HeartButton from '@components/common/HeartButton';
 import ProductContent from '@components/ProductContent';
 
-import productThumbOne from '@assets/images/product_one.png';
-import ContentOne from '@assets/images/content_one.jpeg';
-import ContentTwo from '@assets/images/content_two.jpeg';
-
 const Product = function () {
   const [count, setCount] = useState(1);
   const { id } = useParams();
@@ -21,12 +17,11 @@ const Product = function () {
   if (isLoading) return <Loading />;
   if (isError) throw error;
   if (!data) return <></>;
-  const { title, price, originalPrice, priceText, like, imageUrl, content, spec, recommendations } = data;
+  const { title, price, originalPrice, priceText, like, imageUrl, content, detailInfo, recommends } = data;
   return (
     <ProductWrapper>
       <InfomationArea>
-        {/* <ProductImage src={imageUrl} alt="상품 이미지" /> */}
-        <ProductImage src={productThumbOne} alt="상품 이미지" />
+        <ProductImage src={imageUrl} alt="상품 이미지" />
         <Infomation>
           <Title>{title}</Title>
           {originalPrice && (
@@ -80,8 +75,7 @@ const Product = function () {
           )}
         </Infomation>
       </InfomationArea>
-      <ProductContent content={[ContentOne, ContentTwo]} spec={spec} recommendations={recommendations} />
-      {/* <ProductContent content={content} spec={spec} recommendations={recommendations} /> */}
+      <ProductContent content={content} detailInfo={detailInfo} recommends={recommends} />
     </ProductWrapper>
   );
 };

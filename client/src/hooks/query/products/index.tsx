@@ -16,7 +16,7 @@ interface ProductListPage {
 interface ProductDetail extends IProductListItem {
   content: string[];
   detailInfo: [string, string][];
-  recommendations: string[];
+  recommends: IProductListItem[];
 }
 
 export function useProductList(path: Path, categoryId: string) {
