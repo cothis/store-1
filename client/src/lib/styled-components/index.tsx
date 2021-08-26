@@ -7,7 +7,7 @@ import TagNames from './tag-names';
 type TagName = typeof TagNames[number];
 
 type StyledTagedTemplateLambda = (args: { theme: DefaultTheme; props: Record<string, any> }) => string;
-type StyledTagedTemplateArg = StyledTagedTemplateLambda | string;
+type StyledTagedTemplateArg = StyledTagedTemplateLambda | string | number;
 type StyledComponent = React.ForwardRefExoticComponent<
   Pick<React.PropsWithChildren<any>, string | number> & React.RefAttributes<HTMLElement>
 >;

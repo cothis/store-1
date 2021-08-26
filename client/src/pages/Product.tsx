@@ -9,6 +9,7 @@ import ButtonNext from '@components/common/ButtonNext';
 import AddCartButton from '@components/AddCartButton';
 import HeartButton from '@components/common/HeartButton';
 import ProductContent from '@components/ProductContent';
+import ZoomImage from '@components/ZoomImage';
 
 const Product = function () {
   const [count, setCount] = useState(1);
@@ -21,7 +22,7 @@ const Product = function () {
   return (
     <ProductWrapper>
       <InfomationArea>
-        <ProductImage src={imageUrl} alt="상품 이미지" />
+        <ZoomImage src={imageUrl} />
         <Infomation>
           <Title>{title}</Title>
           {originalPrice && (
@@ -103,15 +104,6 @@ const InfomationArea = styled.div`
   }
 `;
 
-const ProductImage = styled.img`
-  max-width: 473px;
-  width: 45%;
-  max-height: 100%;
-  @media (max-width: ${({ theme }) => theme.media.medium}) {
-    width: 90%;
-    margin-bottom: 5%;
-  }
-`;
 const Infomation = styled.div`
   max-width: 556px;
   width: 50%;
