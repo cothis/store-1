@@ -17,10 +17,10 @@ jobs:
       - name: install yarn
         run: npm i -g yarn
 
-      - name: client env
+      - name: client .env
         run: |
-          touch env.prod
-          cat << EOF >> env.prod
+          touch .env.prod
+          cat << EOF >> .env.prod
           ${{ secrets.CLIENT_ENV_PROD }}
           EOF
         working-directory: './client'
