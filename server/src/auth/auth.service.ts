@@ -6,6 +6,7 @@ import { AppConfigService } from 'src/config/app.service';
 import { AuthConfigService } from 'src/config/auth-config.service';
 import { User } from 'src/models/users/entities/user.entity';
 import { UserService } from 'src/models/users/user.service';
+import bcrypt from 'bcrypt';
 
 const STATE = rs.generate(20);
 
@@ -66,17 +67,16 @@ export class AuthService {
     return { accessToken, oAuthId, email };
   }
 
-  async validateUser(loginId: string, password: string): Promise<Partial<User> | null> {
+  async validateUser(loginId: string, password: string): Promise<Express.User | null> {
     const user = await this.userService.findByLoginId(loginId);
-    if (user && user.password === password) {
-      const { password, ...userWithoutPassword } = user;
-      return userWithoutPassword;
+    if (user && (await bcrypt.compare(password, user.password))) {
+      return { id: user.id };
     }
     return null;
   }
 
-  login(user: any) {
-    const payload = { userId: user.id };
+  login(user: Pick<User, 'id'>) {
+    const payload = { id: user.id };
     return this.jwtService.sign(payload);
   }
 }

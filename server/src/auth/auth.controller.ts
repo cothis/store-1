@@ -5,7 +5,8 @@ import { Request, Response } from 'express';
 import { AppConfigService } from 'src/config/app.service';
 import { UserService } from 'src/models/users/user.service';
 import { AuthService } from './auth.service';
-import { JwtAuthGuard } from './jwt-auth.guard';
+import { JwtAuthGuard } from './jwt.guard';
+import { LocalAuthGuard } from './local.guard';
 
 @Controller('/api/v1/auth')
 export class AuthController {
@@ -45,7 +46,7 @@ export class AuthController {
     }
   }
 
-  @UseGuards(AuthGuard('local'))
+  @UseGuards(LocalAuthGuard)
   @Post('/login')
   login(@Req() req: Request, @Res() res: Response) {
     res.cookie('jwt', this.authService.login(req.user));
@@ -54,7 +55,7 @@ export class AuthController {
 
   @Get('/test')
   testLogin(@Res() res: Response) {
-    res.cookie('jwt', this.authService.login({ id: 1 }));
+    res.cookie('jwt', this.authService.login({ id: '1' }));
     res.json('ok');
   }
 

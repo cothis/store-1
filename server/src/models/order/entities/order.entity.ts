@@ -11,16 +11,7 @@ import {
   RelationId,
   UpdateDateColumn,
 } from 'typeorm';
-
-export enum OrderStatus {
-  TEMP = 'temp',
-  READY = 'ready',
-  ACCEPTED = 'accepted',
-  DELIVERING = 'delivering',
-  DONE = 'done',
-  CANCELED = 'canceled',
-  REFUNDED = 'refunded',
-}
+import { OrderStatus } from '../enums/order-status.enum';
 
 @Entity()
 export class Order {

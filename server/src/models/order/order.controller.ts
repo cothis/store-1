@@ -1,22 +1,29 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, Query, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseEnumPipe, Put, Query, Req, UseGuards } from '@nestjs/common';
 import { OrderService } from './order.service';
-import { Order, OrderStatus } from './entities/order.entity';
-import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { Order } from './entities/order.entity';
+import { JwtAuthGuard } from 'src/auth/jwt.guard';
+import { OrderStatus } from './enums/order-status.enum';
 import { Request } from 'express';
-import { AuthUserRequest } from 'src/auth/auth-request.interface';
 
+@UseGuards(JwtAuthGuard)
 @Controller('api/v1/orders')
 export class OrderController {
   constructor(private readonly orderService: OrderService) {}
 
-  @UseGuards(JwtAuthGuard)
   @Get('/')
-  async findAll(@Query('status') status: OrderStatus, @Req() req: AuthUserRequest): Promise<Order[]> {
-    return await this.orderService.findAll({ status, userId: req.user.userId });
+  async findAll(
+    @Query('status', new ParseEnumPipe(OrderStatus)) status: OrderStatus,
+    @Req() req: Request,
+  ): Promise<Order[]> {
+    return await this.orderService.findAll({ status, userId: req.user.id });
   }
 
   @Get('/:id')
-  async findById(@Param('id') id: string): Promise<Order> {
+  async findById(
+    @Param('id') id: string,
+    @Query('status', new ParseEnumPipe(OrderStatus)) status: OrderStatus,
+    @Req() req: Request,
+  ): Promise<Order> {
     return await this.orderService.findById(id);
   }
 

@@ -3,7 +3,7 @@ import { Order } from './entities/order.entity';
 
 @EntityRepository(Order)
 export class OrderRepository extends Repository<Order> {
-  async findAll(query: Partial<Order>): Promise<Order[] | null> {
+  async findAll(query: Partial<Order>): Promise<Order[]> {
     const { userId, ...condition } = query;
     return await this.find({ where: { ...condition, ...{ user: { id: userId } } } });
   }

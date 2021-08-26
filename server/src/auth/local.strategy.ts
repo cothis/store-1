@@ -12,11 +12,11 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
     // Username & Password 탭, Parameters 확인
   }
 
-  async validate(loginId: string, password: string): Promise<any> {
+  async validate(loginId: string, password: string): Promise<Express.User> {
     const user = await this.authService.validateUser(loginId, password);
     if (!user) {
       throw new UnauthorizedException();
     }
-    return user;
+    return { id: user.id };
   }
 }

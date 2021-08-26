@@ -16,7 +16,8 @@
       "@models/*": ["src/models/*"]
     },
     "incremental": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "typeRoots": ["node_modules/@types", "@types"]
   },
   "watchOptions": {
     "excludeDirectories": ["**/node_module", "dist", "seed"]
