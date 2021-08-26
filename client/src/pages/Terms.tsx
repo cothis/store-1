@@ -44,12 +44,13 @@ export default function Terms() {
 }
 
 const Wrapper = styled.div`
-  max-width: 1200px;
+  max-width: ${({ theme }) => theme.media.desktop};
   width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  padding: 0 1rem;
   margin: 70px auto;
 `;
 

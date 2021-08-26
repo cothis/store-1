@@ -12,6 +12,7 @@ import Route from '@lib/router/Route';
 import Nav from '@components/Nav/Nav';
 import Error from '@components/Error';
 import ToastifyContainer from '@components/Toastify/ToastifyContainer';
+import Footer from '@components/Footer';
 
 // pages
 import Home from '@pages/Home';
@@ -37,7 +38,7 @@ import { ErrorBoundary } from 'react-error-boundary';
 const queryClient = new QueryClient();
 
 const AppContent = styled.div`
-  padding-top: 100px;
+  padding: 100px 0 200px 0;
 `;
 
 const App = () => {
@@ -103,6 +104,7 @@ const App = () => {
                     <Error404 />
                   </Switch>
                 </AppContent>
+                <Footer />
               </BrowseRouter>
             </ErrorBoundary>
           )}
