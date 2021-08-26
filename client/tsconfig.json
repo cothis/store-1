@@ -1,5 +1,6 @@
 {
-  "include": ["src/**/*", "test/**/*"],
+  "include": ["src/**/*", "webpack/**/*", "test/**/*"],
+  "files": ["webpack.config.ts"],
   "compilerOptions": {
     "jsx": "react-jsx",
     "target": "es6",
@@ -20,6 +21,7 @@
       "@constants/*": ["src/constants/*"],
       "@assets/*": ["src/assets/*"],
       "@styles/*": ["src/styles/*"],
+      "@utils/*": ["src/utils/*"],
       "@types": ["src/types"]
     }
   }

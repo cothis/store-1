@@ -2,6 +2,7 @@ import styled from '@lib/styled-components';
 import size from '@constants/size';
 import { MouseEvent, useState, useEffect } from 'react';
 import useHistory from '@hooks/useHistory';
+import { debouncer } from '@utils/debouncer';
 
 export interface ICategory {
   id: number;
@@ -14,7 +15,7 @@ const Category = ({ categories }: { categories: ICategory[] }) => {
   const [parentActive, setParentActive] = useState<number>(-1);
   const [categoryToggle, setCategoryToggle] = useState<boolean>(false);
   const history = useHistory();
-  let timeOutNum: ReturnType<typeof setTimeout> | null = null;
+  const updateDebouncer = debouncer<void>();
 
   const resetActive = () => {
     setParentActive(-1);
@@ -23,8 +24,8 @@ const Category = ({ categories }: { categories: ICategory[] }) => {
   // desktop 버전 이벤트 핸들링
   const parentHover = (e: MouseEvent<HTMLElement>) => {
     if (window.innerWidth <= size.mobile) return;
-    if (timeOutNum) clearTimeout(timeOutNum);
-    timeOutNum = setTimeout(() => {
+
+    updateDebouncer(() => {
       const target = e.target as HTMLElement;
       updateParentActive(target);
     }, 150);
@@ -32,7 +33,7 @@ const Category = ({ categories }: { categories: ICategory[] }) => {
 
   const childHover = () => {
     if (window.innerWidth <= size.mobile) return;
-    if (timeOutNum) clearTimeout(timeOutNum);
+    updateDebouncer(() => {});
   };
 
   // mobile ui 버전 이벤트 핸들링 && 전체보기로 이동

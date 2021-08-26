@@ -32,6 +32,7 @@ const theme: DefaultTheme = {
     mobileSmall: `${size.mobileSmall}px`,
     mobile: `${size.mobile}px`,
     medium: `${size.medium}px`,
+    desktop: `${size.desktop}px`,
   },
 };
 

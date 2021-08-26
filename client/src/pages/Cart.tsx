@@ -4,6 +4,7 @@ import useLocalStorage from '@hooks/useLocalStorage';
 import Link from '@lib/router/Link';
 import { ICart } from '@types';
 import ExitBtn from '@components/ExitBtn';
+import { debouncer } from '@utils/debouncer';
 
 export default function Cart() {
   return (
@@ -22,7 +23,7 @@ interface IChecked {
 
 function CartForm() {
   const [cart, setCart] = useLocalStorage<ICart[]>('cart', []);
-  let countTimeOut: null | ReturnType<typeof setTimeout>;
+  const setCartDebouncer = debouncer<void>();
 
   const initialChecked: IChecked = cart.reduce((acc, product) => {
     acc[product.id] = true;
@@ -71,10 +72,7 @@ function CartForm() {
       product.count = type === 'plus' ? product.count + 1 : product.count - 1;
       return product;
     });
-    if (countTimeOut) clearTimeout(countTimeOut);
-    countTimeOut = setTimeout(() => {
-      setCart(newCart);
-    }, 400);
+    setCartDebouncer(setCart, 400, newCart);
   };
 
   const deleteBtnClickHandler: MouseEventHandler = useCallback(

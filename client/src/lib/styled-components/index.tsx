@@ -75,6 +75,7 @@ const constructWithTag = (tag?: string) => {
 
       return (
         <CustomTag
+          // @ts-ignore
           ref={ref as LegacyRef<any>}
           {...domProps}
           className={`${className}${props.className ? ' ' + props.className : ''}`}

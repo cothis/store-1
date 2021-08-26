@@ -7,8 +7,8 @@ import { Order } from './entities/order.entity';
 export class OrderService {
   constructor(@InjectRepository(OrderRepository) private readonly orderRepository: OrderRepository) {}
 
-  async findAll(): Promise<Order[]> {
-    return await this.orderRepository.findAll();
+  async findAll(query: Partial<Order>): Promise<Order[]> {
+    return await this.orderRepository.findAll(query);
   }
 
   async findById(id: string): Promise<Order> {
@@ -19,7 +19,7 @@ export class OrderService {
   //   return await this.orderRepository.createEntity(createOrderDto);
   // }
 
-  async updateEntity(id: string, order: Order): Promise<Order> {
+  async updateEntity(id: string, order: Partial<Order>): Promise<Order> {
     return await this.orderRepository.updateEntity(id, order);
   }
 

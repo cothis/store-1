@@ -1,5 +1,5 @@
 import { useQuery } from 'react-query';
-import { fetchProductDetail } from '@lib/api/product/detail';
+import { fetchProductDetail } from '@utils/product/detail';
 import { IProductListItem } from '@types';
 interface ProductDetail extends IProductListItem {
   content: string[];

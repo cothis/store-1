@@ -18,3 +18,29 @@ export interface IProductListItem {
   like: boolean;
   imageUrl: string;
 }
+
+export enum OrderStatus {
+  TEMP = 'temp',
+  READY = 'ready',
+  ACCEPTED = 'accepted',
+  DELIVERING = 'delivering',
+  DONE = 'done',
+  CANCELED = 'canceled',
+  REFUNDED = 'refunded',
+}
+
+export interface IOrder {
+  id: string;
+  status: OrderStatus;
+  senderName: string;
+  senderCall: string;
+  senderPhone: string;
+  senderMail: string;
+  receiverName: string;
+  receiverCall: string;
+  receiverPhone: string;
+  zipcode: string;
+  address: string;
+  addressDetail: string;
+  message: string;
+}

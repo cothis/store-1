@@ -1,7 +1,7 @@
 import { useQuery } from 'react-query';
-import { fetchProductList } from '@lib/api/product';
-import { ProductListItem } from '@components/ProductListItem';
+import { fetchProductList } from '@utils/product';
 import { Path } from '@lib/router/history';
+import { IProductListItem } from '@types';
 type sortKeyword = 'popular' | 'latest' | 'low-price' | 'high-price ';
 interface ProductListPage {
   categoryId?: string;
@@ -10,7 +10,7 @@ interface ProductListPage {
   totalPage: number;
   currentPage: number;
   totalCount: number;
-  products: ProductListItem[];
+  products: IProductListItem[];
 }
 
 export function useProductList(path: Path, categoryId: string) {

@@ -20,6 +20,7 @@ declare module 'woowa-styled-component' {
       mobileSmall: string;
       mobile: string;
       medium: string;
+      desktop: string;
     };
   }
 }

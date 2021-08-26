@@ -1,5 +1,16 @@
+import { User } from '@models/users/entities/user.entity';
 import { OrderHasProduct } from './order-has-product.entity';
-import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+  RelationId,
+  UpdateDateColumn,
+} from 'typeorm';
 
 export enum OrderStatus {
   TEMP = 'temp',
@@ -19,8 +30,48 @@ export class Order {
   @Column({ type: 'enum', enum: OrderStatus, default: OrderStatus.TEMP })
   status: OrderStatus;
 
-  @OneToMany(() => OrderHasProduct, (orderHasProduct) => orderHasProduct.order)
+  @Column({ type: 'varchar', length: 30 })
+  senderName: string;
+
+  @Column({ type: 'varchar', length: 30, nullable: true })
+  senderCall: string;
+
+  @Column({ type: 'varchar', length: 20 })
+  senderPhone: string;
+
+  @Column({ type: 'varchar', length: 50 })
+  senderMail: string;
+
+  @Column({ type: 'varchar', length: 30 })
+  receiverName: string;
+
+  @Column({ type: 'varchar', length: 30, nullable: true })
+  receiverCall: string;
+
+  @Column({ type: 'varchar', length: 20 })
+  receiverPhone: string;
+
+  @Column({ type: 'char', length: 5 })
+  zipcode: string;
+
+  @Column({ type: 'text' })
+  address: string;
+
+  @Column({ type: 'text', nullable: true })
+  addressDetail: string;
+
+  @Column({ type: 'text', nullable: true })
+  message: string;
+
+  @OneToMany(() => OrderHasProduct, (orderhasProduct) => orderhasProduct.order)
   orderHasProducts: OrderHasProduct[];
+
+  @ManyToOne(() => User)
+  @JoinColumn()
+  user: User;
+
+  @RelationId((order: Order) => order.user)
+  userId: string;
 
   @CreateDateColumn()
   createdAt: Date;

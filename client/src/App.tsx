@@ -25,6 +25,7 @@ import MyPageEdit from '@pages/MyPage/MyPageEdit';
 import MyPageConfirm from '@pages/MyPage/MyPageConfirm';
 import Terms from '@pages/Terms';
 import Cart from '@pages/Cart';
+import Order from '@pages/Order/Order';
 import Product from '@pages/Product';
 
 // etc
@@ -95,6 +96,9 @@ const App = () => {
                     </Route>
                     <Route exact path="/cart">
                       <Cart />
+                    </Route>
+                    <Route exact path="/order">
+                      <Order />
                     </Route>
                     <Error404 />
                   </Switch>
