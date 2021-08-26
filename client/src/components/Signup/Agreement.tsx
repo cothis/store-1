@@ -1,17 +1,20 @@
 import { ChangeEventHandler, MouseEventHandler, useState } from 'react';
 import styled from '@lib/styled-components';
 import useHistory from '@hooks/useHistory';
+import ButtonPrev from '@components/common/ButtonPrev';
+import ButtonNext from '@components/common/ButtonNext';
 
 interface AgreementProps {
   clickHandler: MouseEventHandler;
+  possible: boolean;
 }
 
-const Agreement = ({ clickHandler }: AgreementProps) => {
+export default function Agreement({ clickHandler, possible }: AgreementProps) {
   const [checkAgreement, setCheckAgreement] = useState(false);
   const [checkPrivacy, setCheckPrivacy] = useState(false);
   const history = useHistory();
 
-  const bigCheckBoxClickHandler: ChangeEventHandler = (e) => {
+  const bigCheckBoxClickHandler: ChangeEventHandler = () => {
     if (checkAgreement && checkPrivacy) {
       setCheckAgreement(false);
       setCheckPrivacy(false);
@@ -20,15 +23,15 @@ const Agreement = ({ clickHandler }: AgreementProps) => {
       setCheckPrivacy(true);
     }
   };
-  const checkAgreementHandler: ChangeEventHandler = (e) => {
+  const checkAgreementHandler: ChangeEventHandler = () => {
     setCheckAgreement(!checkAgreement);
   };
-  const checkPrivacyHandler: ChangeEventHandler = (e) => {
+  const checkPrivacyHandler: ChangeEventHandler = () => {
     setCheckPrivacy(!checkPrivacy);
   };
 
-  const cancelClickHandler: MouseEventHandler = (e) => {
-    history.push({ pathname: '/' });
+  const cancelClickHandler: MouseEventHandler = () => {
+    history.back();
   };
 
   return (
@@ -54,20 +57,16 @@ const Agreement = ({ clickHandler }: AgreementProps) => {
         </ANewPage>
       </CheckboxArea>
       <ButtonArea>
-        <ButtonPrev onClick={cancelClickHandler} type="button">
-          취소
-        </ButtonPrev>
+        <ButtonPrev clickHandler={cancelClickHandler} />
         <ButtonNext
-          $isPossible={checkAgreement && checkPrivacy}
-          disabled={!(checkAgreement && checkPrivacy)}
-          onClick={clickHandler}
-        >
-          회원가입
-        </ButtonNext>
+          $isPossible={checkAgreement && checkPrivacy && possible}
+          clickHandler={clickHandler}
+          text="회원가입"
+        />
       </ButtonArea>
     </Wrapper>
   );
-};
+}
 
 const Wrapper = styled.div`
   max-width: 743px;
@@ -113,24 +112,7 @@ const ButtonArea = styled.div`
   justify-content: space-around;
 `;
 
-const ButtonPrev = styled.button`
-  width: 35%;
-  height: 45px;
-  border: 1px solid #cccccc;
-  color: #3e3d3c;
-`;
-
-const ButtonNext = styled.button`
-  opacity: ${({ props }) => (props.$isPossible ? '1' : '0.6')};
-  width: 35%;
-  height: 45px;
-  color: white;
-  background-color: black;
-`;
-
 const ANewPage = styled.a`
   text-decoration: underline;
   margin-left: 5px;
 `;
-
-export default Agreement;

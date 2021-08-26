@@ -1,14 +1,9 @@
 import styled from '@lib/styled-components';
 import useHistory from '@hooks/useHistory';
 import { UIEvent, useState, useEffect, useRef, MouseEventHandler, useCallback } from 'react';
-
-export interface ICarouselItem {
-  imageUrl: string;
-  url: string;
-  title: string;
-}
+import { IBanner } from '@types';
 interface CarouselProps {
-  items: ICarouselItem[];
+  items: IBanner[];
   carouselWidth: string;
 }
 
@@ -55,9 +50,9 @@ const Carousel = ({ items, carouselWidth }: CarouselProps) => {
         {items.map((item) => (
           <img
             src={item.imageUrl}
-            key={item.url}
+            key={item.productId}
             onClick={() => {
-              history.push({ pathname: item.url });
+              history.push({ pathname: `/products/${item.productId}` });
             }}
           />
         ))}

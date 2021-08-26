@@ -1,0 +1,34 @@
+[
+  {
+    "imageUrl": "6944efc2856a2b0942c7b5f148e5738a206c8c8d3778ba61d92cc3b42ba49e49.gif",
+    "title": "텀블러백",
+    "productId": "351",
+    "forSlide": true
+  },
+  {
+    "imageUrl": "2768df38ae85cc6dfbd4a23d400058b0eea5cd7a2e70c783313f5b1d0a240a2a.gif",
+    "title": "맥주짠 세트",
+    "productId": "134",
+    "forSlide": true
+  },
+  {
+    "imageUrl": "cab2aee7c9c6f8680ce8efa443dfa4f922cafaa0632e48d63bbfb8177633c7a6.gif",
+    "title": "흑심있어요",
+    "productId": "62",
+    "forSlide": true
+  },
+  {
+    "imageUrl": "152d09070cf0bb7a5d2f90a3dc2ea64fe9c1984a10bed33b4241b40c5091577d.png",
+    "title": "효자손은 과학이다.",
+    "description": "시원하게 긁어드려요",
+    "productId": "151",
+    "forSlide": false
+  },
+  {
+    "imageUrl": "2095d750f464ff2e7f77897daaf86e1b7a2b53d04eee63658c922047ba850d73.png",
+    "title": "꼭꼭 숨어라",
+    "description": "ㅋㅋ안 보이는 양말세트",
+    "productId": "284",
+    "forSlide": false
+  }
+]

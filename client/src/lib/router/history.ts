@@ -22,11 +22,12 @@ export interface IHistory {
 
 function parseSearch(query: string) {
   return query
+    .substr(1)
     .split('&')
     .map<[string, string]>((s) => s.split('=') as [string, string])
     .reduce<Search>((acc, [key, value]) => {
       if (!key) return acc;
-      acc[key] = value;
+      acc[key] = decodeURI(value);
       return acc;
     }, {});
 }
@@ -60,8 +61,15 @@ const mergeSearch = (search: Search) =>
     .map(([key, value]) => `${key}=${value}`)
     .join('&');
 
-const createPath = ({ pathname = '/', search = {}, hash = '' }: Partial<Path>) =>
-  `${pathname}${Object.keys(search).length ? '?' : ''}${mergeSearch(search)}${hash ? '#' : ''}${hash}`;
+function createPath({ pathname = '/', search = {}, hash = '' }: Partial<Path>): string {
+  const _search: Search = {};
+  Object.entries(search).forEach(([key, value]) => {
+    if (value.trim() !== '') {
+      _search[key] = value.trim();
+    }
+  });
+  return `${pathname}${Object.keys(_search).length ? '?' : ''}${mergeSearch(_search)}${hash ? '#' : ''}${hash}`;
+}
 
 export const createHref = (to: To) => (typeof to === 'string' ? to : createPath(to));
 
@@ -95,6 +103,7 @@ class BrowserHistory implements IHistory {
 
     window.addEventListener('popstate', (e) => {
       const prevPath = e.state as Path;
+      this.currentPath = prevPath;
       this.listeners.call(prevPath);
     });
 
@@ -113,13 +122,23 @@ class BrowserHistory implements IHistory {
 
   getNextPathAndUrl(to: To): [Path, string] {
     const path = typeof to === 'string' ? parsePath(to) : to;
-    return [
-      {
+    let nextPath: Path;
+    if (path.pathname && path.pathname !== this.currentPath.pathname) {
+      nextPath = {
+        pathname: path.pathname,
+        search: {},
+        hash: '',
+        ...path,
+      };
+    } else {
+      nextPath = {
         ...this.currentPath,
         ...path,
-      },
-      createHref(path),
-    ];
+        search: { ...this.currentPath.search, ...path.search },
+      };
+    }
+
+    return [nextPath, createHref(nextPath)];
   }
 
   listen(listener: HistoryEventHandler) {

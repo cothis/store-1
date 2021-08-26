@@ -2,19 +2,17 @@ import styled from '@lib/styled-components';
 import size from '@constants/size';
 import { MouseEvent, useState, useEffect } from 'react';
 import useHistory from '@hooks/useHistory';
+import { useCategories } from '@hooks/query/categories';
+import { debouncer } from '@utils/debouncer';
 
-export interface ICategory {
-  id: number;
-  name: string;
-  children?: ICategory[];
-}
-
-const Category = ({ categories }: { categories: ICategory[] }) => {
+const Category = () => {
   const [toggleOff, setToggleOff] = useState<boolean>(false);
   const [parentActive, setParentActive] = useState<number>(-1);
   const [categoryToggle, setCategoryToggle] = useState<boolean>(false);
+  const { isLoading, data: categories, isError, error } = useCategories();
+
   const history = useHistory();
-  let timeOutNum: ReturnType<typeof setTimeout> | null = null;
+  const updateDebouncer = debouncer<void>();
 
   const resetActive = () => {
     setParentActive(-1);
@@ -23,16 +21,16 @@ const Category = ({ categories }: { categories: ICategory[] }) => {
   // desktop 버전 이벤트 핸들링
   const parentHover = (e: MouseEvent<HTMLElement>) => {
     if (window.innerWidth <= size.mobile) return;
-    if (timeOutNum) clearTimeout(timeOutNum);
-    timeOutNum = setTimeout(() => {
+
+    updateDebouncer(() => {
       const target = e.target as HTMLElement;
       updateParentActive(target);
-    }, 150);
+    }, 100);
   };
 
   const childHover = () => {
     if (window.innerWidth <= size.mobile) return;
-    if (timeOutNum) clearTimeout(timeOutNum);
+    updateDebouncer(() => {});
   };
 
   // mobile ui 버전 이벤트 핸들링 && 전체보기로 이동
@@ -87,6 +85,32 @@ const Category = ({ categories }: { categories: ICategory[] }) => {
     resetActive();
   }, [categoryToggle]);
 
+  useEffect(() => {
+    if (categories) {
+      categories.unshift({
+        id: '0',
+        title: '전체',
+        children: [],
+      });
+    }
+  }, [categories]);
+
+  if (isLoading) {
+    return (
+      <div
+        style={{
+          width: '2rem',
+          height: '2rem',
+          borderRadius: '6px',
+          backgroundColor: '#ddd',
+        }}
+      ></div>
+    );
+  }
+  if (isError) {
+    throw error;
+  }
+
   return (
     <CategoryWrapper
       onMouseEnter={() => {
@@ -123,33 +147,34 @@ const Category = ({ categories }: { categories: ICategory[] }) => {
           <p>카테고리</p>
         </div>
         <ul className={'parent'}>
-          {categories.map((category) => {
-            return (
-              <li
-                className={parentActive === category.id ? 'active' : ''}
-                key={category.id}
-                data-id={category.id}
-                onMouseEnter={parentHover}
-                onClick={parentClick}
-              >
-                <div className="parent-item">
-                  <p>{category.name}</p>
-                  <i className="fas fa-chevron-down"></i>
-                </div>
-                <ul className={'child ' + (category.children ? '' : 'none')} onMouseEnter={childHover}>
-                  <li className="all" key={parentActive} data-id={parentActive} onClick={childClick}>
-                    전체보기
-                  </li>
-                  {category.children &&
-                    category.children.map((childCategory) => (
-                      <li key={childCategory.id} data-id={childCategory.id} onClick={childClick}>
-                        {childCategory.name}
-                      </li>
-                    ))}
-                </ul>
-              </li>
-            );
-          })}
+          {categories &&
+            categories.map((category) => {
+              return (
+                <li
+                  className={parentActive === +category.id ? 'active' : ''}
+                  key={category.id}
+                  data-id={category.id}
+                  onMouseEnter={parentHover}
+                  onClick={parentClick}
+                >
+                  <div className="parent-item">
+                    <p>{category.title}</p>
+                    <i className="fas fa-chevron-down"></i>
+                  </div>
+                  <ul className={'child ' + (category.children.length ? '' : 'none')} onMouseEnter={childHover}>
+                    <li className="all" key={parentActive} data-id={parentActive} onClick={childClick}>
+                      전체보기
+                    </li>
+                    {category.children.length !== 0 &&
+                      category.children.map((childCategory) => (
+                        <li key={childCategory.id} data-id={childCategory.id} onClick={childClick}>
+                          {childCategory.title}
+                        </li>
+                      ))}
+                  </ul>
+                </li>
+              );
+            })}
         </ul>
       </CategoryMenu>
     </CategoryWrapper>
@@ -283,6 +308,7 @@ const CategoryMenu = styled.div`
       color: black;
     }
     .parent {
+      min-height: calc(100vh - 48px);
       background-color: white;
       > li {
         border-bottom: 1px solid #ddd;

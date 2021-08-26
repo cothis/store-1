@@ -1,16 +1,12 @@
 app:
   port: 8080
-
-typeorm:
-  host: localhost
-  port: 3306
-  database: store
-  username: woowa
-  password: woowa
-  synchronize: true
-  logging: true
-
+  client: http://localhost:9000
+  server: http://localhost:8080
+  s3: s3_url
+  
 jwt:
-  secret:
-    access: 128bit_base64_encoded
-    refresh: 128bit_base64_encoded
+  # https://generate.plus/en/base64 여기서 생성 가능
+  secret: 128bit_base64_encoded
+
+auth:
+  kakao_client_id: kakao_api

@@ -12,6 +12,7 @@ type ExitProps = {
   height: string;
   color: string;
   strokeWidth: string;
+  className?: string;
 };
 
 const ExitBtn = ({
@@ -26,9 +27,11 @@ const ExitBtn = ({
   strokeWidth,
   onClick,
   transform,
+  className = '',
 }: ExitProps) => {
   return (
     <button
+      className={className}
       style={{
         position: absolute ? 'absolute' : 'static',
         transform: transform ? transform : '',

@@ -118,3 +118,6 @@ dist
 .pnp.*
 
 build/
+deploy/data/mysql
+
+.DS_Store

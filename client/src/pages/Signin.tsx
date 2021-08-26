@@ -6,6 +6,9 @@ const Signin = () => {
   const loginClickHandler: MouseEventHandler = (e) => {
     e.preventDefault();
   };
+  const kakaoClickHandler: MouseEventHandler = async (e) => {
+    location.href = 'http://localhost:8080/api/v1/auth';
+  };
   return (
     <Wrapper>
       <Title>회원 로그인</Title>
@@ -18,7 +21,7 @@ const Signin = () => {
         </CheckboxArea>
         <LoginButton onClick={loginClickHandler}>로그인</LoginButton>
       </Form>
-      <OAuthButton>카카오 로그인</OAuthButton>
+      <OAuthButton onClick={kakaoClickHandler}>카카오 로그인</OAuthButton>
       <ButtonArea>
         <Link to="/signup-method">
           <Button>회원가입</Button>

@@ -1,11 +1,16 @@
 import styled from '@lib/styled-components';
-import { SyntheticEvent, useRef, useEffect, MouseEvent } from 'react';
+import { SyntheticEvent, useRef, useEffect, MouseEvent, useCallback } from 'react';
 import ExitBtn from '@components/ExitBtn';
 import useLocalStorage from '@hooks/useLocalStorage';
 import useModal from '@hooks/useModal';
 import useHistory from '@hooks/useHistory';
+import notify from '@utils/toastify';
+import { SEARCH_INPUT_INVALID } from '@constants/message';
 
-const SearchModal = () => {
+const SEARCH_MIN_LENGTH = 2;
+const SEARCH_MAX_LENGTH = 20;
+
+export default function SearchModal() {
   const searchInput = useRef<HTMLInputElement>(null);
   const [queryArr, setQueryArr] = useLocalStorage<string[]>('query', []);
   const [modal, setModal] = useModal();
@@ -21,22 +26,40 @@ const SearchModal = () => {
     setModal(false);
   };
 
+  const searchValidation = useCallback((keyword: string, arr: string[]) => {
+    if (keyword.length < SEARCH_MIN_LENGTH || keyword.length > SEARCH_MAX_LENGTH) {
+      notify('error', SEARCH_INPUT_INVALID);
+      return false;
+    }
+
+    const nextQueryArr = arr.concat([]);
+    if (nextQueryArr.includes(keyword)) {
+      nextQueryArr.splice(nextQueryArr.indexOf(keyword), 1);
+    } else if (nextQueryArr.length >= 20) {
+      nextQueryArr.pop();
+    }
+    nextQueryArr.unshift(keyword);
+
+    setQueryArr(nextQueryArr);
+    return true;
+  }, []);
+
   const submitHandler = (e: SyntheticEvent) => {
     e.preventDefault();
     const { search } = e.target as HTMLFormElement;
-    if (search.value.length) {
-      const nextQueryArr = queryArr.concat(search.value);
-      setQueryArr(nextQueryArr);
-      history.push({ pathname: '/search', search: { keyword: search.value } });
-      offHandler();
-    }
+    const keyword = search.value;
+    if (!searchValidation(keyword, queryArr)) return;
+    history.push({ pathname: '/search', search: { keyword } });
+    offHandler();
   };
 
   const quickHandler = (e: MouseEvent<HTMLElement>) => {
     const target = e.target as HTMLElement;
     const parent = target.closest('.quick-content') as HTMLElement;
-    if (!parent || !parent.dataset.query) return;
-    history.push({ pathname: '/search', search: { keyword: parent.dataset.query } });
+    const keyword = parent.dataset.query;
+    if (!parent || !keyword) return;
+    if (!searchValidation(keyword, queryArr)) return;
+    history.push({ pathname: '/search', search: { keyword } });
     offHandler();
   };
 
@@ -118,7 +141,7 @@ const SearchModal = () => {
       </div>
     </>
   );
-};
+}
 
 const SearchFormWrapper = styled.div`
   position: absolute;
@@ -217,5 +240,3 @@ const ModalBackground = styled.div`
   background-color: black;
   opacity: 0.5;
 `;
-
-export default SearchModal;

@@ -1,14 +1,12 @@
 import styled from '@lib/styled-components';
 import Link from '@lib/router/Link';
+import { IBanner } from '@types';
 
-export interface IBanner {
-  imageUrl: string;
-  title: string;
-  description: string;
-  productId: string;
+interface Props {
+  banners: IBanner[];
 }
 
-function ProductBannerList({ banners }: { banners: IBanner[] }) {
+function ProductBannerList({ banners }: Props) {
   return (
     <BannerList>
       {banners.map((banner) => {

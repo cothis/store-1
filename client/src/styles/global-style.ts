@@ -55,6 +55,7 @@ export default createGlobalStyle`
   #app {
     min-height: 100vh;
     overflow-x: hidden;
+    position: relative;
   }
   a {
     text-decoration: none;

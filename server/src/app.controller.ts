@@ -1,13 +1,15 @@
-import { Controller, Get, Render } from '@nestjs/common';
-import { AppService } from './app.service';
+import { Controller, Get } from '@nestjs/common';
+import { AGREEMENT_STRING, PRIVACY_STRING } from '@/data/terms';
 
-@Controller()
+@Controller('api/v1')
 export class AppController {
-  constructor(private readonly appService: AppService) {}
+  @Get('agreement')
+  agreement(): string {
+    return AGREEMENT_STRING;
+  }
 
-  @Get()
-  @Render('index')
-  root() {
-    return { message: 'Hello world with hbs' };
+  @Get('privacy')
+  privacy(): string {
+    return PRIVACY_STRING;
   }
 }

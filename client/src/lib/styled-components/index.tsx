@@ -7,7 +7,7 @@ import TagNames from './tag-names';
 type TagName = typeof TagNames[number];
 
 type StyledTagedTemplateLambda = (args: { theme: DefaultTheme; props: Record<string, any> }) => string;
-type StyledTagedTemplateArg = StyledTagedTemplateLambda | string;
+type StyledTagedTemplateArg = StyledTagedTemplateLambda | string | number;
 type StyledComponent = React.ForwardRefExoticComponent<
   Pick<React.PropsWithChildren<any>, string | number> & React.RefAttributes<HTMLElement>
 >;
@@ -75,6 +75,7 @@ const constructWithTag = (tag?: string) => {
 
       return (
         <CustomTag
+          // @ts-ignore
           ref={ref as LegacyRef<any>}
           {...domProps}
           className={`${className}${props.className ? ' ' + props.className : ''}`}

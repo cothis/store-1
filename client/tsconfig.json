@@ -1,5 +1,6 @@
 {
-  "include": ["src/**/*", "test/**/*"],
+  "include": ["src/**/*", "webpack/**/*", "test/**/*"],
+  "files": ["webpack.config.ts"],
   "compilerOptions": {
     "jsx": "react-jsx",
     "target": "es6",
@@ -18,7 +19,11 @@
       "@pages/*": ["src/pages/*"],
       "@lib/*": ["src/lib/*"],
       "@constants/*": ["src/constants/*"],
-      "@assets/*": ["src/assets/*"]
+      "@assets/*": ["src/assets/*"],
+      "@styles/*": ["src/styles/*"],
+      "@utils/*": ["src/utils/*"],
+      "@types": ["src/types"],
+      "@config": ["src/config"]
     }
   }
 }
