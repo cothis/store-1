@@ -1,12 +1,12 @@
 import { useState } from 'react';
 import styled from '@lib/styled-components';
-import { useProductDetail } from '@hooks/query/products/detail';
+import { useProductDetail } from '@hooks/query/products';
 import useParams from '@hooks/useParams';
 
 import Loading from '@components/Loading';
 import Count from '@components/common/Count';
 import ButtonNext from '@components/common/ButtonNext';
-import ButtonPrev from '@components/common/ButtonPrev';
+import AddCartButton from '@components/AddCartButton';
 import HeartButton from '@components/common/HeartButton';
 import ProductContent from '@components/ProductContent';
 
@@ -62,7 +62,14 @@ const Product = function () {
                 <ButtonArea>
                   <MiniButtonArea>
                     <HeartButton initialState={like} />
-                    <ButtonPrev clickHandler={() => {}} text="장바구니"></ButtonPrev>
+                    <AddCartButton
+                      id={id}
+                      title={title}
+                      imageUrl={imageUrl}
+                      price={price}
+                      originalPrice={originalPrice}
+                      count={count}
+                    />
                   </MiniButtonArea>
                   <ButtonNext clickHandler={() => {}} $isPossible={price !== 0} text="바로 구매"></ButtonNext>
                 </ButtonArea>

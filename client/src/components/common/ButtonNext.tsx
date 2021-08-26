@@ -22,6 +22,9 @@ const Button = styled.button`
   color: white;
   background-color: black;
   border-radius: 6px;
+  @media (max-width: ${({ theme }) => theme.media.mobileSmall}) {
+    font-size: 0.7rem;
+  }
 `;
 
 export default ButtonNext;

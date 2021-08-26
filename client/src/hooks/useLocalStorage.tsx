@@ -7,14 +7,13 @@ function useLocalStorage<T>(key: string, initialValue: T): [T, (value: T) => voi
   const initValue = localValue ? (JSON.parse(localValue) as T) : initialValue;
   const [value, setValueData] = useState<T>(initValue);
 
-  // 구독 시작
-  if (!setObserver[key]) {
-    setObserver[key] = [setValueData];
-  } else {
-    setObserver[key].push(setValueData);
-  }
-
   useEffect(() => {
+    // 구독 시작
+    if (!setObserver[key]) {
+      setObserver[key] = [setValueData];
+    } else {
+      setObserver[key].push(setValueData);
+    }
     // 구독 해제
     return () => {
       setObserver[key].splice(setObserver[key].indexOf(setValueData), 1);
