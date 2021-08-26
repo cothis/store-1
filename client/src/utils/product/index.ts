@@ -1,6 +1,7 @@
 import { QueryFunctionContext } from 'react-query';
 import axios from 'axios';
 import { Path } from '@lib/router/history';
+import { API_ENDPOINT } from '@config';
 
 type ProductsQueryKey = [
   string,
@@ -10,18 +11,26 @@ type ProductsQueryKey = [
   },
 ];
 
+const PRODUCT_API_ENDPOINT = API_ENDPOINT + '/api/v1/products';
+
+function makeQuery(searches: { [key: string]: string }) {
+  return Object.entries(searches)
+    .filter(([_, value]) => value.length !== 0)
+    .map(([key, value]) => {
+      return `${key}=${value}`;
+    })
+    .join('&');
+}
+
 export async function fetchProductList({ queryKey }: QueryFunctionContext) {
   const [_key, { path, categoryId }] = queryKey as ProductsQueryKey;
 
   const searches = Object.assign({}, path.search);
-
   if (categoryId) searches.categoryId = categoryId;
 
-  const url = Object.entries(searches).reduce((acc, [key, value], idx) => {
-    if (idx === 0) return acc + '?' + `${key}=${value}`;
-    return acc + `&${key}=${value}`;
-  }, '/api/v1/products');
+  const query = makeQuery(searches);
 
+  const url = PRODUCT_API_ENDPOINT + (query.length ? `?${query}` : '');
   const result = await axios.get(url);
   return result.data;
 }
@@ -35,7 +44,7 @@ type ProductDetailQueryKey = [
 
 export async function fetchProductDetail({ queryKey }: QueryFunctionContext) {
   const [_key, { params }] = queryKey as ProductDetailQueryKey;
-  const url = `http://localhost:8080/api/v1/products/${params}`;
+  const url = PRODUCT_API_ENDPOINT + `/${params}`;
 
   const result = await axios.get(url);
   return result.data;

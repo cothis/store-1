@@ -5,7 +5,7 @@ export const debouncer = <T>() => {
     return new Promise<T>((resolve, reject) => {
       if (timer) clearTimeout(timer);
       timer = setTimeout(() => {
-        resolve(cb(args) as T);
+        resolve(cb(...args) as T);
       }, delay);
     });
   };

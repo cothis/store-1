@@ -12,6 +12,7 @@ interface NavLinkProps {
   children: ReactNode;
   activeClassName?: string;
   activeStyle?: CSSProperties;
+  goTop?: boolean;
 }
 
 function checkSearchAndHash(to: Exclude<To, string>, search: Search, hash: string): boolean {
@@ -49,6 +50,9 @@ export default function NavLink(props: NavLinkProps) {
       history.replace(to);
     } else {
       history.push(to);
+    }
+    if (props.goTop) {
+      window.scrollTo(0, 0);
     }
   };
 

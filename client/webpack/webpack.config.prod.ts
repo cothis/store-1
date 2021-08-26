@@ -1,5 +1,6 @@
 import { Configuration } from 'webpack';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
+import Dotenv from 'dotenv-webpack';
 
 const prodConfig: Configuration = {
   mode: 'production',
@@ -11,6 +12,12 @@ const prodConfig: Configuration = {
       },
     ],
   },
+  plugins: [
+    new Dotenv({
+      safe: true,
+      path: '.env.prod',
+    }),
+  ],
 };
 
 export default prodConfig;

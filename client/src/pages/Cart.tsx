@@ -169,12 +169,15 @@ function CartForm() {
           </div>
           <div className="cart__result--price-item">
             <p>배송비</p>
-            <p>{totalPrice >= 30000 ? '0' : '2,500'}원</p>
+            <p>{totalPrice >= 30000 || totalPrice === 0 ? '0' : '2,500'}원</p>
           </div>
           <div className="cart__result--price-item">
             <p>총 합계금액</p>
             <p className="cart__result--total-price">
-              {totalPrice >= 30000 ? totalPrice.toLocaleString() : (totalPrice + 2500).toLocaleString()}원
+              {totalPrice >= 30000 || totalPrice === 0
+                ? totalPrice.toLocaleString()
+                : (totalPrice + 2500).toLocaleString()}
+              원
             </p>
           </div>
         </div>

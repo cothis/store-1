@@ -16,14 +16,13 @@ export class ProductRepository extends Repository<Product> {
         query = query.orderBy('product.price', 'ASC');
         break;
       case 'latest':
-        query = query.orderBy('product.createdAt', 'DESC');
         break;
       case 'popular':
         query = query.orderBy('product.viewCount', 'DESC');
         break;
     }
 
-    return query;
+    return query.addOrderBy('product.id', 'DESC');
   }
 
   async findAllAndCount(sort: SortType, page: number): Promise<[Product[], number]> {

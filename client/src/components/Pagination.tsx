@@ -22,14 +22,14 @@ export default function Pagination({ currentPage, totalPage, path }: Props) {
       <ul className="pagination--list">
         {currentPage !== 1 && (
           <li className="pagination--item">
-            <NavLink to={{ search: { ...path.search, page: convertPageNum(1) } }}>
+            <NavLink goTop to={{ search: { ...path.search, page: convertPageNum(1) } }}>
               <p>처음으로</p>
             </NavLink>
           </li>
         )}
         {currentPage !== totalPage && (
           <li className="pagination--item">
-            <NavLink to={{ search: { ...path.search, page: convertPageNum(totalPage) } }}>
+            <NavLink goTop to={{ search: { ...path.search, page: convertPageNum(totalPage) } }}>
               <p>마지막으로</p>
             </NavLink>
           </li>
@@ -38,7 +38,7 @@ export default function Pagination({ currentPage, totalPage, path }: Props) {
       <ul className="pagination--list">
         {startPage !== 1 && (
           <li className="pagination--item">
-            <NavLink to={{ search: { ...path.search, page: convertPageNum(startPage - 1) } }}>
+            <NavLink goTop to={{ search: { ...path.search, page: convertPageNum(startPage - 1) } }}>
               <p>{'...'}</p>
             </NavLink>
           </li>
@@ -49,6 +49,7 @@ export default function Pagination({ currentPage, totalPage, path }: Props) {
               <NavLink
                 to={{ search: { ...path.search, page: convertPageNum(pageNum) } }}
                 activeClassName="page-current"
+                goTop
               >
                 <p>{pageNum}</p>
               </NavLink>
@@ -57,7 +58,7 @@ export default function Pagination({ currentPage, totalPage, path }: Props) {
         })}
         {maxPage < totalPage && (
           <li className="pagination--item">
-            <NavLink to={{ search: { ...path.search, page: convertPageNum(maxPage + 1) } }}>
+            <NavLink goTop to={{ search: { ...path.search, page: convertPageNum(maxPage + 1) } }}>
               <p>{'...'}</p>
             </NavLink>
           </li>
