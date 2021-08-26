@@ -1,15 +1,21 @@
 import { EntityRepository, Repository } from 'typeorm';
 import { Order } from './entities/order.entity';
+import { OrderStatus } from './enums/order-status.enum';
 
 @EntityRepository(Order)
 export class OrderRepository extends Repository<Order> {
-  async findAll(query: Partial<Order>): Promise<Order[]> {
-    const { userId, ...condition } = query;
-    return await this.find({ where: { ...condition, ...{ user: { id: userId } } } });
+  async findAll(status?: OrderStatus): Promise<Order[]> {
+    return await this.find({
+      where: {
+        ...(status && { status }),
+      },
+    });
   }
 
   async findById(id: string): Promise<Order> {
-    return await this.findOneOrFail({ where: { id } });
+    return await this.findOne({
+      where: { id },
+    });
   }
 
   // async createEntity(dto: CreateOrderDto): Promise<Order> {

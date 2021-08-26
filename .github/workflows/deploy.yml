@@ -28,6 +28,7 @@ jobs:
           touch config.yaml
           cat << EOF >> config.yaml
           ${{ secrets.CONFIG }}
+          EOF
         working-directory: './server/src/config'
 
       - name: compose

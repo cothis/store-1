@@ -1,6 +1,7 @@
 import { User } from '@models/users/entities/user.entity';
 import { OrderHasProduct } from './order-has-product.entity';
 import {
+  AfterLoad,
   Column,
   CreateDateColumn,
   Entity,
@@ -12,7 +13,9 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { OrderStatus } from '../enums/order-status.enum';
-
+interface AA {
+  number: number;
+}
 @Entity()
 export class Order {
   @PrimaryGeneratedColumn('increment', { type: 'bigint', unsigned: true })
@@ -54,7 +57,7 @@ export class Order {
   @Column({ type: 'text', nullable: true })
   message: string;
 
-  @OneToMany(() => OrderHasProduct, (orderhasProduct) => orderhasProduct.order)
+  @OneToMany(() => OrderHasProduct, (orderhasProduct) => orderhasProduct.order, { eager: true })
   orderHasProducts: OrderHasProduct[];
 
   @ManyToOne(() => User)
@@ -69,4 +72,24 @@ export class Order {
 
   @UpdateDateColumn()
   updatedAt: Date;
+
+  /* 비즈니스 컬럼 */
+  productsPrice: number;
+  deliveryFee: number;
+  paymentPrice: number;
+
+  @AfterLoad()
+  setPrices = () => {
+    this.productsPrice = this.calculateProductPrice(this.orderHasProducts);
+    this.deliveryFee = 2500;
+    this.paymentPrice = this.productsPrice + this.deliveryFee;
+  };
+
+  calculateProductPrice = (orderHasProducts: OrderHasProduct[]) => {
+    console.log(orderHasProducts);
+    return orderHasProducts?.reduce<number>(
+      (price, { product }) => (price += product.price || product.originalPrice || 0),
+      0,
+    );
+  };
 }

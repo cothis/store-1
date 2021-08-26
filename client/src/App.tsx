@@ -98,7 +98,7 @@ const App = () => {
                     <Route exact path="/cart">
                       <Cart />
                     </Route>
-                    <Route exact path="/order">
+                    <Route path="/orders/:id">
                       <Order />
                     </Route>
                     <Error404 />

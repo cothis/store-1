@@ -29,6 +29,11 @@ export enum OrderStatus {
   REFUNDED = 'refunded',
 }
 
+export interface IOrderHasProduct {
+  id: string;
+  quantity: number;
+  product: IProductListItem;
+}
 export interface IOrder {
   id: string;
   status: OrderStatus;
@@ -43,6 +48,9 @@ export interface IOrder {
   address: string;
   addressDetail: string;
   message: string;
+  createAt: Date;
+  updateAt: Date;
+  orderHasProducts: IOrderHasProduct[];
 }
 
 export interface ICategory {

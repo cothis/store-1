@@ -11,7 +11,7 @@ export class OrderHasProduct {
   @JoinColumn()
   order: Order;
 
-  @ManyToOne(() => Product)
+  @ManyToOne(() => Product, { eager: true })
   @JoinColumn()
   product: Product;
 

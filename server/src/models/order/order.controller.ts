@@ -1,36 +1,44 @@
-import { Body, Controller, Delete, Get, Param, ParseEnumPipe, Put, Query, Req, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  ClassSerializerInterceptor,
+  Controller,
+  DefaultValuePipe,
+  Delete,
+  Get,
+  Param,
+  ParseEnumPipe,
+  ParseIntPipe,
+  Put,
+  Query,
+  Req,
+  UseGuards,
+  UseInterceptors,
+  ValidationPipe,
+} from '@nestjs/common';
 import { OrderService } from './order.service';
 import { Order } from './entities/order.entity';
 import { JwtAuthGuard } from 'src/auth/jwt.guard';
 import { OrderStatus } from './enums/order-status.enum';
-import { Request } from 'express';
 
 @UseGuards(JwtAuthGuard)
 @Controller('api/v1/orders')
+@UseInterceptors(ClassSerializerInterceptor)
 export class OrderController {
   constructor(private readonly orderService: OrderService) {}
 
   @Get('/')
   async findAll(
-    @Query('status', new ParseEnumPipe(OrderStatus)) status: OrderStatus,
-    @Req() req: Request,
+    @Query('status', new DefaultValuePipe(OrderStatus.NULL), new ParseEnumPipe(OrderStatus)) status: OrderStatus,
   ): Promise<Order[]> {
-    return await this.orderService.findAll({ status, userId: req.user.id });
+    if (status === OrderStatus.NULL) status = undefined;
+
+    return await this.orderService.findAll(status);
   }
 
   @Get('/:id')
-  async findById(
-    @Param('id') id: string,
-    @Query('status', new ParseEnumPipe(OrderStatus)) status: OrderStatus,
-    @Req() req: Request,
-  ): Promise<Order> {
+  async findById(@Param('id') id: string): Promise<Order> {
     return await this.orderService.findById(id);
   }
-
-  // @Post('/')
-  // async create(@Body() dto: CreateOrderDto): Promise<Order> {
-  //   return await this.orderService.createEntity(dto);
-  // }
 
   @Put('/:id')
   async update(@Param('id') id: string, @Body() order: Partial<Order>): Promise<Order> {

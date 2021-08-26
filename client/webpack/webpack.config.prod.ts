@@ -17,6 +17,7 @@ const prodConfig: Configuration = {
       safe: true,
       path: '.env.prod',
     }),
+    new MiniCssExtractPlugin(),
   ],
 };
 

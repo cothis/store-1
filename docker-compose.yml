@@ -19,7 +19,6 @@ services:
     environment:
       TZ: 'Asia/Seoul'
     working_dir: /app
-    command: node dist/main
     networks:
       default:
         aliases:
@@ -37,6 +36,8 @@ services:
       - SYS_NICE
     volumes:
       - ./deploy/data/mysql:/var/lib/mysql
+    ports:
+      - '33061:3306'
     networks:
       default:
         aliases:

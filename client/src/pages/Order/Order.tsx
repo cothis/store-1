@@ -1,57 +1,74 @@
 import { useTempOrders } from '@hooks/query/orders/useTempOrders';
+import useParams from '@hooks/useParams';
 import styled from '@lib/styled-components';
 import { IOrder, OrderStatus } from '@types';
 import axios from 'axios';
 import { useCallback, useState } from 'react';
+import { useQueries, useQuery } from 'react-query';
 
 type UpdateOrderDto = Omit<IOrder, 'id'>;
-const testData: UpdateOrderDto = {
-  status: OrderStatus.READY,
-  senderName: 'test-sender-name',
-  senderCall: 'test-sender-call',
-  senderPhone: 'test-sender-phone',
-  senderMail: 'test-sender-mail',
-  receiverName: 'test-receiver-name',
-  receiverCall: 'test-receiver-call',
-  receiverPhone: 'test-receiver-phone',
-  zipcode: 'test',
-  address: 'test-address',
-  addressDetail: 'test-address-detail',
-  message: 'test-message',
-};
+
+interface IUser {
+  id: string;
+  loginId: string;
+  isAdmin: boolean;
+  email: string;
+  name: string;
+  zipcode: string;
+  address: string;
+  addressDetail: string;
+}
 
 /**
  * 1. 주문 내역 가져오기(TEMP 인것만)
  * 2.
  */
-
 const Order = () => {
-  const handlePaymentButtonClick = async () => {
-    const result = await axios.put('http://localhost:8080/api/v1/orders/1', testData, { withCredentials: true });
-    console.log(result);
-  };
+  const { id: orderId } = useParams();
+  const { status, data, error } = useTempOrders(orderId);
+  const {
+    isLoading,
+    data: user,
+    isError,
+  } = useQuery('user', async () => {
+    const { data } = await axios.get<IUser>('http://localhost:8080/api/v1/users/me', { withCredentials: true });
+    return data;
+  });
 
-  const { status, data, error } = useTempOrders();
-
-  const renderByStatus = useCallback(() => {
+  const renderOrderDetail = useCallback(() => {
     switch (status) {
       case 'loading':
         return <div>Loading...</div>;
-
       case 'error':
         if (error instanceof Error) {
           return <span>Error: {error.message}</span>;
         }
         break;
       default:
+        if (!data) return;
         return (
-          <div>
-            {data?.map((d) => (
-              <div>
-                <div>{d.id}</div>
-                <div>{d.senderName}</div>
-                <div>{d.senderMail}</div>
-                <div>{d.receiverName}</div>
+          <div className="order-detail">
+            <h2>주문상세내역</h2>
+            <div className="products-header">
+              <div className="product-info">상품 정보</div>
+              <div className="product-quantity">수량</div>
+              <div className="product-price">상품금액</div>
+              <div className="product-total-price">합계금액</div>
+            </div>
+            {data.orderHasProducts.map((orderHasProduct) => (
+              <div className="product" key={`product${orderHasProduct.id}`}>
+                <div className="product-info">
+                  <img className="product-image" src={orderHasProduct.product.imageUrl} alt="상품이미지" />
+                  <div className="product-title">{orderHasProduct.product.title}</div>
+                </div>
+                <div className="product-quantity">{orderHasProduct.quantity}</div>
+                <div className="product-price">{orderHasProduct.product.price}</div>
+                <div className="product-total-price">
+                  {orderHasProduct.product.price && orderHasProduct.product.price * orderHasProduct.quantity}
+                  {orderHasProduct.product.originalPrice &&
+                    orderHasProduct.product.originalPrice * orderHasProduct.quantity}
+                  {orderHasProduct.product.priceText && orderHasProduct.product.priceText}
+                </div>
               </div>
             ))}
           </div>
@@ -64,25 +81,7 @@ const Order = () => {
   return (
     <OrderWrapper>
       <h1 className="title">주문서작성/결제</h1>
-      {renderByStatus()}
-      <div className="order-detail">
-        <h2>주문상세내역</h2>
-        <div className="products-header">
-          <div className="product-info">상품 정보</div>
-          <div className="product-quantity">수량</div>
-          <div className="product-price">상품금액</div>
-          <div className="product-total-price">합계금액</div>
-        </div>
-        <div className="products">
-          <div className="product-info">
-            <img className="product-image" src="" alt="상품이미지" />
-            <div className="product-title">재생지에 콩기름으로 인쇄한 일기장</div>
-          </div>
-          <div className="product-quantity">1개</div>
-          <div className="product-price">3,500원</div>
-          <div className="product-total-price">3,500원</div>
-        </div>
-      </div>
+      {renderOrderDetail()}
       <form className="user-info">
         <h2>주문자 정보</h2>
         <div className="table">
@@ -94,8 +93,7 @@ const Order = () => {
                 type="text"
                 name="senderName"
                 id="sender-name"
-                value="배민이"
-                onChange={() => {}}
+                defaultValue={user && user.name}
               />
             </div>
           </div>
@@ -108,14 +106,7 @@ const Order = () => {
           <div className="row">
             <div className="description required">휴대폰 번호</div>
             <div className="content">
-              <input
-                className="input-medium"
-                type="phone"
-                name="senderPhone"
-                id="sender-phone"
-                value="010-1234-5678"
-                onChange={() => {}}
-              />
+              <input className="input-medium" type="phone" name="senderPhone" id="sender-phone" />
             </div>
           </div>
           <div className="row">
@@ -126,8 +117,7 @@ const Order = () => {
                 type="email"
                 name="senderEmail"
                 id="sender-email"
-                value="baemin@woowa.work"
-                onChange={() => {}}
+                defaultValue={user && user.email}
               />
               <div className="extra">직접입력</div>
             </div>
@@ -185,7 +175,7 @@ const Order = () => {
           </div>
           <div className="row">
             <div className="description">배송비</div>
-            <div className="content">0원</div>
+            <div className="content">2500원</div>
           </div>
           <div className="row">
             <div className="description">최종 결제금액</div>
@@ -210,7 +200,7 @@ const Order = () => {
           </label>
         </div>
       </div>
-      <button className="payment" type="button" onClick={handlePaymentButtonClick}>
+      <button className="payment" type="button" onClick={() => {}}>
         결제하기
       </button>
     </OrderWrapper>

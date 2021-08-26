@@ -1,4 +1,5 @@
 export enum OrderStatus {
+  NULL = 'null',
   TEMP = 'temp',
   READY = 'ready',
   ACCEPTED = 'accepted',
