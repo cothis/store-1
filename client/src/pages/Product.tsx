@@ -101,6 +101,7 @@ const InfomationArea = styled.div`
   align-items: center;
   @media (max-width: ${({ theme }) => theme.media.medium}) {
     flex-direction: column;
+    padding: 0 1rem;
   }
 `;
 

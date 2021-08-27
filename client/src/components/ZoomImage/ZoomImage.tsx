@@ -134,7 +134,7 @@ const ZoomedImage = styled.img`
   position: absolute;
   top: 0;
   right: -${ZOOM_WIDTH + 15}px;
-  z-index: 10;
+  z-index: 9;
   width: ${ZOOM_WIDTH}px;
   height: ${ZOOM_HEIGHT}px;
   border: 1px solid black;

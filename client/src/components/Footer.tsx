@@ -18,9 +18,6 @@ export default function Footer() {
           <NavLink goTop to={{ pathname: '/board', search: { type: 'notice' } }}>
             공지사항
           </NavLink>
-          <NavLink goTop to={{ pathname: '/my-page/qna' }}>
-            1:1문의
-          </NavLink>
           <NavLink goTop to={{ pathname: '/agreement' }}>
             이용약관
           </NavLink>
