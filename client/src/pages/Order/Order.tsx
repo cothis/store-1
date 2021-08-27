@@ -2,7 +2,7 @@ import { useTempOrders } from '@hooks/query/orders/useTempOrders';
 import useParams from '@hooks/useParams';
 import styled from '@lib/styled-components';
 import { IOrder, OrderStatus } from '@types';
-import axios from 'axios';
+import axios from '@utils/axios';
 import { useCallback, useState } from 'react';
 import { useQueries, useQuery } from 'react-query';
 

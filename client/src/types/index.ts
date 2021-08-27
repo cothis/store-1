@@ -86,3 +86,10 @@ export interface IProductBannerList {
 export type IMainBlock = ISlideBanner | IProductList | IProductBannerList;
 
 export type Term = '/agreement' | '/privacy';
+
+export interface User {
+  id: string;
+  name: string;
+  loginId: string;
+  email: string;
+}

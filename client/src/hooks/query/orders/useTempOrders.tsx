@@ -1,5 +1,5 @@
 import { IOrder } from '@types';
-import axios from 'axios';
+import axios from '@utils/axios';
 import { useQuery } from 'react-query';
 
 const getMyTempOrders = async (id: string): Promise<IOrder> => {

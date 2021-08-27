@@ -8,6 +8,7 @@ import session from 'express-session';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
+  const appConfigService = app.get(AppConfigService);
 
   app.useGlobalPipes(
     new ValidationPipe({
@@ -18,7 +19,7 @@ async function bootstrap() {
     }),
   );
 
-  app.enableCors({ credentials: true, origin: true });
+  app.enableCors({ credentials: true, origin: appConfigService.client });
   app.use(cookieParser());
   app.use(
     session({

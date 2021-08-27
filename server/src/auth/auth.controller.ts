@@ -1,6 +1,5 @@
-import { Controller, Get, Post, Req, Res, Session, UnauthorizedException, UseGuards } from '@nestjs/common';
+import { Controller, Get, HttpCode, HttpStatus, Post, Req, Res, Session, UseGuards } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { AuthGuard } from '@nestjs/passport';
 import { Request, Response } from 'express';
 import { AppConfigService } from 'src/config/app.service';
 import { UserService } from 'src/models/users/user.service';
@@ -8,7 +7,7 @@ import { AuthService } from './auth.service';
 import { JwtAuthGuard } from './jwt.guard';
 import { LocalAuthGuard } from './local.guard';
 
-@Controller('/api/v1/auth')
+@Controller('api/v1/auth')
 export class AuthController {
   private clientUrl: string;
   constructor(
@@ -47,9 +46,10 @@ export class AuthController {
   }
 
   @UseGuards(LocalAuthGuard)
-  @Post('/login')
+  @Post('login')
+  @HttpCode(HttpStatus.OK)
   login(@Req() req: Request, @Res() res: Response) {
-    res.cookie('jwt', this.authService.login(req.user));
+    res.cookie('jwt', this.authService.login(req.user), { httpOnly: true });
     res.json(req.user);
   }
 

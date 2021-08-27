@@ -1,18 +1,36 @@
 import Link from '@lib/router/Link';
 import DividerOne from '@assets/images/divider1.png';
 import DividerTwo from '@assets/images/divider2.png';
+import { useLogout, USER_QUERY_KEY } from '@hooks/query/users';
+import { useQueryClient } from 'react-query';
 
-export const AuthenticatedContent = ({
-  username,
-  setAuthToggle,
-}: {
+interface Props {
   username: string;
   setAuthToggle: (b: boolean) => void;
-}) => {
+}
+
+export function AuthenticatedContent({ username, setAuthToggle }: Props) {
+  const queryClient = useQueryClient();
+  const logoutMutation = useLogout();
+
+  const logout = () => {
+    logoutMutation.mutate(null, {
+      onSuccess: () => {
+        setAuthToggle(false);
+        queryClient.clear();
+      },
+    });
+  };
+
   return (
     <>
       <div className="box-content">
-        <span>{username}님</span>
+        <div>
+          <span>{username}님</span>
+          <button type="button" onClick={logout}>
+            로그아웃
+          </button>
+        </div>
         <p className="dohyeon header">나이스 투 미츄!</p>
       </div>
       <img src={DividerOne} />
@@ -51,7 +69,7 @@ export const AuthenticatedContent = ({
       <img src={DividerTwo} />
     </>
   );
-};
+}
 
 export const UnAuthenticatedContent = ({ setAuthToggle }: { setAuthToggle: (b: boolean) => void }) => {
   return (

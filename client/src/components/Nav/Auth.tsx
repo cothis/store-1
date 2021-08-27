@@ -3,11 +3,11 @@ import useModal from '@hooks/useModal';
 import styled from '@lib/styled-components';
 import BabImg from '@assets/images/bab.png';
 import TearsImg from '@assets/images/tears.png';
+import { useUser } from '@hooks/query/users';
 
 const Auth = () => {
-  let login = false;
-  let username = 'jiyong';
   const [authToggle, setAuthToggle] = useModal();
+  const { isError, data } = useUser();
 
   return (
     <>
@@ -20,15 +20,20 @@ const Auth = () => {
         <i className="fas fa-user"></i>
       </button>
       <AuthBox className={authToggle ? 'on' : ''}>
-        {login ? (
-          <AuthenticatedContent username={username} setAuthToggle={setAuthToggle} />
+        {!isError && data ? (
+          <AuthenticatedContent username={data.name} setAuthToggle={setAuthToggle} />
         ) : (
           <UnAuthenticatedContent setAuthToggle={setAuthToggle} />
         )}
-        <img className="auth-icon" style={{ display: login ? 'block' : 'none' }} src={BabImg} alt="밥 캐릭터"></img>
         <img
           className="auth-icon"
-          style={{ display: login ? 'none' : 'block' }}
+          style={{ display: !isError && data ? 'block' : 'none' }}
+          src={BabImg}
+          alt="밥 캐릭터"
+        ></img>
+        <img
+          className="auth-icon"
+          style={{ display: !isError && data ? 'none' : 'block' }}
           src={TearsImg}
           alt="눈물 흘리는 캐릭터"
         ></img>

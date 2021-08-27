@@ -1,8 +1,6 @@
-import axios from 'axios';
-import { API_ENDPOINT } from '@config';
+import axios from '@utils/axios';
 
 export async function fetchCategories() {
-  const url = API_ENDPOINT + `/api/v1/categories`;
-  const result = await axios.get(url);
+  const result = await axios.get('/api/v1/categories');
   return result.data;
 }

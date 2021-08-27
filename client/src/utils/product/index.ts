@@ -1,5 +1,5 @@
 import { QueryFunctionContext } from 'react-query';
-import axios from 'axios';
+import axios from '@utils/axios';
 import { Path } from '@lib/router/history';
 import { API_ENDPOINT } from '@config';
 import type { IMainBlock } from '@types';
@@ -12,7 +12,7 @@ type ProductsQueryKey = [
   },
 ];
 
-const PRODUCT_API_ENDPOINT = API_ENDPOINT + '/api/v1/products';
+const PRODUCT_API_ENDPOINT = '/api/v1/products';
 
 function makeQuery(searches: { [key: string]: string }) {
   return Object.entries(searches)
