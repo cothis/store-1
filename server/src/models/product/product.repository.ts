@@ -1,4 +1,4 @@
-import { EntityRepository, Repository, SelectQueryBuilder } from 'typeorm';
+import { EntityManager, EntityRepository, Repository, SelectQueryBuilder, TransactionManager } from 'typeorm';
 import { ProductBanner } from './entities/product-banner.entity';
 import { Product } from './entities/product.entity';
 import { ProductTag } from './enums/product-tag.enum';
@@ -97,5 +97,20 @@ export class ProductRepository extends Repository<Product> {
       .orderBy('product.id', 'DESC')
       .limit(count)
       .getMany();
+  }
+
+  async findByProductIds(ids: string[], @TransactionManager() manager: EntityManager) {
+    let products = [];
+    if (!manager) {
+      products = await this.findByIds(ids);
+    } else {
+      products = await manager.findByIds(Product, ids);
+    }
+
+    if (products.length !== ids.length) {
+      throw new Error('존재하지 않는 id가 포함되어 있습니다.');
+    }
+
+    return products;
   }
 }

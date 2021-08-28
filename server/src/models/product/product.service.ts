@@ -12,6 +12,7 @@ import { Product } from './entities/product.entity';
 import { AppConfigService } from 'src/config/app.service';
 import { MainBlock, ProductBannerListBlock, ProductListBlock, SlideBannerBlock } from './dto/main-block.dto';
 import { ProductTag } from './enums/product-tag.enum';
+import { EntityManager, TransactionManager } from 'typeorm';
 
 @Injectable()
 export class ProductService {
@@ -23,6 +24,10 @@ export class ProductService {
     readonly appConfigService: AppConfigService,
   ) {
     this.s3 = appConfigService.s3;
+  }
+
+  async findByIds(productIds: string[], @TransactionManager() manager?: EntityManager) {
+    return await this.productRepository.findByProductIds(productIds, manager);
   }
 
   async search(

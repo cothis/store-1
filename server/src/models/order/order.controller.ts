@@ -7,24 +7,30 @@ import {
   Get,
   Param,
   ParseEnumPipe,
-  ParseIntPipe,
+  Post,
   Put,
   Query,
   Req,
   UseGuards,
   UseInterceptors,
-  ValidationPipe,
 } from '@nestjs/common';
 import { OrderService } from './order.service';
 import { Order } from './entities/order.entity';
 import { JwtAuthGuard } from 'src/auth/jwt.guard';
 import { OrderStatus } from './enums/order-status.enum';
+import { CreateOrderDto } from './dto/create-order.dto';
+import { EntityManager, getManager } from 'typeorm';
+import { UpdateOrderDto } from './dto/update-order.dto';
+import { Request } from 'express';
 
 @UseGuards(JwtAuthGuard)
 @Controller('api/v1/orders')
 @UseInterceptors(ClassSerializerInterceptor)
 export class OrderController {
-  constructor(private readonly orderService: OrderService) {}
+  private manager: EntityManager;
+  constructor(private readonly orderService: OrderService) {
+    this.manager = getManager();
+  }
 
   @Get('/')
   async findAll(
@@ -41,12 +47,18 @@ export class OrderController {
   }
 
   @Put('/:id')
-  async update(@Param('id') id: string, @Body() order: Partial<Order>): Promise<Order> {
-    return await this.orderService.updateEntity(id, order);
+  async update(@Param('id') id: string, @Body() order: UpdateOrderDto): Promise<Order> {
+    return await this.orderService.updateEntity(id, order, this.manager);
   }
 
   @Delete('/:id')
   async delete(@Param('id') id: string): Promise<boolean> {
     return await this.orderService.deleteEntity(id);
+  }
+
+  @Post()
+  async createOrder(@Body() newOrder: CreateOrderDto, @Req() req: Request) {
+    const orders = await this.orderService.createOrder(newOrder, req.user.id);
+    return { id: orders.id };
   }
 }

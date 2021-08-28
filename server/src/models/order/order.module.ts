@@ -1,12 +1,13 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { RootConfigModule } from 'src/config/config.module';
+import { ProductModule } from '../product/product.module';
 import { OrderController } from './order.controller';
 import { OrderRepository } from './order.repository';
 import { OrderService } from './order.service';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([OrderRepository]), RootConfigModule],
+  imports: [TypeOrmModule.forFeature([OrderRepository]), RootConfigModule, ProductModule],
   providers: [OrderService],
   exports: [OrderService],
   controllers: [OrderController],
