@@ -71,6 +71,9 @@ export default createGlobalStyle`
     &:hover {
       cursor: pointer;
     }
+    &:disabled {
+      opacity: 0.6;
+    }
   }
   input,
   button,

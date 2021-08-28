@@ -1,4 +1,5 @@
 import { ERROR_MESSAGE_PASSWORD, ERROR_MESSAGE_PASSWORD_DUPLICATE } from '@constants/message';
+import { SIGNUP_PASSWORD_INPUT_NAME } from '@constants/signup';
 import styled from '@lib/styled-components';
 import { ChangeEventHandler, Dispatch, FocusEventHandler, SetStateAction, useCallback, useState } from 'react';
 
@@ -34,7 +35,7 @@ export default function Password({ setPossible }: PasswordProps) {
         <Span>비밀번호</Span>
         <Div>
           <ShortInput
-            name="password"
+            name={SIGNUP_PASSWORD_INPUT_NAME}
             type="password"
             value={passwordInputValue}
             onChange={passwordChangeHandler}

@@ -5,7 +5,18 @@ import FormElement from '@components/common/FormElement';
 import Address from '@components/common/Address';
 import useHistory from '@hooks/useHistory';
 import Password from '@components/Signup/Password';
-import { ERROR_MESSAGE_ID, ERROR_MESSAGE_NAME, ERROR_MESSAGE_EMAIL } from '@constants/message';
+import {
+  ERROR_MESSAGE_ID,
+  ERROR_MESSAGE_NAME,
+  ERROR_MESSAGE_EMAIL,
+  ERROR_MESSAGE_UNKNOWN,
+  ERROR_DUPLICATED,
+} from '@constants/message';
+import axios from '@utils/axios';
+import { useMutation } from 'react-query';
+import notify from '@utils/toastify';
+import { SIGNUP_ID_INPUT_NAME, SIGNUP_REALNAME_INPUT_NAME, SIGNUP_EMAIL_INPUT_NAME } from '@constants/signup';
+import ax from 'axios';
 
 export default function Signup() {
   const form = useRef<HTMLFormElement>(null);
@@ -17,7 +28,7 @@ export default function Signup() {
   );
   const [possibleName, setPossibleName] = useState(false);
   const nameValidationFunction = useCallback(
-    (e: ChangeEvent<HTMLInputElement>) => e.target.value.length > 0 && e.target.value.length < 21,
+    (e: ChangeEvent<HTMLInputElement>) => e.target.value.length > 0 && e.target.value.length < 11,
     [],
   );
   const [possiblePassword, setPossiblePassword] = useState(false);
@@ -31,14 +42,27 @@ export default function Signup() {
     [],
   );
   const [possibleAddress, setPossibleAddress] = useState(false);
+  const login = useMutation((data: { [key: string]: string }) => axios.post('/api/v1/users', data));
   const submitHandler: MouseEventHandler = (e) => {
     e.preventDefault();
-    // POST 처리
-    if (form.current) {
-      const data = new FormData(form.current);
-    }
+    if (!form.current) return;
 
-    history.push({ pathname: '/signin' });
+    const formData = new FormData(form.current);
+    const body: { [key: string]: string } = {};
+    formData.forEach((value, key) => {
+      body[key] = value as string;
+    });
+    login.mutate(body, {
+      onSuccess: () => {
+        history.push('/signin');
+      },
+      onError: (error) => {
+        if (ax.isAxiosError(error)) {
+          if (error.response?.status === 409) notify('error', ERROR_DUPLICATED);
+          else notify('error', ERROR_MESSAGE_UNKNOWN);
+        }
+      },
+    });
   };
   return (
     <Wrapper>
@@ -47,7 +71,7 @@ export default function Signup() {
       <Form ref={form}>
         <FormElement
           elementName="아이디"
-          inputName="loginid"
+          inputName={SIGNUP_ID_INPUT_NAME}
           type="text"
           isLong
           validationFunction={idValidationFunction}
@@ -57,7 +81,7 @@ export default function Signup() {
         <Password setPossible={setPossiblePassword} />
         <FormElement
           elementName="이름"
-          inputName="realname"
+          inputName={SIGNUP_REALNAME_INPUT_NAME}
           type="text"
           isLong
           validationFunction={nameValidationFunction}
@@ -66,7 +90,7 @@ export default function Signup() {
         />
         <FormElement
           elementName="이메일"
-          inputName="email"
+          inputName={SIGNUP_EMAIL_INPUT_NAME}
           type="email"
           validationFunction={emailValidationFunction}
           setPossible={setPossibleEmail}
@@ -75,7 +99,9 @@ export default function Signup() {
         <Address setPossible={setPossibleAddress} />
         <Agreement
           clickHandler={submitHandler}
-          possible={possibleId && possiblePassword && possibleName && possibleEmail && possibleAddress}
+          possible={
+            possibleId && possiblePassword && possibleName && possibleEmail && possibleAddress && !login.isLoading
+          }
         />
       </Form>
     </Wrapper>
