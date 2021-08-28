@@ -9,6 +9,7 @@ import { SEARCH_INPUT_INVALID } from '@constants/message';
 
 const SEARCH_MIN_LENGTH = 2;
 const SEARCH_MAX_LENGTH = 20;
+const QUICK_SEARCH_MAX_LENGTH = 5;
 
 export default function SearchModal() {
   const searchInput = useRef<HTMLInputElement>(null);
@@ -35,7 +36,7 @@ export default function SearchModal() {
     const nextQueryArr = arr.concat([]);
     if (nextQueryArr.includes(keyword)) {
       nextQueryArr.splice(nextQueryArr.indexOf(keyword), 1);
-    } else if (nextQueryArr.length >= 20) {
+    } else if (nextQueryArr.length >= QUICK_SEARCH_MAX_LENGTH) {
       nextQueryArr.pop();
     }
     nextQueryArr.unshift(keyword);
@@ -49,6 +50,7 @@ export default function SearchModal() {
     const { search } = e.target as HTMLFormElement;
     const keyword = search.value;
     if (!searchValidation(keyword, queryArr)) return;
+    search.value = '';
     history.push({ pathname: '/search', search: { keyword } });
     offHandler();
   };
@@ -117,22 +119,25 @@ export default function SearchModal() {
         </SearchFormWrapper>
         <QuickSearchWrapper className={queryArr.length ? '' : 'empty'}>
           {queryArr.length ? (
-            queryArr.map((query) => (
-              <div onClick={quickHandler} key={query} data-query={query} className="quick-content">
-                <p>{query}</p>
-                <ExitBtn
-                  absolute
-                  right="0"
-                  top="50%"
-                  transform="translateY(-50%)"
-                  width="20px"
-                  height="20px"
-                  color="black"
-                  strokeWidth="6"
-                  onClick={queryDelete}
-                />
-              </div>
-            ))
+            <>
+              <p className="quick-search-header">최근 검색어</p>
+              {queryArr.map((query) => (
+                <div onClick={quickHandler} key={query} data-query={query} className="quick-content">
+                  <p>{query}</p>
+                  <ExitBtn
+                    absolute
+                    right="0"
+                    top="50%"
+                    transform="translateY(-50%)"
+                    width="20px"
+                    height="20px"
+                    color="black"
+                    strokeWidth="6"
+                    onClick={queryDelete}
+                  />
+                </div>
+              ))}
+            </>
           ) : (
             <p>최근 검색어가 없습니다.</p>
           )}
@@ -204,14 +209,18 @@ const QuickSearchWrapper = styled.div`
       opacity: 1;
     }
   }
+  .quick-search-header {
+    font-weight: bold;
+    margin-bottom: 1em;
+  }
   position: absolute;
   z-index: 2;
   width: 90vw;
-  height: 80vh;
+  height: 50vh;
   max-width: 700px;
   top: 100%;
   left: 50%;
-  background-color: white;
+  background-color: #fcfcf7;
   transform: translateX(-50%);
   border-bottom-left-radius: 10px;
   border-bottom-right-radius: 10px;
