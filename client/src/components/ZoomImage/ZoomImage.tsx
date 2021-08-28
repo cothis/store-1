@@ -92,13 +92,14 @@ export default function ZoomImage({ src }: Props) {
         <ProductImage ref={imageRef} src={src} alt="상품 이미지" />
         {/* @ts-ignore */}
         {show && <LensImage ref={lensImageRef} />}
-        {show && <ZoomedImage ref={zoomImageRef} />}
       </ImageContainer>
+      {show && <ZoomedImage ref={zoomImageRef} />}
     </Container>
   );
 }
 
 const Container = styled.div`
+  position: relative;
   display: flex;
   flex-direction: row;
 
