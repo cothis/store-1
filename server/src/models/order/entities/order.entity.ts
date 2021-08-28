@@ -79,21 +79,12 @@ export class Order {
   updatedAt: Date;
 
   /* 비즈니스 컬럼 */
+  @Column({ type: 'decimal' })
   productsPrice: number;
+
+  @Column({ type: 'decimal' })
   deliveryFee: number;
+
+  @Column({ type: 'decimal' })
   paymentPrice: number;
-
-  @AfterLoad()
-  setPrices = () => {
-    this.productsPrice = this.calculateProductPrice(this.orderHasProducts);
-    this.deliveryFee = 2500;
-    this.paymentPrice = this.productsPrice + this.deliveryFee;
-  };
-
-  calculateProductPrice = (orderHasProducts: OrderHasProduct[]) => {
-    return orderHasProducts?.reduce<number>(
-      (price, { product }) => (price += product.price || product.originalPrice || 0),
-      0,
-    );
-  };
 }

@@ -79,8 +79,8 @@ export class ProductService {
     return result;
   }
 
-  async getById(id: string): Promise<Product> {
-    const product = await this.productRepository.findWithRecommends(id);
+  async getById(id: string, manager?: EntityManager): Promise<Product> {
+    const product = await this.productRepository.findWithRecommends(id, manager);
     if (!product) {
       throw new NotFoundException('해당 상품이 존재하지 않습니다.');
     }

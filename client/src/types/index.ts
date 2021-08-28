@@ -51,6 +51,10 @@ export interface IOrder {
   createAt: Date;
   updateAt: Date;
   orderHasProducts: IOrderHasProduct[];
+
+  productsPrice: number;
+  deliveryFee: number;
+  paymentPrice: number;
 }
 
 export interface ICategory {

@@ -1,4 +1,11 @@
-import { EntityManager, EntityRepository, Repository, SelectQueryBuilder, TransactionManager } from 'typeorm';
+import {
+  EntityManager,
+  EntityRepository,
+  getManager,
+  Repository,
+  SelectQueryBuilder,
+  TransactionManager,
+} from 'typeorm';
 import { ProductBanner } from './entities/product-banner.entity';
 import { Product } from './entities/product.entity';
 import { ProductTag } from './enums/product-tag.enum';
@@ -75,8 +82,11 @@ export class ProductRepository extends Repository<Product> {
     return [products, count];
   }
 
-  findWithRecommends(id: string): Promise<Product> {
-    return this.createQueryBuilder('product')
+  findWithRecommends(id: string, @TransactionManager() manager?: EntityManager): Promise<Product> {
+    if (!manager) manager = getManager();
+
+    return manager
+      .createQueryBuilder(Product, 'product')
       .where('product.id = :id', { id })
       .leftJoinAndSelect('product.recommends', 'recommend')
       .getOne();

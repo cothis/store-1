@@ -5,15 +5,18 @@ import { UpdateOrderDto } from './dto/update-order.dto';
 import { OrderHasProduct } from './entities/order-has-product.entity';
 import { Order } from './entities/order.entity';
 import { OrderStatus } from './enums/order-status.enum';
+import { FinalPrices } from './price.service';
 
 @EntityRepository(Order)
 export class OrderRepository extends Repository<Order> {
   async createOrderHasProduct(
-    @TransactionManager() manager: EntityManager,
     order: Order,
     products: Product[],
     quantities: number[],
+    @TransactionManager() manager?: EntityManager,
   ) {
+    if (!manager) manager = getManager();
+
     const orderHasProducts = products.map((product, index) => {
       const orderHasProduct = new OrderHasProduct();
       orderHasProduct.order = order;
@@ -23,11 +26,17 @@ export class OrderRepository extends Repository<Order> {
     });
     return await manager.save<OrderHasProduct>(orderHasProducts);
   }
-  async getNewOrder(@TransactionManager() manager: EntityManager, userId: string) {
-    const newOrder = new Order();
+  async getNewOrder(userId: string, prices: FinalPrices, @TransactionManager() manager?: EntityManager) {
+    if (!manager) manager = getManager();
+
     const user = new User();
     user.id = userId;
+
+    const newOrder = new Order();
     newOrder.user = user;
+    newOrder.productsPrice = prices.productsPrice;
+    newOrder.deliveryFee = prices.deliveryFee;
+    newOrder.paymentPrice = prices.paymentPrice;
 
     return await manager.save<Order>(newOrder);
   }

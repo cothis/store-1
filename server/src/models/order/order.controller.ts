@@ -19,7 +19,6 @@ import { Order } from './entities/order.entity';
 import { JwtAuthGuard } from 'src/auth/jwt.guard';
 import { OrderStatus } from './enums/order-status.enum';
 import { CreateOrderDto } from './dto/create-order.dto';
-import { EntityManager, getManager } from 'typeorm';
 import { UpdateOrderDto } from './dto/update-order.dto';
 import { Request } from 'express';
 
@@ -27,10 +26,7 @@ import { Request } from 'express';
 @Controller('api/v1/orders')
 @UseInterceptors(ClassSerializerInterceptor)
 export class OrderController {
-  private manager: EntityManager;
-  constructor(private readonly orderService: OrderService) {
-    this.manager = getManager();
-  }
+  constructor(private readonly orderService: OrderService) {}
 
   @Get('/')
   async findAll(
@@ -42,13 +38,13 @@ export class OrderController {
   }
 
   @Get('/:id')
-  async findById(@Param('id') id: string): Promise<Order> {
+  async findById(@Param('id') id: string, @Query('status') status: OrderStatus): Promise<Order> {
     return await this.orderService.findById(id);
   }
 
   @Put('/:id')
   async update(@Param('id') id: string, @Body() order: UpdateOrderDto): Promise<Order> {
-    return await this.orderService.updateEntity(id, order, this.manager);
+    return await this.orderService.updateEntity(id, order);
   }
 
   @Delete('/:id')

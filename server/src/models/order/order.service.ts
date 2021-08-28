@@ -1,4 +1,4 @@
-import { HttpStatus, Injectable, InternalServerErrorException, NotAcceptableException } from '@nestjs/common';
+import { HttpStatus, Injectable, NotAcceptableException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { OrderRepository } from './order.repository';
 import { Order } from './entities/order.entity';
@@ -6,15 +6,17 @@ import { OrderStatus } from './enums/order-status.enum';
 import { AppConfigService } from 'src/config/app.service';
 import path from 'path';
 import { CreateOrderDto } from './dto/create-order.dto';
-import { EntityManager, getManager, TransactionManager } from 'typeorm';
+import { EntityManager, getManager } from 'typeorm';
 import { ProductService } from '../product/product.service';
 import { UpdateOrderDto } from './dto/update-order.dto';
+import { PriceService } from './price.service';
 
 @Injectable()
 export class OrderService {
   constructor(
     @InjectRepository(OrderRepository) private readonly orderRepository: OrderRepository,
     private readonly productService: ProductService,
+    private readonly priceService: PriceService,
     private readonly appConfigService: AppConfigService,
   ) {}
 
@@ -31,15 +33,20 @@ export class OrderService {
     return order;
   }
 
-  async createOrder(newOrder: CreateOrderDto, userId: string) {
+  async createOrder(newOrder: CreateOrderDto, userId: string, manager?: EntityManager) {
     try {
-      return await getManager().transaction<Order>(async (manager) => {
-        const createdOrder = await this.orderRepository.getNewOrder(manager, userId);
-        const products = await this.productService.findByIds(newOrder.products.map((product) => product.id));
+      if (!manager) manager = getManager();
+      return await manager.transaction<Order>(async (tm) => {
+        const prices = await this.priceService.calculatePrices(newOrder.products, tm);
+        const createdOrder = await this.orderRepository.getNewOrder(userId, prices, tm);
+        const products = await this.productService.findByIds(
+          newOrder.products.map((product) => product.id),
+          tm,
+        );
         const quantities = newOrder.products.map((product) => product.quantity);
 
-        await this.orderRepository.createOrderHasProduct(manager, createdOrder, products, quantities);
-        return await this.orderRepository.findById(createdOrder.id, manager);
+        await this.orderRepository.createOrderHasProduct(createdOrder, products, quantities, tm);
+        return await this.orderRepository.findById(createdOrder.id, tm);
       });
     } catch (err) {
       throw new NotAcceptableException({
@@ -49,14 +56,13 @@ export class OrderService {
     }
   }
 
-  async updateEntity(id: string, order: UpdateOrderDto, manager: EntityManager): Promise<Order> {
+  async updateEntity(id: string, order: UpdateOrderDto, manager?: EntityManager): Promise<Order> {
     try {
-      if (!manager) {
-        return await this.orderRepository.updateEntity(id, order);
-      }
+      if (!manager) manager = getManager();
 
       return await manager.transaction(async (tm) => {
-        return await this.orderRepository.updateEntity(id, order, tm);
+        await this.orderRepository.updateEntity(id, order, tm);
+        return await this.orderRepository.findById(id);
       });
     } catch {
       throw new NotAcceptableException({

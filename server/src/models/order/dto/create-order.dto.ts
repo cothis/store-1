@@ -1,6 +1,6 @@
 import { IsNotEmpty, IsNumber, IsNumberString, IsPositive, Max } from 'class-validator';
 
-export class OrderItemDto {
+export class ProductIdWithQuantity {
   @IsNumberString()
   id: string;
 
@@ -12,5 +12,5 @@ export class OrderItemDto {
 
 export class CreateOrderDto {
   @IsNotEmpty()
-  products: OrderItemDto[];
+  products: ProductIdWithQuantity[];
 }
