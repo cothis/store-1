@@ -9,17 +9,16 @@ import styled from '@lib/styled-components';
 import notify from '@utils/toastify';
 import { SEARCH_INPUT_INVALID } from '@constants/message';
 import useHistory from '@hooks/useHistory';
+import Redirect from '@lib/router/Redirect';
 
-export default function Category() {
+export default function ProductsPreview() {
   const { id } = useParams();
   const path = usePath();
   const history = useHistory();
   const keyword = path.search.keyword;
   if (keyword && (keyword.length < 2 || keyword.length > 20)) {
     notify('error', SEARCH_INPUT_INVALID);
-    // TODO: returnRedirect 만들거임
-    // history.replace({ pathname: '/' });
-    return null;
+    return <Redirect to="/" />;
   }
   const { isLoading, isError, data, error } = useProductList(path, id);
   if (isLoading) {
