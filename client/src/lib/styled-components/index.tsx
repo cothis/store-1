@@ -44,6 +44,9 @@ const constructWithTag = (tag?: string) => {
     const suffix = uuidv4();
     // tag가 없을 경우 global로 처리
     const className = tag && tag + '-' + suffix;
+
+    const classMap = new Map<string, { node: Node; count: number }>();
+
     const NewComponent: StyledComponent = React.forwardRef<HTMLElement, StyledComponentProps>((props, ref) => {
       const theme = useContext(ThemeContext)!;
       // Lazy Evalution!! 와! 대단해!
@@ -58,10 +61,22 @@ const constructWithTag = (tag?: string) => {
           })
           .join('');
         const classString = stylis(css, className);
-        const $style = document.createTextNode(classString);
-        $styleTag.appendChild($style);
+        if (classMap.has(classString)) {
+          const value = classMap.get(classString)!;
+          value.count += 1;
+        } else {
+          const $style = document.createTextNode(classString);
+          $styleTag.appendChild($style);
+          classMap.set(classString, { node: $style, count: 1 });
+        }
+
         return () => {
-          $style.remove();
+          const value = classMap.get(classString)!;
+          value.count -= 1;
+          if (value.count === 0) {
+            value.node.nodeValue = '';
+            classMap.delete(classString);
+          }
         };
       }, [props, theme]);
       // TODO: props라고 해도 될지 나중에 고민.
