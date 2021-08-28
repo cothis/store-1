@@ -43,7 +43,7 @@ export class UserController {
     @Req() req: Request,
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
   ): Promise<BoardResponseDto> {
-    return this.boardService.getProductBoard({ slug: 'review', page, userId: req.user!.id });
+    return this.boardService.getProductBoard({ slug: 'review', page, userId: req.user!.id, forProduct: true });
   }
 
   @UseGuards(JwtAuthGuard)
@@ -53,7 +53,7 @@ export class UserController {
     @Req() req: Request,
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
   ): Promise<BoardResponseDto> {
-    return this.boardService.getProductBoard({ slug: 'question', page, userId: req.user!.id });
+    return this.boardService.getProductBoard({ slug: 'question', page, userId: req.user!.id, forProduct: true });
   }
 
   @Get('/:id')

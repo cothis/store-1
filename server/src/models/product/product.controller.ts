@@ -32,6 +32,8 @@ import { CreateContentDto } from '../board/dto/create-content.dto';
 import { SortType } from './enums/sort-type.enum';
 
 import { Product } from './entities/product.entity';
+import { BoardContent } from '../board/entities/board-content.entity';
+import { ONE_PAGE_COUNT } from '../board/board.repository';
 
 @UseInterceptors(ClassSerializerInterceptor)
 @Controller('api/v1/products')
@@ -69,15 +71,16 @@ export class ProductController {
   getReviews(
     @Param('id') id: string,
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
+    @Query('onePageCount', new DefaultValuePipe(ONE_PAGE_COUNT), ParseIntPipe) onePageCount: number,
   ): Promise<BoardResponseDto> {
-    return this.boardService.getProductBoard({ slug: 'review', productId: id, page });
+    return this.boardService.getProductBoard({ slug: 'review', productId: id, page, forProduct: true, onePageCount });
   }
 
   @UseGuards(JwtAuthGuard)
   @Post(':id/reviews')
   @HttpCode(HttpStatus.CREATED)
-  postReview(@Param('id') id: string, @Body() review: CreateContentDto, @Req() req: Request): Promise<void> {
-    return this.boardService.writeProductBoardContent('review', id, review, req.user!.id);
+  postReview(@Param('id') id: string, @Body() review: CreateContentDto, @Req() req: Request): Promise<BoardContent> {
+    return this.boardService.writeBoardContent('review', req.user!.id, review, id);
   }
 
   @Get(':id/questions')
@@ -85,14 +88,19 @@ export class ProductController {
   getQuestions(
     @Param('id') id: string,
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
+    @Query('onePageCount', new DefaultValuePipe(ONE_PAGE_COUNT), ParseIntPipe) onePageCount: number,
   ): Promise<BoardResponseDto> {
-    return this.boardService.getProductBoard({ slug: 'question', productId: id, page });
+    return this.boardService.getProductBoard({ slug: 'question', productId: id, page, forProduct: true, onePageCount });
   }
 
   @UseGuards(JwtAuthGuard)
   @Post(':id/questions')
   @HttpCode(HttpStatus.CREATED)
-  postQuestion(@Param('id') id: string, @Body() question: CreateContentDto, @Req() req: Request): Promise<void> {
-    return this.boardService.writeProductBoardContent('question', id, question, req.user!.id);
+  postQuestion(
+    @Param('id') id: string,
+    @Body() question: CreateContentDto,
+    @Req() req: Request,
+  ): Promise<BoardContent> {
+    return this.boardService.writeBoardContent('question', req.user!.id, question, id);
   }
 }

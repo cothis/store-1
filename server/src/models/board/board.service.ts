@@ -3,7 +3,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import path from 'path';
 import { Product } from '../product/entities/product.entity';
 import { User } from '../users/entities/user.entity';
-import { BoardRepository, ONE_PAGE_COUNT, ProductBoardSlug } from './board.repository';
+import { BoardRepository, ONE_PAGE_COUNT } from './board.repository';
 import { BoardResponseDto } from './dto/board-response.dto';
 import { CreateContentDto } from './dto/create-content.dto';
 import { BoardContent } from './entities/board-content.entity';
@@ -16,24 +16,31 @@ export class BoardService {
   }
 
   async getProductBoard(options: {
-    slug: ProductBoardSlug;
+    slug: string;
+    onePageCount?: number;
     page?: number;
     productId?: string;
     userId?: string;
+    forProduct: boolean;
   }): Promise<BoardResponseDto> {
-    const { slug, productId, userId } = options;
-    let { page = 1 } = options;
+    const { slug, forProduct = false } = options;
+    let { page = 1, onePageCount = ONE_PAGE_COUNT } = options;
 
-    const board = await this.boardRepository.findProductBoard(options.slug);
+    const board = await this.boardRepository.findBoard(slug, forProduct);
     if (!board) {
       throw new NotFoundException('해당 게시판은 존재하지 않습니다.');
     }
 
-    if (options.page < 1) {
-      options.page = 1;
+    if (page < 1) {
+      page = 1;
     }
-    const [contents, count] = await this.boardRepository.findProductBoardContentAndCount({
+    if (onePageCount < 1) {
+      onePageCount = ONE_PAGE_COUNT;
+    }
+    const [contents, count] = await this.boardRepository.findBoardContentAndCount({
       boardId: board.id,
+      onePageCount,
+      page,
       ...options,
     });
     contents.forEach((content) => {
@@ -46,30 +53,32 @@ export class BoardService {
     const response = new BoardResponseDto();
     response.board = board;
     response.totalCount = count;
-    response.totalPage = Math.ceil(count / ONE_PAGE_COUNT);
-    response.currentPage = count < ONE_PAGE_COUNT ? 1 : page;
+    response.totalPage = Math.ceil(count / onePageCount);
+    response.currentPage = count < onePageCount ? 1 : page;
 
     return response;
   }
 
-  async writeProductBoardContent(
-    slug: ProductBoardSlug,
-    productId: string,
-    createContent: CreateContentDto,
+  async writeBoardContent(
+    slug: string,
     userId: string,
-  ): Promise<void> {
-    const board = await this.boardRepository.findProductBoard(slug);
+    createContent: CreateContentDto,
+    productId?: string,
+  ): Promise<BoardContent> {
+    const board = await this.boardRepository.findBoard(slug, !!productId);
     if (!board) {
       throw new NotFoundException('해당 게시판은 존재하지 않습니다.');
     }
 
     const boardContent = new BoardContent();
     boardContent.board = board;
-    boardContent.product = { id: productId } as Product;
+    if (productId) {
+      boardContent.product = { id: productId } as Product;
+    }
     boardContent.user = { id: userId } as User;
     boardContent.content = createContent.content;
     boardContent.title = createContent.title;
 
-    await this.boardRepository.saveBoardContent(boardContent);
+    return this.boardRepository.saveBoardContent(boardContent);
   }
 }

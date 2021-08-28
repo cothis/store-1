@@ -1,23 +1,23 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Query } from '@nestjs/common';
 import { Connection } from 'typeorm';
 import { BoardContent } from './entities/board-content.entity';
 import { Board } from './entities/board.entity';
 
 export const ONE_PAGE_COUNT = 12;
-export type ProductBoardSlug = 'review' | 'question';
 
 @Injectable()
 export class BoardRepository {
   constructor(private connection: Connection) {}
 
-  async findProductBoardContentAndCount(options: {
+  async findBoardContentAndCount(options: {
     boardId: string;
-    page?: number;
+    page: number;
+    onePageCount: number;
     productId?: string;
     userId?: string;
   }): Promise<[BoardContent[], number]> {
-    const { boardId, productId, userId } = options;
-    let { page = 1 } = options;
+    const { boardId, productId, userId, onePageCount } = options;
+    let { page } = options;
 
     let countQuery = this.connection
       .getRepository(BoardContent)
@@ -34,7 +34,7 @@ export class BoardRepository {
 
     const count = await countQuery.getCount();
 
-    if (count < ONE_PAGE_COUNT && page > 1) {
+    if (count < onePageCount && page > 1) {
       page = 1;
     }
 
@@ -59,20 +59,20 @@ export class BoardRepository {
     }
 
     const contents = await contentQuery
-      .offset(ONE_PAGE_COUNT * (page - 1))
-      .limit(ONE_PAGE_COUNT)
+      .offset(onePageCount * (page - 1))
+      .limit(onePageCount)
       .orderBy('content.id', 'DESC')
       .getMany();
 
     return [contents, count];
   }
 
-  findProductBoard(slug: ProductBoardSlug): Promise<Board> {
+  findBoard(slug: string, forProduct: boolean): Promise<Board> {
     return this.connection
       .getRepository(Board)
       .createQueryBuilder('board')
       .where('board.slug = :slug', { slug })
-      .andWhere('board.forProduct = true')
+      .andWhere('board.forProduct = :forProduct', { forProduct })
       .getOne();
   }
 
