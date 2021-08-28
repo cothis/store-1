@@ -2,12 +2,16 @@ import {
   Body,
   ClassSerializerInterceptor,
   Controller,
+  DefaultValuePipe,
   Delete,
   Get,
   Param,
+  ParseIntPipe,
   Post,
   Put,
+  Query,
   Req,
+  SerializeOptions,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
@@ -16,11 +20,13 @@ import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './entities/user.entity';
 import { JwtAuthGuard } from 'src/auth/jwt.guard';
+import { BoardResponseDto } from '../board/dto/board-response.dto';
+import { BoardService } from '../board/board.service';
 
 @Controller('api/v1/users')
 @UseInterceptors(ClassSerializerInterceptor)
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(private readonly userService: UserService, private readonly boardService: BoardService) {}
 
   @UseGuards(JwtAuthGuard)
   @Get('/me')
@@ -30,9 +36,24 @@ export class UserController {
     return user;
   }
 
-  @Get('/')
-  async findAll(): Promise<User[]> {
-    return await this.userService.findAll();
+  @UseGuards(JwtAuthGuard)
+  @Get('me/reviews')
+  @SerializeOptions({ groups: ['product'] })
+  async getMyReviews(
+    @Req() req: Request,
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
+  ): Promise<BoardResponseDto> {
+    return this.boardService.getProductBoard({ slug: 'review', page, userId: req.user!.id });
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('me/questions')
+  @SerializeOptions({ groups: ['product'] })
+  async getMyQuestions(
+    @Req() req: Request,
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
+  ): Promise<BoardResponseDto> {
+    return this.boardService.getProductBoard({ slug: 'question', page, userId: req.user!.id });
   }
 
   @Get('/:id')

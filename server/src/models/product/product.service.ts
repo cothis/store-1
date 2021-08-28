@@ -13,7 +13,7 @@ import { AppConfigService } from 'src/config/app.service';
 import { MainBlock, ProductBannerListBlock, ProductListBlock, SlideBannerBlock } from './dto/main-block.dto';
 import { ProductTag } from './enums/product-tag.enum';
 import { EntityManager, TransactionManager } from 'typeorm';
-
+import { BoardService } from '../board/board.service';
 @Injectable()
 export class ProductService {
   private s3: string;
@@ -22,6 +22,7 @@ export class ProductService {
     @InjectRepository(ProductRepository) private readonly productRepository: ProductRepository,
     @InjectRepository(CategoryRepository) private readonly categoryRepository: CategoryRepository,
     readonly appConfigService: AppConfigService,
+    private readonly boardService: BoardService,
   ) {
     this.s3 = appConfigService.s3;
   }
