@@ -98,6 +98,11 @@ export interface User {
   email: string;
 }
 
+export interface IBoardUser {
+  id: string;
+  name: string;
+}
+
 export interface IBoard {
   id: string;
   slug: 'notice' | 'review' | 'question';
@@ -113,8 +118,14 @@ export interface IBoardContent {
   title: string;
   content: string;
   date: Date | string; // Date.prototype.toISOString()
-  userName: string;
-  comments?: string;
+  user: IBoardUser;
+  comments: IBoardComment[];
+}
+
+export interface IBoardComment {
+  id: string;
+  content: string;
+  user: IBoardUser;
 }
 
 export interface IBoardPostBody {

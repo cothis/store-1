@@ -19,8 +19,6 @@ export class BoardComment {
   @Column('text')
   content: string;
 
-  @Expose({ name: 'userName' })
-  @Transform(({ value }) => value?.realName)
   @ManyToOne(() => User)
   @JoinColumn()
   user: User;

@@ -44,17 +44,16 @@ export class BoardRepository {
       .leftJoin('content.board', 'board')
       .leftJoinAndSelect('content.user', 'user')
       .leftJoinAndSelect('content.comments', 'comment')
+      .leftJoinAndSelect('comment.user', 'comment_user')
       .where('content.board_id = :boardId', { boardId });
 
     if (productId) {
-      if (userId) {
-        contentQuery = contentQuery.leftJoinAndSelect('content.product', 'product');
-      } else {
-        contentQuery = contentQuery.leftJoin('content.product', 'product');
-      }
-      contentQuery = contentQuery.andWhere('product.id = :productId', { productId });
+      contentQuery = contentQuery
+        .leftJoin('content.product', 'product')
+        .andWhere('product.id = :productId', { productId });
     }
     if (userId) {
+      contentQuery = contentQuery.leftJoinAndSelect('content.product', 'product');
       contentQuery = contentQuery.andWhere('user.id = :userId', { userId });
     }
 

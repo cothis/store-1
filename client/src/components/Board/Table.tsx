@@ -45,13 +45,18 @@ export default function Table({ board }: BoardProps) {
               <div data-idx={idx} onClick={activeHandler} className="board__content--header">
                 <p>{post.id}</p>
                 <p>{post.title}</p>
-                <p>{post.userName}</p>
+                <p>{post.user.name}</p>
                 <p className="board__content--date">{getDateString(post.date)}</p>
               </div>
               <div className="board__content--content">
                 <p className="board__content--title">{post.title}</p>
                 <p>{post.content}</p>
-                {board.slug === 'question' && (post.comments ? <p>{post.comments}</p> : <p>답변을 대기중입니다..</p>)}
+                {board.slug === 'question' &&
+                  (post.comments && post.comments.length ? (
+                    <p>{post.comments[0].content}</p>
+                  ) : (
+                    <p>답변을 대기중입니다..</p>
+                  ))}
               </div>
             </li>
           ))}

@@ -29,6 +29,7 @@ export class UserController {
   constructor(private readonly userService: UserService, private readonly boardService: BoardService) {}
 
   @UseGuards(JwtAuthGuard)
+  @SerializeOptions({ groups: ['me'] })
   @Get('/me')
   async getMe(@Req() req: Request): Promise<User> {
     const userId = req.user.id;

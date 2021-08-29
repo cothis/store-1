@@ -13,6 +13,7 @@ interface IBoardProps {
   id?: string;
   login?: boolean;
 }
+
 export default function Board({ header, type, id, login }: IBoardProps) {
   const [page, setPage] = useState<number>(1);
   const path = usePath();

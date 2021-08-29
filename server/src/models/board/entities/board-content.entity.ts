@@ -30,8 +30,6 @@ export class BoardContent {
   @JoinColumn()
   board: Board;
 
-  @Expose({ name: 'userName' })
-  @Transform(({ value }) => value?.realName)
   @ManyToOne(() => User)
   @JoinColumn()
   user: User;
@@ -41,8 +39,7 @@ export class BoardContent {
   @JoinColumn()
   product: Product;
 
-  @Expose({ name: 'comment', groups: ['comment'] })
-  @Transform(({ value }) => value[0]?.content)
+  @Expose({ groups: ['comment'] })
   @OneToMany(() => BoardComment, (comment) => comment.boardContent)
   comments: BoardComment[];
 
