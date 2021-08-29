@@ -47,3 +47,17 @@ export async function fetchPostBoard(id: string, type: BoardType, body: IBoardPo
   const result = await axios.post(url, body);
   return result;
 }
+
+export async function fetchPutBoard(productsId: string, postId: string, type: BoardType, body: IBoardPostBody) {
+  const url = `/api/v1/products/${productsId}/${type}/${postId}`;
+
+  const result = await axios.put(url, body);
+  return result;
+}
+
+export async function fetchDeleteBoard(productsId: string, postId: string, type: BoardType) {
+  const url = `/api/v1/products/${productsId}/${type}/${postId}`;
+
+  const result = await axios.delete(url);
+  return result;
+}

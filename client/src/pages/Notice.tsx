@@ -4,7 +4,7 @@ import Board from '@components/Board';
 export default function Notice() {
   return (
     <NoticeWrapper>
-      <Board header="공지사항" type="notice" />
+      <Board header="공지사항" type="notice" id={''} user={undefined} />
     </NoticeWrapper>
   );
 }

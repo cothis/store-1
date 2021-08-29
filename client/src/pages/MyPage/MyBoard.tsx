@@ -30,7 +30,7 @@ export default function MyBoard() {
   return (
     <MyBoardPage>
       <h2>{header}</h2>
-      <div className="mypage__board">{data && <Board board={data} />}</div>
+      <div className="mypage__board">{data && <Board board={data} type={type} />}</div>
       {data && <Pagination path={path} currentPage={page} link totalPage={data.totalPage} />}
     </MyBoardPage>
   );

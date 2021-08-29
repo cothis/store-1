@@ -1,6 +1,11 @@
 import styled from '@lib/styled-components';
 import { useCallback } from 'react';
-import { IBoardContent } from '@types';
+import { IBoardContent, User } from '@types';
+import useParams from '@hooks/useParams';
+import { useBoardDelete } from '@hooks/query/board';
+import notify from '@utils/toastify';
+import { DELETE_SUCCESS } from '@constants/message';
+import { useQueryClient } from 'react-query';
 
 interface ITableItemProps {
   idx: number;
@@ -8,9 +13,52 @@ interface ITableItemProps {
   post: IBoardContent;
   activeHandler: (idx: number) => void;
   slug: string;
+  user: User | undefined;
+  setModify: (value: string) => void;
+  setTitle: (value: string) => void;
+  setContent: (value: string) => void;
+  setModal: (value: boolean) => void;
 }
 
-export default function TableItem({ idx, active, post, activeHandler, slug }: ITableItemProps) {
+export default function TableItem({
+  idx,
+  active,
+  post,
+  activeHandler,
+  slug,
+  user,
+  setModify,
+  setContent,
+  setTitle,
+  setModal,
+}: ITableItemProps) {
+  const queryClient = useQueryClient();
+  const param = useParams();
+  const productId = post.product ? post.product.id : param.id;
+  const type = slug === 'review' ? 'reviews' : 'questions';
+
+  const { mutate: postDelete, isLoading } = useBoardDelete(productId, post.id, type);
+
+  const modifyHandler = () => {
+    setTitle(post.title);
+    setContent(post.content);
+    setModify(post.id);
+    setModal(true);
+  };
+  const deleteHandler = () => {
+    postDelete(null, {
+      onSuccess: () => {
+        notify('dark', DELETE_SUCCESS);
+        queryClient.invalidateQueries(type);
+        queryClient.invalidateQueries(`my-${type}`);
+        activeHandler(-1);
+      },
+      onError: () => {
+        notify('error', '삭제에 실패하였습니다');
+      },
+    });
+  };
+
   const getDateString = useCallback((rawDate) => {
     const date = new Date(rawDate);
     return `${date.getFullYear().toString().substr(2)}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date
@@ -27,6 +75,16 @@ export default function TableItem({ idx, active, post, activeHandler, slug }: IT
         <p className="board__content--date">{getDateString(post.date)}</p>
       </div>
       <div className="board__content--content">
+        {user && post.user.id === user.id && (
+          <div className="board__content--btns">
+            <button className="board__content--modify" onClick={modifyHandler}>
+              수정
+            </button>
+            <button className="board__content--delete" onClick={deleteHandler} disabled={isLoading}>
+              삭제
+            </button>
+          </div>
+        )}
         <p className="board__content--title">{post.title}</p>
         <p>{post.content}</p>
         {slug === 'question' &&
@@ -58,18 +116,36 @@ const Item = styled.li`
     }
   }
   .board__content--content {
+    position: relative;
     display: none;
     padding: 1rem;
     overflow: hidden;
     background-color: #fafaf7;
     transition: 0.5s;
     border-top: 1px dashed #ddd;
+    .board__content--btns {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      > button {
+        padding: 0.5em;
+        border-radius: 6px;
+        color: white;
+      }
+      .board__content--modify {
+        background-color: ${({ theme }) => theme.color.yellow};
+        margin-right: 0.5em;
+      }
+      .board__content--delete {
+        background-color: ${({ theme }) => theme.color.red};
+      }
+    }
     .board__content--title {
       font-weight: bold;
       font-size: 1.2rem;
       margin: 1rem 0;
     }
-    > p:nth-child(3) {
+    > p:nth-of-type(3) {
       padding: 0.5rem;
       background-color: #eee;
       border-radius: 6px;

@@ -18,6 +18,7 @@ export function AuthenticatedContent({ username, setAuthToggle }: Props) {
       onSuccess: () => {
         setAuthToggle(false);
         queryClient.invalidateQueries();
+        queryClient.clear();
       },
     });
   };

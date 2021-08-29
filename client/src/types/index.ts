@@ -123,6 +123,7 @@ export interface IBoardContent {
   date: Date | string; // Date.prototype.toISOString()
   user: IBoardUser;
   comments: IBoardComment[];
+  product?: IProductListItem;
 }
 
 export interface IBoardComment {
@@ -137,16 +138,3 @@ export interface IBoardPostBody {
 }
 
 export type BoardType = 'reviews' | 'questions' | 'notice';
-
-export interface IMyBoard extends IBoard {
-  contents: IMyBoardContent[];
-}
-
-export interface IMyBoardContent extends IBoardContent {
-  product: IProductListItem;
-}
-
-export interface ProductIdAndTitle {
-  id: string;
-  title: string;
-}

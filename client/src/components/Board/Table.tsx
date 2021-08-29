@@ -1,13 +1,18 @@
 import styled from '@lib/styled-components';
-import { IBoard } from '@types';
+import { IBoard, User } from '@types';
 import { useState, useCallback, MouseEventHandler } from 'react';
 import TableItem from './TableItem';
 
 interface BoardProps {
   board: IBoard;
+  user: User | undefined;
+  setModify: (value: string) => void;
+  setTitle: (value: string) => void;
+  setContent: (value: string) => void;
+  setModal: (value: boolean) => void;
 }
 
-export default function Table({ board }: BoardProps) {
+export default function Table({ board, user, setModify, setTitle, setContent, setModal }: BoardProps) {
   const [active, setActive] = useState<number>(-1);
 
   const activeHandler = useCallback(
@@ -38,6 +43,11 @@ export default function Table({ board }: BoardProps) {
               active={active}
               activeHandler={activeHandler}
               slug={board.slug}
+              user={user}
+              setModify={setModify}
+              setTitle={setTitle}
+              setContent={setContent}
+              setModal={setModal}
             />
           ))}
         </ul>

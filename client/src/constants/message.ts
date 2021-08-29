@@ -13,6 +13,8 @@ export const ERROR_MESSAGE_PASSWORD_DUPLICATE = '비밀번호가 서로 다릅�
 
 export const INPUT_REQUIRED = '⚠️ 필수 입력 사항을 입력해 주십시오.';
 export const SUCCESS_BOARD_POST = '🎉 성공적으로 작성을 완료하였습니다.';
+export const SUCCESS_BOARD_PUT = '😊 성공적으로 수정을 완료하였습니다.';
+export const DELETE_SUCCESS = '😭 성공적으로 삭제를 완료하였습니다.';
 
 export const ERROR_DUPLICATED = '중복된 아이디 혹은 중복된 이메일입니다.';
 export const ERROR_MESSAGE_UNKNOWN = '알 수 없는 에러가 발생했습니다.';

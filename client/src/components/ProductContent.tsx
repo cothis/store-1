@@ -28,7 +28,7 @@ export default function ProductContent({ content, detailInfo, recommends, id }: 
     return [detailRef, deliveryRef, changeRef, reviewRef, qnaRef];
   }, []);
 
-  const { isError: login } = useUser();
+  const { data: user } = useUser();
 
   return (
     <Wrapper>
@@ -122,9 +122,9 @@ export default function ProductContent({ content, detailInfo, recommends, id }: 
         </ul>
       </div>
       <Tabs refArr={refArr} idx={3} />
-      <Board header="상품후기" id={id} type="reviews" login={!login} />
+      <Board header="상품후기" id={id} type="reviews" user={user} />
       <Tabs refArr={refArr} idx={4} />
-      <Board header="상품문의" id={id} type="questions" login={!login} />
+      <Board header="상품문의" id={id} type="questions" user={user} />
     </Wrapper>
   );
 }
