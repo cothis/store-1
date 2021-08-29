@@ -1,11 +1,11 @@
-import { API_ENDPOINT } from '@config';
-import { USER_QUERY_KEY } from '@hooks/query/users';
 import useHistory from '@hooks/useHistory';
 import styled from '@lib/styled-components';
 import axios from '@utils/axios';
 import notify from '@utils/toastify';
 import { FormEvent, useCallback, useRef } from 'react';
 import { useMutation, useQueryClient } from 'react-query';
+import usePath from '@hooks/usePath';
+import Loading from '@components/Loading';
 
 interface LoginFormData {
   loginId: string;
@@ -19,6 +19,7 @@ export default function LoginForm() {
   const history = useHistory();
   const queryClient = useQueryClient();
   const login = useMutation((data: LoginFormData) => axios.post('/api/v1/auth/login', data));
+  const path = usePath();
 
   const formRef = useRef<HTMLFormElement>(null);
   const saveId = useRef<HTMLInputElement>(null);
@@ -37,7 +38,8 @@ export default function LoginForm() {
     login.mutate(form, {
       onSuccess: () => {
         queryClient.clear();
-        history.push('/');
+        if (path.search.redirect) history.replace(path.search.redirect);
+        else history.replace('/');
       },
       onError: () => {
         notify('error', '회원정보가 일치하지 않습니다.');
@@ -53,7 +55,9 @@ export default function LoginForm() {
         <Checkbox ref={saveId} type="checkbox" />
         <span>아이디 저장</span>
       </CheckboxArea>
-      <LoginButton type="submit">로그인</LoginButton>
+      <LoginButton disabled={login.isLoading} type="submit">
+        {login.isLoading ? <Loading /> : '로그인'}
+      </LoginButton>
     </Form>
   );
 }
@@ -96,4 +100,10 @@ const LoginButton = styled.button`
   margin-bottom: 20px;
   border-radius: 5px;
   ${({ theme }) => theme.opacityHover};
+  &:disabled {
+    height: auto;
+    > * {
+      margin: 0 !important;
+    }
+  }
 `;

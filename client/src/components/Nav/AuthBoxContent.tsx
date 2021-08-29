@@ -17,7 +17,7 @@ export function AuthenticatedContent({ username, setAuthToggle }: Props) {
     logoutMutation.mutate(null, {
       onSuccess: () => {
         setAuthToggle(false);
-        queryClient.clear();
+        queryClient.invalidateQueries();
       },
     });
   };

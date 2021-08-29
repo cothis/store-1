@@ -1,27 +1,30 @@
 import styled from '@lib/styled-components';
 import NavLink from '@lib/router/NavLink';
+import usePath from '@hooks/usePath';
 
 export default function Sort() {
+  const path = usePath();
+  const current = path.search.sort;
   return (
     <SortWrapper>
       <li className="sort--item">
-        <NavLink to={{ search: { sort: '' } }} activeClassName="current">
-          <p>최신순</p>
+        <NavLink to={{ search: { sort: '', page: '' } }}>
+          <p className={current === '' ? 'current' : ''}>최신순</p>
         </NavLink>
       </li>
       <li className="sort--item">
-        <NavLink to={{ search: { sort: 'popular' } }} activeClassName="current">
-          <p>인기순</p>
+        <NavLink to={{ search: { sort: 'popular', page: '' } }}>
+          <p className={current === 'popular' ? 'current' : ''}>인기순</p>
         </NavLink>
       </li>
       <li className="sort--item">
-        <NavLink to={{ search: { sort: 'low-price' } }} activeClassName="current">
-          <p>낮은가격순</p>
+        <NavLink to={{ search: { sort: 'low-price', page: '' } }}>
+          <p className={current === 'low-price' ? 'current' : ''}>낮은가격순</p>
         </NavLink>
       </li>
       <li className="sort--item">
-        <NavLink to={{ search: { sort: 'high-price' } }} activeClassName="current">
-          <p>높은가격순</p>
+        <NavLink to={{ search: { sort: 'high-price', page: '' } }}>
+          <p className={current === 'high-price' ? 'current' : ''}>높은가격순</p>
         </NavLink>
       </li>
     </SortWrapper>
@@ -42,12 +45,10 @@ const SortWrapper = styled.ul`
         border-radius: 2rem;
       }
 
-      &.current {
-        > p {
-          background-color: ${({ theme }) => theme.color.baeminDark};
-          color: white;
-          border: none;
-        }
+      p.current {
+        background-color: ${({ theme }) => theme.color.baeminDark};
+        color: white;
+        border: none;
       }
     }
   }

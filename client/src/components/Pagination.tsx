@@ -1,14 +1,26 @@
 import styled from '@lib/styled-components';
 import NavLink from '@lib/router/NavLink';
 import { Path } from '@lib/router/history';
+import { useCallback } from 'react';
 
 type Props = {
   currentPage: number;
   totalPage: number;
   path: Path;
+  link: boolean;
+  setPage?: (value: number) => void;
 };
 
-export default function Pagination({ currentPage, totalPage, path }: Props) {
+type PaginationItemProps = {
+  text: string;
+  page: number;
+  currentPage: number;
+  link: boolean;
+  path: Path;
+  setPage?: (value: number) => void;
+};
+
+export default function Pagination({ currentPage, totalPage, path, link, setPage }: Props) {
   const startPage = Math.floor((currentPage - 1) / 5) * 5 + 1;
   const maxPage = Math.min(totalPage, startPage + 4);
   const range = Array.from({ length: maxPage - startPage + 1 }, (_, idx) => idx + startPage);
@@ -21,50 +33,92 @@ export default function Pagination({ currentPage, totalPage, path }: Props) {
     <PaginationListWrapper>
       <ul className="pagination--list">
         {currentPage !== 1 && (
-          <li className="pagination--item">
-            <NavLink goTop to={{ search: { ...path.search, page: convertPageNum(1) } }}>
-              <p>처음으로</p>
-            </NavLink>
-          </li>
+          <PaginationItem
+            text="처음으로"
+            link={link}
+            path={path}
+            page={1}
+            currentPage={currentPage}
+            setPage={setPage}
+          />
         )}
         {currentPage !== totalPage && (
-          <li className="pagination--item">
-            <NavLink goTop to={{ search: { ...path.search, page: convertPageNum(totalPage) } }}>
-              <p>마지막으로</p>
-            </NavLink>
-          </li>
+          <PaginationItem
+            text="마지막으로"
+            link={link}
+            path={path}
+            page={totalPage}
+            currentPage={currentPage}
+            setPage={setPage}
+          />
         )}
       </ul>
       <ul className="pagination--list">
         {startPage !== 1 && (
-          <li className="pagination--item">
-            <NavLink goTop to={{ search: { ...path.search, page: convertPageNum(startPage - 1) } }}>
-              <p>{'...'}</p>
-            </NavLink>
-          </li>
+          <PaginationItem
+            text="..."
+            link={link}
+            path={path}
+            page={startPage - 1}
+            currentPage={currentPage}
+            setPage={setPage}
+          />
         )}
         {range.map((pageNum) => {
           return (
-            <li className="pagination--item item-number" key={pageNum}>
-              <NavLink
-                to={{ search: { ...path.search, page: convertPageNum(pageNum) } }}
-                activeClassName="page-current"
-                goTop
-              >
-                <p>{pageNum}</p>
-              </NavLink>
-            </li>
+            <PaginationItem
+              key={pageNum}
+              text={pageNum.toString()}
+              link={link}
+              path={path}
+              page={pageNum}
+              currentPage={currentPage}
+              setPage={setPage}
+            />
           );
         })}
         {maxPage < totalPage && (
-          <li className="pagination--item">
-            <NavLink goTop to={{ search: { ...path.search, page: convertPageNum(maxPage + 1) } }}>
-              <p>{'...'}</p>
-            </NavLink>
-          </li>
+          <PaginationItem
+            text="..."
+            link={link}
+            path={path}
+            page={maxPage + 1}
+            currentPage={currentPage}
+            setPage={setPage}
+          />
         )}
       </ul>
     </PaginationListWrapper>
+  );
+}
+
+function PaginationItem({ text, link, path, page, currentPage, setPage }: PaginationItemProps) {
+  const convertPageNum = useCallback((pageNum: number) => {
+    if (pageNum === 1) return '';
+    return String(pageNum);
+  }, []);
+
+  return (
+    <li className="pagination--item">
+      {link ? (
+        <NavLink goTop to={{ search: { ...path.search, page: convertPageNum(page) } }}>
+          <p className={currentPage === page ? 'current' : ''}>{text}</p>
+        </NavLink>
+      ) : (
+        <p
+          onClick={
+            setPage
+              ? () => {
+                  setPage(page);
+                }
+              : () => {}
+          }
+          className={currentPage === page ? 'current' : ''}
+        >
+          {text}
+        </p>
+      )}
+    </li>
   );
 }
 
@@ -89,11 +143,12 @@ const PaginationListWrapper = styled.div`
         background-color: #fcfcf7;
         border-radius: 3px;
       }
-      a.page-current > p {
+      p.current {
         background-color: ${({ theme }) => theme.color.baeminPrimary};
         color: white;
       }
-      a:not(.page-current) > p:hover {
+      p:not(.current):hover {
+        cursor: pointer;
         background-color: #eee;
       }
     }

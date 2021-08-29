@@ -97,3 +97,29 @@ export interface User {
   loginId: string;
   email: string;
 }
+
+export interface IBoard {
+  id: string;
+  slug: 'notice' | 'review' | 'question';
+  title: string;
+  contents: IBoardContent[];
+  currentPage: number;
+  totalPage: number;
+  totalCount: number;
+}
+
+export interface IBoardContent {
+  id: string;
+  title: string;
+  content: string;
+  date: Date | string; // Date.prototype.toISOString()
+  userName: string;
+  comments?: string;
+}
+
+export interface IBoardPostBody {
+  title: string;
+  content: string;
+}
+
+export type BoardType = 'reviews' | 'questions' | 'notice';

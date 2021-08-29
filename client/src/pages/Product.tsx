@@ -76,7 +76,7 @@ const Product = function () {
           )}
         </Infomation>
       </InfomationArea>
-      <ProductContent content={content} detailInfo={detailInfo} recommends={recommends} />
+      <ProductContent id={id} content={content} detailInfo={detailInfo} recommends={recommends} />
     </ProductWrapper>
   );
 };

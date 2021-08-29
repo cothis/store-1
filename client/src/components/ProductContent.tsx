@@ -2,11 +2,15 @@ import styled from '@lib/styled-components';
 import { IProductListItem } from '@types';
 import ProductList from './ProductList';
 import { RefObject, useMemo, useRef, MouseEventHandler } from 'react';
+import { useUser } from '@hooks/query/users';
+
+import Board from '@components/Board';
 
 interface ProductContentProps {
   content: string[];
   detailInfo: [string, string][];
   recommends: IProductListItem[];
+  id: string;
 }
 
 interface TabProps {
@@ -14,7 +18,7 @@ interface TabProps {
   idx: number;
 }
 
-export default function ProductContent({ content, detailInfo, recommends }: ProductContentProps) {
+export default function ProductContent({ content, detailInfo, recommends, id }: ProductContentProps) {
   const detailRef = useRef<HTMLDivElement>(null);
   const deliveryRef = useRef<HTMLDivElement>(null);
   const changeRef = useRef<HTMLDivElement>(null);
@@ -23,6 +27,9 @@ export default function ProductContent({ content, detailInfo, recommends }: Prod
   const refArr = useMemo(() => {
     return [detailRef, deliveryRef, changeRef, reviewRef, qnaRef];
   }, []);
+
+  const { isError: login } = useUser();
+
   return (
     <Wrapper>
       <Tabs refArr={refArr} idx={0} />
@@ -115,9 +122,9 @@ export default function ProductContent({ content, detailInfo, recommends }: Prod
         </ul>
       </div>
       <Tabs refArr={refArr} idx={3} />
-      <div>우하하</div>
+      <Board header="상품후기" id={id} type="reviews" login={!login} />
       <Tabs refArr={refArr} idx={4} />
-      <div>무야호</div>
+      <Board header="상품문의" id={id} type="questions" login={!login} />
     </Wrapper>
   );
 }
@@ -193,15 +200,15 @@ const Wrapper = styled.div`
   > * {
     margin: 2rem auto;
   }
+  h4 {
+    font-weight: bold;
+    font-size: 1.2rem;
+    margin: 1em 0;
+  }
   .product__content--info {
     width: 100%;
     font-size: 0.8rem;
     line-height: 2em;
-    h4 {
-      font-weight: bold;
-      font-size: 1.2rem;
-      margin: 1em 0;
-    }
     ul {
       list-style: disc inside;
       > ul {

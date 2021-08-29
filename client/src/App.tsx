@@ -28,6 +28,7 @@ import Terms from '@pages/Terms';
 import Cart from '@pages/Cart';
 import Order from '@pages/Order/Order';
 import Product from '@pages/Product';
+import Notice from '@pages/Notice';
 
 // react-query
 import { QueryClient, QueryClientProvider, QueryErrorResetBoundary } from 'react-query';
@@ -88,6 +89,9 @@ const App = () => {
                     </Route>
                     <Route path="/products/:id">
                       <Product />
+                    </Route>
+                    <Route exact path="/notice">
+                      <Notice />
                     </Route>
                     <Route exact path="/agreement">
                       <Terms />

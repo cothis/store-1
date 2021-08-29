@@ -7,6 +7,7 @@ export const USER_QUERY_KEY = 'user';
 export function useUser() {
   return useQuery<User, Error>(USER_QUERY_KEY, () => fetchUser(), {
     retry: false,
+    refetchOnWindowFocus: false,
   });
 }
 

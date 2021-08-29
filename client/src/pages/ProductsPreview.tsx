@@ -47,7 +47,7 @@ export default function ProductsPreview() {
         <>
           <Sort />
           <ProductList products={data.products}></ProductList>
-          <Pagination path={path} currentPage={data.currentPage} totalPage={data.totalPage} />
+          <Pagination path={path} currentPage={data.currentPage} totalPage={data.totalPage} link />
         </>
       ) : (
         <p className="products__content--empty">텅</p>
