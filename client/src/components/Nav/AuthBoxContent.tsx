@@ -41,8 +41,19 @@ export function AuthenticatedContent({ username, setAuthToggle }: Props) {
           setAuthToggle(false);
         }}
       >
-        <Link to="/my-page">
+        <Link to="/my-page/confirm">
           <p className="dohyeon">내 정보 변경</p>
+        </Link>
+      </div>
+      <img src={DividerTwo} />
+      <div
+        className="box-content"
+        onClick={() => {
+          setAuthToggle(false);
+        }}
+      >
+        <Link to="/my-page/like">
+          <p className="dohyeon">내가 좋아한 상품</p>
         </Link>
       </div>
       <img src={DividerTwo} />

@@ -8,6 +8,7 @@ import Redirect from '@lib/router/Redirect';
 import usePath from '@hooks/usePath';
 import Pagination from '@components/Pagination';
 import Board from '@components/MyPage/Board';
+import { TitleWithBorder } from './my-page-style';
 
 export default function MyBoard() {
   const path = usePath();
@@ -17,7 +18,12 @@ export default function MyBoard() {
   const header = path.pathname === '/my-page/review' ? '내 상품 후기' : '내 상품 문의';
 
   if (isLoading) {
-    return <Loading />;
+    return (
+      <MyBoardPage>
+        <TitleWithBorder>{header}</TitleWithBorder>
+        <Loading />
+      </MyBoardPage>
+    );
   }
   if (isError) {
     if (axios.isAxiosError(error) && error.response?.status === 401) {
@@ -29,7 +35,7 @@ export default function MyBoard() {
 
   return (
     <MyBoardPage>
-      <h2>{header}</h2>
+      <TitleWithBorder>{header}</TitleWithBorder>
       <div className="mypage__board">{data && <Board board={data} type={type} />}</div>
       {data && <Pagination path={path} currentPage={page} link totalPage={data.totalPage} />}
     </MyBoardPage>
@@ -39,12 +45,8 @@ export default function MyBoard() {
 const MyBoardPage = styled.div`
   max-width: ${({ theme }) => theme.media.desktop};
   margin: 0 auto;
-  padding: 1rem;
-  h2 {
-    font-size: 1.2rem;
-    font-weight: bold;
-    margin: 1em 0;
-  }
+  padding: 0.5rem;
+
   .mypage__board {
     width: 100%;
     border-radius: 6px;
