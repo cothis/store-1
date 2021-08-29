@@ -13,7 +13,6 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest<Request>();
-    const user = request.user!;
 
     const isForUser = this.reflector.getAllAndOverride<boolean>(IS_FOR_USER_KEY, [
       context.getHandler(),
@@ -39,6 +38,8 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
     } catch {
       jwtResult = false;
     }
+
+    const user = request.user!;
 
     if ((isForUser || isForAdmin) && !jwtResult) {
       throw new UnauthorizedException();
