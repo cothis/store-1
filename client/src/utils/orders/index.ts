@@ -1,4 +1,4 @@
-import { IOrder, OrderStatus } from '@types';
+import { IOrder, OrderStatus, CreateOrderDto } from '@types';
 import axios from '@utils/axios';
 
 export const fetchMyTempOrders = async (id: string): Promise<IOrder> => {
@@ -10,4 +10,8 @@ export const fetchMyTempOrders = async (id: string): Promise<IOrder> => {
 
 export const updateOrder = async (order: IOrder) => {
   return axios.put<IOrder>(`/api/v1/orders/${order.id}`, order);
+};
+
+export const createOrder = async (order: CreateOrderDto) => {
+  return axios.post<{ id: number }>(`/api/v1/orders`, order);
 };

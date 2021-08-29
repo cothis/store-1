@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { MouseEventHandler, useCallback, useState } from 'react';
 import styled from '@lib/styled-components';
 import { useProductDetail } from '@hooks/query/products';
 import useParams from '@hooks/useParams';
@@ -10,15 +10,49 @@ import AddCartButton from '@components/AddCartButton';
 import HeartButton from '@components/common/HeartButton';
 import ProductContent from '@components/ProductContent';
 import ZoomImage from '@components/ZoomImage';
+import { useCreateOrder } from '@hooks/query/orders/useTempOrders';
+import { useUser } from '@hooks/query/users';
+import notify from '@utils/toastify';
+import useHistory from '@hooks/useHistory';
+import { CreateOrderDto } from '@types';
+import { LOGIN_REQUIRED } from '@constants/message';
 
 const Product = function () {
   const [count, setCount] = useState(1);
   const { id } = useParams();
   const { isLoading, isError, data, error } = useProductDetail(id);
+  const { mutate: createOrder, isLoading: isCreating } = useCreateOrder();
+  const { isError: needLogin, data: user } = useUser();
+  const history = useHistory();
+
+  const handleBuyButtonClick: MouseEventHandler = useCallback(() => {
+    // 로그인 체크
+    if (needLogin) {
+      notify('error', LOGIN_REQUIRED);
+      history.replace({ pathname: '/signin', search: { redirect: `/products/${id}` } });
+    }
+
+    // 주문처리
+    const orderDto: CreateOrderDto = {
+      products: [
+        {
+          id,
+          quantity: count,
+        },
+      ],
+    };
+    createOrder(orderDto, {
+      onSuccess: ({ data }) => {
+        history.replace({ pathname: `/orders/${data.id}` });
+      },
+    });
+  }, [needLogin, id, count]);
+
   if (isLoading) return <Loading />;
   if (isError) throw error;
   if (!data) return <></>;
   const { title, price, originalPrice, priceText, like, imageUrl, content, detailInfo, recommends } = data;
+
   return (
     <ProductWrapper>
       <InfomationArea>
@@ -67,7 +101,11 @@ const Product = function () {
                       count={count}
                     />
                   </MiniButtonArea>
-                  <ButtonNext clickHandler={() => {}} $isPossible={price !== 0} text="바로 구매"></ButtonNext>
+                  <ButtonNext
+                    clickHandler={handleBuyButtonClick}
+                    $isPossible={price !== 0 && !isCreating}
+                    text="바로 구매"
+                  ></ButtonNext>
                 </ButtonArea>
               </BottomInfomation>
             </>

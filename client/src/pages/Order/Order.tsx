@@ -3,7 +3,7 @@ import { useUser } from '@hooks/query/users';
 import DaumPostcode, { AddressData } from 'react-daum-postcode';
 import useParams from '@hooks/useParams';
 import Redirect from '@lib/router/Redirect';
-import { IOrder, OrderStatus, User } from '@types';
+import { ICart, IOrder, OrderStatus, User } from '@types';
 import { formToObject } from '@utils/formToObject';
 import {
   ChangeEventHandler,
@@ -14,6 +14,7 @@ import {
   useEffect,
   useState,
 } from 'react';
+import { INPUT_REQUIRED } from '@constants/message';
 import useModal from '@hooks/useModal';
 import Link from '@lib/router/Link';
 import notify from '@utils/toastify';
@@ -34,6 +35,9 @@ import {
   Row,
   Table,
 } from './style';
+import useHistory from '@hooks/useHistory';
+import useLocalStorage from '@hooks/useLocalStorage';
+import usePath from '@hooks/usePath';
 
 const toPriceText = (price?: number | string) => {
   if (!price) return;
@@ -82,6 +86,9 @@ function Order() {
   const { data: user } = useUser();
   const updateOrder = useUpdateOrder();
   const [isEnableSubmit, setEnableSubmit] = useState(validationInit);
+  const history = useHistory();
+  const [cart, setCart] = useLocalStorage<ICart[]>('cart', []);
+  const path = usePath();
 
   const setValid = (key: string, value: boolean) => {
     isEnableSubmit[key] = value;
@@ -92,7 +99,7 @@ function Order() {
     e.preventDefault();
     const valids: boolean[] = Object.values(isEnableSubmit);
     if (!valids.every((valid) => valid)) {
-      notify('error', 'validation에 실패하였습니다!');
+      notify('error', INPUT_REQUIRED);
       return;
     }
 
@@ -104,7 +111,10 @@ function Order() {
     updateOrder.mutate(result, {
       onSuccess: ({ data }) => {
         notify('success', '주문처리가 성공했습니다!! 메인으로 이동합니다.');
-        <Redirect to="/" />;
+        if (path.search.fromCart) {
+          setCart([]);
+        }
+        history.replace({ pathname: '/' });
       },
     });
   };

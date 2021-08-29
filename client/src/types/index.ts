@@ -57,6 +57,13 @@ export interface IOrder {
   paymentPrice: number;
 }
 
+export interface CreateOrderDto {
+  products: {
+    id: string;
+    quantity: number;
+  }[];
+}
+
 export interface ICategory {
   id: string;
   title: string;

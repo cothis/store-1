@@ -2,9 +2,15 @@ import { useState, useMemo, useCallback, ChangeEventHandler, MouseEventHandler, 
 import styled from '@lib/styled-components';
 import useLocalStorage from '@hooks/useLocalStorage';
 import Link from '@lib/router/Link';
-import { ICart } from '@types';
+import { CreateOrderDto, ICart } from '@types';
 import ExitBtn from '@components/ExitBtn';
 import { debouncer } from '@utils/debouncer';
+import { useUser } from '@hooks/query/users';
+import notify from '@utils/toastify';
+import useHistory from '@hooks/useHistory';
+import { useCreateOrder } from '@hooks/query/orders/useTempOrders';
+import { LOGIN_REQUIRED } from '@constants/message';
+import Loading from '@components/Loading';
 
 export default function Cart() {
   return (
@@ -25,6 +31,9 @@ function CartForm() {
   const [cartLocal, setCartLocal] = useLocalStorage<ICart[]>('cart', []);
   const [cart, setCart] = useState<ICart[]>(cartLocal);
   const setCartDebouncer = debouncer<void>();
+  const { isError: needLogin, data: user } = useUser();
+  const history = useHistory();
+  const { mutate: createOrder, isLoading } = useCreateOrder();
 
   useEffect(() => {
     setCartDebouncer(setCartLocal, 400, cart);
@@ -92,6 +101,31 @@ function CartForm() {
       setChecked(newChecked);
     },
     [cart],
+  );
+
+  const orderBtnClickHandler: MouseEventHandler = useCallback(
+    ({ currentTarget }) => {
+      // 로그인 체크
+      if (needLogin) {
+        notify('error', LOGIN_REQUIRED);
+        history.replace({ pathname: '/signin', search: { redirect: '/cart' } });
+      }
+
+      // 주문처리
+      const products = cart.map((cartItem) => {
+        return { id: cartItem.id, quantity: cartItem.count };
+      });
+
+      const orderDto: CreateOrderDto = {
+        products,
+      };
+      createOrder(orderDto, {
+        onSuccess: ({ data }) => {
+          history.replace({ pathname: `/orders/${data.id}`, search: { fromCart: '1' } });
+        },
+      });
+    },
+    [cart, needLogin],
   );
 
   if (!cart.length) {
@@ -186,8 +220,12 @@ function CartForm() {
             </p>
           </div>
         </div>
-        <button disabled={totalPrice === 0} className="cart__result--pay-btn">
-          결제하기
+        <button
+          disabled={totalPrice === 0 || isLoading}
+          className="cart__result--pay-btn"
+          onClick={orderBtnClickHandler}
+        >
+          {isLoading ? <Loading /> : '결제하기'}
         </button>
       </div>
     </>
@@ -311,17 +349,20 @@ const CartPageWrapper = styled.div`
       border-radius: 10px;
       background-color: ${({ theme }) => theme.color.baeminDark};
       color: white;
+
+      &:disabled {
+        padding: 0;
+      }
+
+      > * {
+        margin: 0;
+      }
     }
   }
   .cart__img--empty {
     width: 200px;
   }
-  button:disabled {
-    opacity: 0.3;
-    &:hover {
-      cursor: unset;
-    }
-  }
+
   .cart__content--empty {
     margin: 1rem 0;
     font-family: 'Do Hyeon', sans-serif;

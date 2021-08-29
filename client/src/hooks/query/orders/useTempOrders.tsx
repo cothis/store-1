@@ -1,5 +1,5 @@
-import { IOrder } from '@types';
-import { fetchMyTempOrders, updateOrder } from '@utils/orders';
+import { CreateOrderDto, IOrder } from '@types';
+import { createOrder, fetchMyTempOrders, updateOrder } from '@utils/orders';
 import { useMutation, useQuery } from 'react-query';
 
 export const useTempOrders = (id: string) => {
@@ -8,4 +8,8 @@ export const useTempOrders = (id: string) => {
 
 export const useUpdateOrder = () => {
   return useMutation((order: IOrder) => updateOrder(order));
+};
+
+export const useCreateOrder = () => {
+  return useMutation((order: CreateOrderDto) => createOrder(order));
 };
