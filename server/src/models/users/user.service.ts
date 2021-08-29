@@ -33,10 +33,16 @@ export class UserService {
   }
 
   async updateEntity(id: string, updateUserDto: UpdateUserDto): Promise<UpdateResult> {
-    return await this.userRepository.updateEntity(id, {
-      ...updateUserDto,
-      password: updateUserDto.password ? await bcrypt.hash(updateUserDto.password, 10) : null,
-    });
+    if (updateUserDto.password.length < 8) delete updateUserDto.password;
+    return await this.userRepository.updateEntity(
+      id,
+      updateUserDto.password
+        ? {
+            ...updateUserDto,
+            password: await bcrypt.hash(updateUserDto.password, 10),
+          }
+        : updateUserDto,
+    );
   }
 
   async deleteEntity(id: string): Promise<boolean> {
