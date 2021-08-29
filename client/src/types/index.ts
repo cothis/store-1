@@ -96,6 +96,9 @@ export interface User {
   name: string;
   loginId: string;
   email: string;
+  zipcode: string;
+  address: string;
+  addressDetail: string;
 }
 
 export interface IBoardUser {

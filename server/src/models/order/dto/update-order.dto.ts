@@ -1,4 +1,4 @@
-import { IsEnum, IsNotEmpty, IsNumber, IsNumberString, IsPositive, IsString, Max } from 'class-validator';
+import { IsEnum, IsString, Length } from 'class-validator';
 import { OrderStatus } from '../enums/order-status.enum';
 
 export class UpdateOrderDto {
@@ -36,6 +36,7 @@ export class UpdateOrderDto {
   address: string;
 
   @IsString()
+  @Length(0, 100)
   addressDetail: string;
 
   @IsString()

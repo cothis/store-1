@@ -29,11 +29,10 @@ export class PriceService {
   }
 
   calculateDeliveryFee(productsPrice: number) {
-    if (productsPrice > 30000) {
+    if (productsPrice >= 30000) {
       return 0;
-    } else if (productsPrice > 10000) {
-      return 2000;
-    } else return 3000;
+    }
+    return 2500;
   }
 
   async calculatePrices(products: ProductIdWithQuantity[], manager?: EntityManager): Promise<FinalPrices> {
