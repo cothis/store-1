@@ -10,6 +10,7 @@ import { EntityManager, getManager } from 'typeorm';
 import { ProductService } from '../product/product.service';
 import { UpdateOrderDto } from './dto/update-order.dto';
 import { PriceService } from './price.service';
+import { OrderHasProduct } from './entities/order-has-product.entity';
 
 @Injectable()
 export class OrderService {
@@ -20,16 +21,22 @@ export class OrderService {
     private readonly appConfigService: AppConfigService,
   ) {}
 
-  async findAll(status?: OrderStatus): Promise<Order[]> {
-    return await this.orderRepository.findAll(status);
-  }
-
-  async findById(id: string): Promise<Order> {
-    const order = await this.orderRepository.findById(id);
+  private prefixImageUrl(order: Order) {
     order.orderHasProducts.forEach(
       (orderHasProduct) =>
         (orderHasProduct.product.image = path.join(this.appConfigService.s3, orderHasProduct.product.image)),
     );
+  }
+
+  async findAll(status?: OrderStatus): Promise<Order[]> {
+    const orders = await this.orderRepository.findAll(status);
+    orders.forEach((order) => this.prefixImageUrl(order));
+    return orders;
+  }
+
+  async findById(id: string): Promise<Order> {
+    const order = await this.orderRepository.findById(id);
+    this.prefixImageUrl(order);
     return order;
   }
 

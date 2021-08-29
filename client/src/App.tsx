@@ -37,6 +37,7 @@ import { QueryClient, QueryClientProvider, QueryErrorResetBoundary } from 'react
 
 // react-error-boundary
 import { ErrorBoundary } from 'react-error-boundary';
+import MyOrder from '@pages/MyPage/MyOrder';
 
 const queryClient = new QueryClient();
 
@@ -79,6 +80,9 @@ const App = () => {
                     </Route>
                     <Route exact path="/my-page/qna">
                       <MyPageLayout component={MyBoard} />
+                    </Route>
+                    <Route exact path="/my-page/orders">
+                      <MyOrder />
                     </Route>
                     <Route exact path="/signin">
                       <Signin />

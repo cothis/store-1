@@ -38,12 +38,7 @@ import {
 import useHistory from '@hooks/useHistory';
 import useLocalStorage from '@hooks/useLocalStorage';
 import usePath from '@hooks/usePath';
-
-const toPriceText = (price?: number | string) => {
-  if (!price) return;
-  if (typeof price == 'string') price = Number(price);
-  return price.toLocaleString() + '원';
-};
+import { toPriceText } from '@utils/toPriceText';
 
 interface CheckValidationList {
   senderName: boolean;
