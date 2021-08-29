@@ -26,6 +26,12 @@ import { ProductListPageDto } from '../product/dto/product-list-page.dto';
 import { ProductService } from '../product/product.service';
 import { ForUser } from '@/auth/decorators/for-user.decorator';
 
+declare module 'express-session' {
+  interface SessionData {
+    oAuthId: number;
+  }
+}
+
 @Controller('api/v1/users')
 @UseInterceptors(ClassSerializerInterceptor)
 export class UserController {
@@ -39,6 +45,7 @@ export class UserController {
   @SerializeOptions({ groups: ['me'] })
   @Get('/me')
   async getMe(@Req() req: Request): Promise<User> {
+    console.log(req.user);
     const userId = req.user.id;
     const user = await this.userService.findById(userId);
     return user;
@@ -95,8 +102,11 @@ export class UserController {
   }
 
   @Post('/')
-  async create(@Body() createUserDto: CreateUserDto): Promise<User> {
-    return await this.userService.createEntity(createUserDto);
+  async create(@Body() createUserDto: CreateUserDto, @Req() req: Request): Promise<User> {
+    return await this.userService.createEntity({
+      ...createUserDto,
+      oAuthId: req.session.oAuthId ? String(req.session.oAuthId) : null,
+    });
   }
 
   @Put('/:id')

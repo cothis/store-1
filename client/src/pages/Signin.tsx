@@ -2,10 +2,11 @@ import Link from '@lib/router/Link';
 import { MouseEventHandler } from 'react';
 import styled from '@lib/styled-components';
 import LoginForm from '@components/Signin/LoginForm';
+import { API_ENDPOINT } from '@config';
 
 export default function Signin() {
-  const kakaoClickHandler: MouseEventHandler = async (e) => {
-    location.href = 'http://localhost:8080/api/v1/auth';
+  const kakaoClickHandler: MouseEventHandler = (e) => {
+    location.href = API_ENDPOINT + '/api/v1/auth/kakao';
   };
 
   return (

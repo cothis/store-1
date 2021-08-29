@@ -30,7 +30,7 @@ export class AuthService {
     this.REDIRECT_URI = appConfigService.server + '/api/v1/auth/kakao/redirect';
   }
 
-  getKakoAuthUrl() {
+  getKakaoAuthUrl() {
     const querystring = `?client_id=${this.REST_API_KEY}&redirect_uri=${this.REDIRECT_URI}&state=${STATE}&response_type=code`;
     return `${KAKAO_AUTH_URI}${querystring}`;
   }
@@ -75,8 +75,8 @@ export class AuthService {
     return null;
   }
 
-  login(user: Pick<User, 'id'>) {
-    const payload = { id: user.id };
+  login(user: Pick<User, 'id' | 'isAdmin'>) {
+    const payload = { id: user.id, isAdmin: user.isAdmin };
     return this.jwtService.sign(payload);
   }
 }

@@ -15,6 +15,7 @@ export class CreateUserDto {
 
   @IsString()
   @IsByteLength(0, 60)
+  @IsOptional()
   password: string;
 
   @IsString()

@@ -20,7 +20,7 @@ export class AuthController {
 
   @Get('kakao/')
   requestAuth(@Res() res: Response) {
-    res.redirect(this.authService.getKakoAuthUrl());
+    res.redirect(this.authService.getKakaoAuthUrl());
   }
 
   @Get('kakao/redirect')
@@ -32,7 +32,7 @@ export class AuthController {
       // 가입한 유저라면 jwt 발급하고 메인으로 redirect
       const user = await this.userService.findByOauthId(oAuthId);
       if (user) {
-        res.cookie('jwt', this.jwtService.sign({ userId: user.id }));
+        res.cookie('jwt', this.jwtService.sign({ id: user.id, isAdmin: user.isAdmin }));
         res.redirect(this.clientUrl);
       }
 

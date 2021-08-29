@@ -21,7 +21,7 @@ export class UserService {
     try {
       return await this.userRepository.createEntity({
         ...createUserDto,
-        password: await bcrypt.hash(createUserDto.password, 10),
+        password: createUserDto.password ? await bcrypt.hash(createUserDto.password, 10) : null,
       });
     } catch {
       throw new ConflictException({

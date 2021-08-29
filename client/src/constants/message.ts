@@ -18,3 +18,4 @@ export const DELETE_SUCCESS = '😭 성공적으로 삭제를 완료하였습니
 
 export const ERROR_DUPLICATED = '중복된 아이디 혹은 중복된 이메일입니다.';
 export const ERROR_MESSAGE_UNKNOWN = '알 수 없는 에러가 발생했습니다.';
+export const SUCCESS_SIGNUP = '회원가입에 성공했습니다.';

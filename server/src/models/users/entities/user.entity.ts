@@ -21,7 +21,7 @@ export class User implements Express.User {
 
   // hashed by bcrypt
   @Exclude()
-  @Column({ type: 'char', length: 60 })
+  @Column({ type: 'char', length: 60, nullable: true })
   password: string;
 
   @Expose({ groups: ['me'] })
