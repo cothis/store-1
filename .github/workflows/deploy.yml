@@ -12,7 +12,7 @@ jobs:
       - name: Use Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '14.x'
+          node-version: "14.x"
 
       - name: install yarn
         run: npm i -g yarn
@@ -23,13 +23,13 @@ jobs:
           cat << EOF >> .env.prod
           ${{ secrets.CLIENT_ENV_PROD }}
           EOF
-        working-directory: './client'
+        working-directory: "./client"
 
       - name: client build
         run: |
           yarn install
           yarn build:no-check
-        working-directory: './client'
+        working-directory: "./client"
 
       - name: create config.yaml
         run: |
@@ -37,7 +37,7 @@ jobs:
           cat << EOF >> config.yaml
           ${{ secrets.CONFIG }}
           EOF
-        working-directory: './server/src/config'
+        working-directory: "./server/src/config"
 
       - name: create seed password.json
         run: |
@@ -45,12 +45,12 @@ jobs:
           cat << EOF >> password.json
           ${{ secrets.SEED_PASSWORD }}
           EOF
-        working-directory: './server/seed/data'
+        working-directory: "./server/seed/data"
 
       - name: compose
-        run: zip -r ./dist.zip ./server ./appspec.yml ./client/build/ ./deploy ./docker-compose.yml
+        run: zip -r ./dist.zip ./server ./appspec.yml ./client/build/ ./deploy ./docker-compose.yml ./elk
 
-      - name: aws credentail
+      - name: aws credential
         uses: aws-actions/configure-aws-credentials@v1
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
