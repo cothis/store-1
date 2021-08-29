@@ -78,4 +78,17 @@ export class BoardRepository {
   saveBoardContent(boardContent: BoardContent): Promise<BoardContent> {
     return this.connection.getRepository(BoardContent).save(boardContent);
   }
+
+  findBoardContentByIdWithUser(id: string): Promise<BoardContent> {
+    return this.connection
+      .getRepository(BoardContent)
+      .createQueryBuilder('content')
+      .where('content.id = :id', { id })
+      .leftJoinAndSelect('content.user', 'user')
+      .getOne();
+  }
+
+  deleteBoardContent(boardContent: BoardContent): Promise<BoardContent> {
+    return this.connection.getRepository(BoardContent).remove(boardContent);
+  }
 }

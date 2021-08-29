@@ -22,6 +22,7 @@ import { User } from './entities/user.entity';
 import { JwtAuthGuard } from 'src/auth/jwt.guard';
 import { BoardResponseDto } from '../board/dto/board-response.dto';
 import { BoardService } from '../board/board.service';
+import { ONE_PAGE_COUNT } from '../board/board.repository';
 
 @Controller('api/v1/users')
 @UseInterceptors(ClassSerializerInterceptor)
@@ -43,8 +44,15 @@ export class UserController {
   async getMyReviews(
     @Req() req: Request,
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
+    @Query('onePageCount', new DefaultValuePipe(ONE_PAGE_COUNT), ParseIntPipe) onePageCount: number,
   ): Promise<BoardResponseDto> {
-    return this.boardService.getProductBoard({ slug: 'review', page, userId: req.user!.id, forProduct: true });
+    return this.boardService.getProductBoard({
+      slug: 'review',
+      page,
+      userId: req.user!.id,
+      forProduct: true,
+      onePageCount,
+    });
   }
 
   @UseGuards(JwtAuthGuard)
@@ -53,8 +61,15 @@ export class UserController {
   async getMyQuestions(
     @Req() req: Request,
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
+    @Query('onePageCount', new DefaultValuePipe(ONE_PAGE_COUNT), ParseIntPipe) onePageCount: number,
   ): Promise<BoardResponseDto> {
-    return this.boardService.getProductBoard({ slug: 'question', page, userId: req.user!.id, forProduct: true });
+    return this.boardService.getProductBoard({
+      slug: 'question',
+      page,
+      userId: req.user!.id,
+      forProduct: true,
+      onePageCount,
+    });
   }
 
   @Get('/:id')

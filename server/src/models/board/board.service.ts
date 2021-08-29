@@ -1,5 +1,5 @@
 import { AppConfigService } from '@/config/app.service';
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import path from 'path';
 import { Product } from '../product/entities/product.entity';
 import { User } from '../users/entities/user.entity';
@@ -80,5 +80,35 @@ export class BoardService {
     boardContent.title = createContent.title;
 
     return this.boardRepository.saveBoardContent(boardContent);
+  }
+
+  async editBoardContent(contentId: string, userId: string, createContent: CreateContentDto): Promise<BoardContent> {
+    // 게시물 존재 확인
+    const content = await this.boardRepository.findBoardContentByIdWithUser(contentId);
+    if (!content) {
+      throw new NotFoundException('해당 게시물이 존재하지 않습니다.');
+    }
+    // 게시물 주인인지 확인
+    if (content.user.id !== userId) {
+      throw new ForbiddenException('해당 게시물에 권한이 없습니다.');
+    }
+    // 게시물 수정
+    content.title = createContent.title;
+    content.content = createContent.content;
+    return this.boardRepository.saveBoardContent(content);
+  }
+
+  async deleteBoardContent(contentId: string, userId: string): Promise<void> {
+    // 게시물 존재 확인
+    const content = await this.boardRepository.findBoardContentByIdWithUser(contentId);
+    if (!content) {
+      throw new NotFoundException('해당 게시물이 존재하지 않습니다.');
+    }
+    // 게시물 주인인지 확인
+    if (content.user.id !== userId) {
+      throw new ForbiddenException('해당 게시물에 권한이 없습니다.');
+    }
+    // 게시물 삭제
+    await this.boardRepository.deleteBoardContent(content);
   }
 }

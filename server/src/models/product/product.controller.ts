@@ -3,6 +3,7 @@ import {
   ClassSerializerInterceptor,
   Controller,
   DefaultValuePipe,
+  Delete,
   Get,
   HttpCode,
   HttpStatus,
@@ -84,6 +85,23 @@ export class ProductController {
     return this.boardService.writeBoardContent('review', req.user!.id, review, id);
   }
 
+  @UseGuards(JwtAuthGuard)
+  @Put(':id/reviews/:reviewId')
+  putReview(
+    @Param('reviewId') reviewId: string,
+    @Body() review: CreateContentDto,
+    @Req() req: Request,
+  ): Promise<BoardContent> {
+    return this.boardService.editBoardContent(reviewId, req.user!.id, review);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Delete(':id/reviews/:reviewId')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  deleteReview(@Param('reviewId') reviewId: string, @Req() req: Request): Promise<void> {
+    return this.boardService.deleteBoardContent(reviewId, req.user!.id);
+  }
+
   @Get(':id/questions')
   @SerializeOptions({ groups: ['comment'] })
   getQuestions(
@@ -103,6 +121,23 @@ export class ProductController {
     @Req() req: Request,
   ): Promise<BoardContent> {
     return this.boardService.writeBoardContent('question', req.user!.id, question, id);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Put(':id/questions/:questionId')
+  putQuestion(
+    @Param('questionId') questionId: string,
+    @Body() question: CreateContentDto,
+    @Req() req: Request,
+  ): Promise<BoardContent> {
+    return this.boardService.editBoardContent(questionId, req.user!.id, question);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Delete(':id/questions/:questionId')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  deleteQuestion(@Param('questionId') questionId: string, @Req() req: Request): Promise<void> {
+    return this.boardService.deleteBoardContent(questionId, req.user!.id);
   }
 
   @Get('/keywords')
