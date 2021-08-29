@@ -1,28 +1,58 @@
 import styled from '@lib/styled-components';
-import { MouseEventHandler, useCallback } from 'react';
+import { MouseEventHandler, ChangeEventHandler, KeyboardEventHandler, FocusEventHandler, useCallback } from 'react';
+
+const MAX_VALUE = 99;
+const MIN_VALUE = 1;
 
 interface CountProps {
   count: number;
   setCount: Function;
 }
 
-const MAX_VALUE = 99;
-const MIN_VALUE = 1;
+export default function Count({ count, setCount }: CountProps) {
+  const changeHandler: ChangeEventHandler<HTMLInputElement> = useCallback(
+    (e) => {
+      const value = Number(e.target.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1'));
+      setCount(value > MAX_VALUE ? MAX_VALUE : value);
+    },
+    [setCount],
+  );
 
-const Count = function ({ count, setCount }: CountProps) {
-  const changeHandler = useCallback((e) => {
-    const value = Number(e.target.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1'));
-    setCount(value > MAX_VALUE ? MAX_VALUE : value);
-  }, []);
-  const upClickHandler: MouseEventHandler = () => {
+  const blurHandler: FocusEventHandler<HTMLInputElement> = useCallback(
+    (e) => {
+      const value = Number(e.target.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1'));
+      if (value === 0) {
+        setCount(MIN_VALUE);
+      }
+    },
+    [setCount],
+  );
+
+  const keyDownHandler: KeyboardEventHandler = useCallback(
+    (e) => {
+      switch (e.key) {
+        case 'ArrowUp':
+          if (count < MAX_VALUE) setCount(count + 1);
+          break;
+        case 'ArrowDown':
+          if (count > MIN_VALUE) setCount(count - 1);
+          break;
+      }
+    },
+    [count, setCount],
+  );
+
+  const upClickHandler: MouseEventHandler = useCallback(() => {
     if (count < MAX_VALUE) setCount(count + 1);
-  };
-  const downClickHandler: MouseEventHandler = () => {
+  }, [count, setCount]);
+
+  const downClickHandler: MouseEventHandler = useCallback(() => {
     if (count > MIN_VALUE) setCount(count - 1);
-  };
+  }, [count, setCount]);
+
   return (
     <Div>
-      <Input value={count} onChange={changeHandler} />
+      <Input value={count} onChange={changeHandler} onKeyDown={keyDownHandler} onBlur={blurHandler} />
       <ButtonArea>
         <Button onClick={upClickHandler} disabled={count >= MAX_VALUE}>
           <i className="fas fa-chevron-up"></i>
@@ -33,7 +63,7 @@ const Count = function ({ count, setCount }: CountProps) {
       </ButtonArea>
     </Div>
   );
-};
+}
 
 const Div = styled.div`
   width: 65px;
@@ -66,5 +96,3 @@ const Button = styled.button`
     opacity: 0.3;
   }
 `;
-
-export default Count;
