@@ -55,6 +55,11 @@ export default function LoginForm() {
         <Checkbox ref={saveId} type="checkbox" />
         <span>아이디 저장</span>
       </CheckboxArea>
+      <Hint>
+        데모용으로 쉽게 로그인 하세요!
+        <br />
+        아이디: <strong>demo</strong>, 비밀번호: <strong>demo</strong>
+      </Hint>
       <LoginButton disabled={login.isLoading} type="submit">
         {login.isLoading ? <Loading /> : '로그인'}
       </LoginButton>
@@ -90,6 +95,18 @@ const Checkbox = styled.input`
   width: 20px;
   height: 20px;
   margin-right: 8px;
+`;
+
+const Hint = styled.div`
+  margin-bottom: 1rem;
+  padding: 0.5rem;
+  border: 1px solid transparent;
+  border-radius: 0.25rem;
+  color: #664d03;
+  background-color: #fff3cd;
+  border-color: #ffecb5;
+  line-height: 1.3;
+  text-align: center;
 `;
 
 const LoginButton = styled.button`
