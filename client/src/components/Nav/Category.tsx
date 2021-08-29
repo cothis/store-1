@@ -192,10 +192,16 @@ const CategoryWrapper = styled.div`
       stroke-linecap: round;
       stroke-linejoin: round;
     }
+    &:hover {
+      cursor: pointer;
+    }
   }
   > p {
     height: 100%;
     text-align: center;
+    &:hover {
+      cursor: pointer;
+    }
   }
   @media (max-width: ${({ theme }) => theme.media.mobile}) {
     position: static;

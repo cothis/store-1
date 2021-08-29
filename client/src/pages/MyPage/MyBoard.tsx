@@ -36,8 +36,14 @@ export default function MyBoard() {
   return (
     <MyBoardPage>
       <TitleWithBorder>{header}</TitleWithBorder>
-      <div className="mypage__board">{data && <Board board={data} type={type} />}</div>
-      {data && <Pagination path={path} currentPage={page} link totalPage={data.totalPage} />}
+      {data && data.contents.length === 0 ? (
+        <p className="mypage__board--empty">텅</p>
+      ) : (
+        <>
+          <div className="mypage__board">{data && <Board board={data} type={type} />}</div>
+          {data && <Pagination path={path} currentPage={page} link totalPage={data.totalPage} />}{' '}
+        </>
+      )}
     </MyBoardPage>
   );
 }
@@ -50,5 +56,11 @@ const MyBoardPage = styled.div`
   .mypage__board {
     width: 100%;
     border-radius: 6px;
+  }
+  .mypage__board--empty {
+    font-family: 'Do Hyeon', 'sans-serif';
+    font-size: 7rem;
+    margin: 0.5em 0;
+    text-align: center;
   }
 `;

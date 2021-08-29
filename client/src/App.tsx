@@ -10,6 +10,7 @@ import Route from '@lib/router/Route';
 
 // components
 import Nav from '@components/Nav/Nav';
+import SNB from '@components/SNB';
 import Error from '@components/Error';
 import ToastifyContainer from '@components/Toastify/ToastifyContainer';
 import Footer from '@components/Footer';
@@ -61,6 +62,7 @@ const App = () => {
             >
               <BrowseRouter>
                 <Nav />
+                <SNB />
                 <AppContent>
                   <Switch>
                     <Route exact path="/">

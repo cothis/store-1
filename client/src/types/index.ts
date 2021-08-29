@@ -153,3 +153,8 @@ export interface IBoardPostBody {
 }
 
 export type BoardType = 'reviews' | 'questions' | 'notice';
+
+export interface IRecentProduct {
+  id: string;
+  imageUrl: string;
+}

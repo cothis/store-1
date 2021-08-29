@@ -1,4 +1,4 @@
-import { MouseEventHandler, useCallback, useState } from 'react';
+import { MouseEventHandler, useCallback, useState, useEffect } from 'react';
 import styled from '@lib/styled-components';
 import { useProductDetail } from '@hooks/query/products';
 import useParams from '@hooks/useParams';
@@ -14,8 +14,11 @@ import { useCreateOrder } from '@hooks/query/orders/useTempOrders';
 import { useUser } from '@hooks/query/users';
 import notify from '@utils/toastify';
 import useHistory from '@hooks/useHistory';
-import { CreateOrderDto } from '@types';
+import { CreateOrderDto, IRecentProduct } from '@types';
 import { LOGIN_REQUIRED } from '@constants/message';
+import useLocalStorage from '@hooks/useLocalStorage';
+
+const MAX_RECENT_PRODUCT = 6;
 
 const Product = function () {
   const [count, setCount] = useState(1);
@@ -24,6 +27,16 @@ const Product = function () {
   const { mutate: createOrder, isLoading: isCreating } = useCreateOrder();
   const { isError: needLogin, data: user } = useUser();
   const history = useHistory();
+  const [recentProduct, setRecentProduct] = useLocalStorage<IRecentProduct[]>('recent', []);
+
+  useEffect(() => {
+    if (data) {
+      const newRecentProduct = recentProduct.filter(({ id }) => id !== data.id);
+      newRecentProduct.unshift({ id: data.id, imageUrl: data.imageUrl });
+      if (newRecentProduct.length > MAX_RECENT_PRODUCT) newRecentProduct.pop();
+      setRecentProduct(newRecentProduct);
+    }
+  }, [data]);
 
   const handleBuyButtonClick: MouseEventHandler = useCallback(() => {
     // 로그인 체크
