@@ -9,15 +9,12 @@ const activeStyle: CSSProperties = {
 };
 
 const MenuBar = function () {
-  const { pathname } = usePath();
-  const changeInfomationPath = pathname === '/my-page/edit' ? pathname : '/my-page/confirm';
-
   return (
     <MenuTab>
       <Title>메뉴</Title>
       <Menu>
         <MenuItem>
-          <NavLink exact to={changeInfomationPath} activeStyle={activeStyle}>
+          <NavLink exact to="/my-page/edit" activeStyle={activeStyle}>
             회원정보 변경
           </NavLink>
         </MenuItem>

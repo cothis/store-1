@@ -1,5 +1,6 @@
-import { EntityRepository, Repository } from 'typeorm';
+import { EntityRepository, Repository, UpdateResult } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
 
 @EntityRepository(User)
@@ -16,9 +17,9 @@ export class UserRepository extends Repository<User> {
     return await this.save(createUserDto);
   }
 
-  async updateEntity(id: string, user: User): Promise<User> {
-    const entity = this.findById(id);
-    return await this.save({ ...entity, ...user });
+  async updateEntity(id: string, updateUserDto: UpdateUserDto): Promise<UpdateResult> {
+    const entity = await this.findById(id);
+    return await this.update(id, { ...entity, ...updateUserDto });
   }
 
   async deleteEntity(id: string): Promise<boolean> {

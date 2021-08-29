@@ -41,7 +41,7 @@ export function AuthenticatedContent({ username, setAuthToggle }: Props) {
           setAuthToggle(false);
         }}
       >
-        <Link to="/my-page/confirm">
+        <Link to="/my-page/edit">
           <p className="dohyeon">내 정보 변경</p>
         </Link>
       </div>

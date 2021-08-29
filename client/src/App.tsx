@@ -23,7 +23,6 @@ import Signup from '@pages/Signup/Signup';
 import Error404 from '@pages/Error404';
 import ProductsPreview from '@pages/ProductsPreview';
 import MyPageEdit from '@pages/MyPage/MyPageEdit';
-import MyPageConfirm from '@pages/MyPage/MyPageConfirm';
 import Terms from '@pages/Terms';
 import Cart from '@pages/Cart';
 import Order from '@pages/Order/Order';
@@ -67,9 +66,6 @@ const App = () => {
                   <Switch>
                     <Route exact path="/">
                       <Home />
-                    </Route>
-                    <Route exact path="/my-page/confirm">
-                      <MyPageLayout component={MyPageConfirm} />
                     </Route>
                     <Route exact path="/my-page/edit">
                       <MyPageLayout component={MyPageEdit} />
