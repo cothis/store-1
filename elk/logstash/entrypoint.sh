@@ -20,7 +20,7 @@ curl -XPUT "elasticsearch:9200/store" -H 'Content-Type: application/json' -d'
       "tokenizer": {
         "autocomplete": {
           "type": "edge_ngram",
-          "min_gram": 2,
+          "min_gram": 1,
           "max_gram": 20,
           "token_chars": [
             "letter",

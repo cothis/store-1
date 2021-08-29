@@ -2,18 +2,23 @@ import path from 'path';
 
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ProductListPage } from './dto/product-list-page.dto';
-import { ProductRepository } from './product.repository';
+import { ElasticsearchService } from '@nestjs/elasticsearch';
+import { EntityManager, TransactionManager } from 'typeorm';
 
-import { SortType } from './enums/sort-type.enum';
+import { ProductRepository } from './product.repository';
 import { ONE_PAGE_COUNT } from './product.repository';
 import { CategoryRepository } from '@models/category/category.repository';
-import { Product } from './entities/product.entity';
+
 import { AppConfigService } from 'src/config/app.service';
-import { MainBlock, ProductBannerListBlock, ProductListBlock, SlideBannerBlock } from './dto/main-block.dto';
-import { ProductTag } from './enums/product-tag.enum';
-import { EntityManager, TransactionManager } from 'typeorm';
 import { BoardService } from '../board/board.service';
+
+import { Product } from './entities/product.entity';
+import { MainBlock, ProductBannerListBlock, ProductListBlock, SlideBannerBlock } from './dto/main-block.dto';
+import { ProductListPage } from './dto/product-list-page.dto';
+import { SortType } from './enums/sort-type.enum';
+import { ProductTag } from './enums/product-tag.enum';
+import { ElasticService, ProductIdAndTitle } from '@/elastic/elastic.service';
+
 @Injectable()
 export class ProductService {
   private s3: string;
@@ -21,6 +26,7 @@ export class ProductService {
   constructor(
     @InjectRepository(ProductRepository) private readonly productRepository: ProductRepository,
     @InjectRepository(CategoryRepository) private readonly categoryRepository: CategoryRepository,
+    private readonly elasticService: ElasticService,
     readonly appConfigService: AppConfigService,
     private readonly boardService: BoardService,
   ) {
@@ -61,12 +67,10 @@ export class ProductService {
     }
 
     if (keyword) {
-      // TODO: elastic search와 연결
-      if (keyword.length < 2) {
-        throw new BadRequestException('keyword는 두글자 이상이여야 합니다.');
-      }
       result.keyword = keyword;
-      [result.products, result.totalCount] = await this.productRepository.findByKeywordAndCount(keyword, sort, page);
+      const productIdAndTitles = await this.elasticService.getProducts(keyword);
+      const ids = productIdAndTitles.map((x) => x.id);
+      [result.products, result.totalCount] = await this.productRepository.findByKeywordAndCount(ids, sort, page);
     }
 
     result.totalPage = Math.ceil(result.totalCount / ONE_PAGE_COUNT);
@@ -134,5 +138,9 @@ export class ProductService {
     });
 
     return [slideBanner, best, news, productBanner, sale];
+  }
+
+  getKeywords(query: string): Promise<ProductIdAndTitle[]> {
+    return this.elasticService.getProducts(query);
   }
 }

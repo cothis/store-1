@@ -19,4 +19,8 @@ export class AppConfigService {
   get s3(): string {
     return this.configService.get<string>('app.s3');
   }
+
+  get elasticsearch(): string {
+    return this.configService.get<string>('app.elasticsearch');
+  }
 }

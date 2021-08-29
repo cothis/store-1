@@ -30,12 +30,12 @@ services:
           - db
   elasticsearch:
     build:
-      context: ../elk/elasticsearch/
+      context: ../../elk/elasticsearch/
       args:
         ELK_VERSION: 7.14.0
     volumes:
       - type: bind
-        source: ../elk/elasticsearch/config/elasticsearch.yml
+        source: ../../elk/elasticsearch/config/elasticsearch.yml
         target: /usr/share/elasticsearch/config/elasticsearch.yml
         read_only: true
       - type: volume
@@ -49,12 +49,12 @@ services:
       default:
   kibana:
     build:
-      context: ../elk/kibana/
+      context: ../../elk/kibana/
       args:
         ELK_VERSION: 7.14.0
     volumes:
       - type: bind
-        source: ../elk/kibana/config/kibana.yml
+        source: ../../elk/kibana/config/kibana.yml
         target: /usr/share/kibana/config/kibana.yml
         read_only: true
     environment:
@@ -67,18 +67,18 @@ services:
       - elasticsearch
   logstash:
     build:
-      context: ../elk/logstash/
+      context: ../../elk/logstash/
       args:
         ELK_VERSION: 7.14.0
     links:
       - 'elasticsearch'
     volumes:
       - type: bind
-        source: ../elk/logstash/config/logstash.yml
+        source: ../../elk/logstash/config/logstash.yml
         target: /usr/share/logstash/config/logstash.yml
         read_only: true
       - type: bind
-        source: ../elk/logstash/pipeline
+        source: ../../elk/logstash/pipeline
         target: /usr/share/logstash/pipeline
         read_only: true
     environment:

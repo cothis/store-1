@@ -34,6 +34,7 @@ import { SortType } from './enums/sort-type.enum';
 import { Product } from './entities/product.entity';
 import { BoardContent } from '../board/entities/board-content.entity';
 import { ONE_PAGE_COUNT } from '../board/board.repository';
+import { ProductIdAndTitle } from '@/elastic/elastic.service';
 
 @UseInterceptors(ClassSerializerInterceptor)
 @Controller('api/v1/products')
@@ -102,5 +103,10 @@ export class ProductController {
     @Req() req: Request,
   ): Promise<BoardContent> {
     return this.boardService.writeBoardContent('question', req.user!.id, question, id);
+  }
+
+  @Get('/keywords')
+  getKeywords(@Param('query') query: string): Promise<ProductIdAndTitle[]> {
+    return this.productService.getKeywords(query);
   }
 }

@@ -66,18 +66,15 @@ export class ProductRepository extends Repository<Product> {
     return [products, count];
   }
 
-  async findByKeywordAndCount(keyword: string, sort: SortType, page: number): Promise<[Product[], number]> {
-    let query = this.createQueryBuilder('product').where('product.title LIKE :keyword', { keyword: `%${keyword}%` });
+  async findByKeywordAndCount(ids: string[], sort: SortType, page: number): Promise<[Product[], number]> {
+    const count = ids.length;
 
+    let query = this.createQueryBuilder('product').whereInIds(ids);
     query = this.withSort(query, sort);
-
     const products = await query
       .offset(ONE_PAGE_COUNT * (page - 1))
       .limit(ONE_PAGE_COUNT)
       .getMany();
-    const count = await this.createQueryBuilder('product')
-      .where('product.title LIKE :keyword', { keyword: `%${keyword}%` })
-      .getCount();
 
     return [products, count];
   }
