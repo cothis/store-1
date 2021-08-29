@@ -29,6 +29,7 @@ import Cart from '@pages/Cart';
 import Order from '@pages/Order/Order';
 import Product from '@pages/Product';
 import Notice from '@pages/Notice';
+import MyBoard from '@pages/MyPage/MyBoard';
 
 // react-query
 import { QueryClient, QueryClientProvider, QueryErrorResetBoundary } from 'react-query';
@@ -71,6 +72,12 @@ const App = () => {
                     </Route>
                     <Route exact path="/my-page/edit">
                       <MyPageEdit />
+                    </Route>
+                    <Route exact path="/my-page/review">
+                      <MyBoard />
+                    </Route>
+                    <Route exact path="/my-page/qna">
+                      <MyBoard />
                     </Route>
                     <Route exact path="/signin">
                       <Signin />

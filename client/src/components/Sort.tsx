@@ -4,7 +4,7 @@ import usePath from '@hooks/usePath';
 
 export default function Sort() {
   const path = usePath();
-  const current = path.search.sort;
+  const current = path.search.sort || '';
   return (
     <SortWrapper>
       <li className="sort--item">

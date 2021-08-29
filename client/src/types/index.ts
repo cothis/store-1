@@ -134,3 +134,11 @@ export interface IBoardPostBody {
 }
 
 export type BoardType = 'reviews' | 'questions' | 'notice';
+
+export interface IMyBoard extends IBoard {
+  contents: IMyBoardContent[];
+}
+
+export interface IMyBoardContent extends IBoardContent {
+  product: IProductListItem;
+}

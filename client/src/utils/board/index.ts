@@ -13,6 +13,14 @@ type INoticeKey = [
   },
 ];
 
+type MyBoardKey = [
+  string,
+  {
+    page: number;
+    type: BoardType;
+  },
+];
+
 export async function fetchBoard({ queryKey }: QueryFunctionContext) {
   const [key, { id, page, onePageCount }] = queryKey as INoticeKey;
   const url =
@@ -22,6 +30,14 @@ export async function fetchBoard({ queryKey }: QueryFunctionContext) {
 
   const result = await axios.get(url);
 
+  return result.data;
+}
+
+export async function fetchMyBoard({ queryKey }: QueryFunctionContext) {
+  const [_key, { page, type }] = queryKey as MyBoardKey;
+  const url = `/api/v1/users/me/${type}?page=${page}&onePageCount=5`;
+
+  const result = await axios.get(url);
   return result.data;
 }
 
