@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback, ChangeEventHandler, MouseEventHandler } from 'react';
+import { useState, useMemo, useCallback, ChangeEventHandler, MouseEventHandler, useEffect } from 'react';
 import styled from '@lib/styled-components';
 import useLocalStorage from '@hooks/useLocalStorage';
 import Link from '@lib/router/Link';
@@ -22,8 +22,13 @@ interface IChecked {
 }
 
 function CartForm() {
-  const [cart, setCart] = useLocalStorage<ICart[]>('cart', []);
+  const [cartLocal, setCartLocal] = useLocalStorage<ICart[]>('cart', []);
+  const [cart, setCart] = useState<ICart[]>(cartLocal);
   const setCartDebouncer = debouncer<void>();
+
+  useEffect(() => {
+    setCartDebouncer(setCartLocal, 400, cart);
+  }, [cart]);
 
   const initialChecked: IChecked = cart.reduce((acc, product) => {
     acc[product.id] = true;
@@ -72,7 +77,7 @@ function CartForm() {
       product.count = type === 'plus' ? product.count + 1 : product.count - 1;
       return product;
     });
-    setCartDebouncer(setCart, 400, newCart);
+    setCart(newCart);
   };
 
   const deleteBtnClickHandler: MouseEventHandler = useCallback(
