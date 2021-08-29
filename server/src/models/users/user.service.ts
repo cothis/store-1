@@ -4,6 +4,8 @@ import { UserRepository } from './user.repository';
 import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './entities/user.entity';
 import bcrypt from 'bcrypt';
+import { UpdateUserDto } from './dto/update-user.dto';
+import { UpdateResult } from 'typeorm';
 
 @Injectable()
 export class UserService {
@@ -30,8 +32,11 @@ export class UserService {
     }
   }
 
-  async updateEntity(id: string, user: User): Promise<User> {
-    return await this.userRepository.updateEntity(id, user);
+  async updateEntity(id: string, updateUserDto: UpdateUserDto): Promise<UpdateResult> {
+    return await this.userRepository.updateEntity(id, {
+      ...updateUserDto,
+      password: updateUserDto.password ? await bcrypt.hash(updateUserDto.password, 10) : null,
+    });
   }
 
   async deleteEntity(id: string): Promise<boolean> {

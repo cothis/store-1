@@ -25,6 +25,8 @@ import { ONE_PAGE_COUNT as PRODUCT_ONE_PAGE_COUNT } from '@/models/product/produ
 import { ProductListPageDto } from '../product/dto/product-list-page.dto';
 import { ProductService } from '../product/product.service';
 import { ForUser } from '@/auth/decorators/for-user.decorator';
+import { UpdateUserDto } from './dto/update-user.dto';
+import { UpdateResult } from 'typeorm';
 
 declare module 'express-session' {
   interface SessionData {
@@ -45,7 +47,6 @@ export class UserController {
   @SerializeOptions({ groups: ['me'] })
   @Get('/me')
   async getMe(@Req() req: Request): Promise<User> {
-    console.log(req.user);
     const userId = req.user.id;
     const user = await this.userService.findById(userId);
     return user;
@@ -110,8 +111,8 @@ export class UserController {
   }
 
   @Put('/:id')
-  async update(@Param('id') id: string, @Body() user: User): Promise<User> {
-    return await this.userService.updateEntity(id, user);
+  async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto): Promise<UpdateResult> {
+    return await this.userService.updateEntity(id, updateUserDto);
   }
 
   @Delete('/:id')
