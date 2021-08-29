@@ -1,7 +1,6 @@
 import { User } from '@models/users/entities/user.entity';
 import { OrderHasProduct } from './order-has-product.entity';
 import {
-  AfterLoad,
   Column,
   CreateDateColumn,
   Entity,
@@ -14,9 +13,7 @@ import {
 } from 'typeorm';
 import { OrderStatus } from '../enums/order-status.enum';
 import { IsEnum, IsString } from 'class-validator';
-interface AA {
-  number: number;
-}
+
 @Entity()
 export class Order {
   @PrimaryGeneratedColumn('increment', { type: 'bigint', unsigned: true })

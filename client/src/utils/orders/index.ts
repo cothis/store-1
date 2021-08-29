@@ -21,3 +21,21 @@ export const fetchMyOrders = async (status: string, page: number) => {
   if (!data) throw new Error('텅 비었다');
   return data;
 };
+
+export function orderStateToKorean(status: OrderStatus): string {
+  switch (status) {
+    case OrderStatus.READY:
+      return '주문신청';
+    case OrderStatus.ACCEPTED:
+      return '주문확인';
+    case OrderStatus.DELIVERING:
+      return '배송중';
+    case OrderStatus.DONE:
+      return '배송완료';
+    case OrderStatus.CANCELED:
+      return '취소';
+    case OrderStatus.REFUNDED:
+      return '환불';
+  }
+  return '';
+}

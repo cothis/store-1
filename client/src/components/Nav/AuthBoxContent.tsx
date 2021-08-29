@@ -34,7 +34,9 @@ export function AuthenticatedContent({ username, setAuthToggle }: Props) {
         </div>
         <p className="dohyeon header">나이스 투 미츄!</p>
       </div>
+
       <img src={DividerOne} />
+
       <div
         className="box-content"
         onClick={() => {
@@ -45,40 +47,9 @@ export function AuthenticatedContent({ username, setAuthToggle }: Props) {
           <p className="dohyeon">내 정보 변경</p>
         </Link>
       </div>
-      <img src={DividerTwo} />
-      <div
-        className="box-content"
-        onClick={() => {
-          setAuthToggle(false);
-        }}
-      >
-        <Link to="/my-page/like">
-          <p className="dohyeon">내가 좋아한 상품</p>
-        </Link>
-      </div>
-      <img src={DividerTwo} />
-      <div
-        className="box-content"
-        onClick={() => {
-          setAuthToggle(false);
-        }}
-      >
-        <Link to="/my-page/review">
-          <p className="dohyeon">내 상품 후기</p>
-        </Link>
-      </div>
+
       <img src={DividerOne} />
-      <div
-        className="box-content"
-        onClick={() => {
-          setAuthToggle(false);
-        }}
-      >
-        <Link to="/my-page/qna">
-          <p className="dohyeon">내 상품 문의</p>
-        </Link>
-      </div>
-      <img src={DividerTwo} />
+
       <div
         className="box-content"
         onClick={() => {
@@ -89,7 +60,45 @@ export function AuthenticatedContent({ username, setAuthToggle }: Props) {
           <p className="dohyeon">내 구매 목록</p>
         </Link>
       </div>
+
       <img src={DividerTwo} />
+
+      <div
+        className="box-content"
+        onClick={() => {
+          setAuthToggle(false);
+        }}
+      >
+        <Link to="/my-page/like">
+          <p className="dohyeon">내가 좋아한 상품</p>
+        </Link>
+      </div>
+
+      <img src={DividerTwo} />
+
+      <div
+        className="box-content"
+        onClick={() => {
+          setAuthToggle(false);
+        }}
+      >
+        <Link to="/my-page/review">
+          <p className="dohyeon">내 상품 후기</p>
+        </Link>
+      </div>
+
+      <img src={DividerTwo} />
+
+      <div
+        className="box-content"
+        onClick={() => {
+          setAuthToggle(false);
+        }}
+      >
+        <Link to="/my-page/qna">
+          <p className="dohyeon">내 상품 문의</p>
+        </Link>
+      </div>
     </>
   );
 }
