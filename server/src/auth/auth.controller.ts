@@ -4,8 +4,7 @@ import { Request, Response } from 'express';
 import { AppConfigService } from 'src/config/app.service';
 import { UserService } from 'src/models/users/user.service';
 import { AuthService } from './auth.service';
-import { JwtAuthGuard } from './jwt.guard';
-import { LocalAuthGuard } from './local.guard';
+import { LocalAuthGuard } from './guards/local.guard';
 
 @Controller('api/v1/auth')
 export class AuthController {
@@ -47,28 +46,15 @@ export class AuthController {
 
   @UseGuards(LocalAuthGuard)
   @Post('login')
-  @HttpCode(HttpStatus.OK)
-  login(@Req() req: Request, @Res() res: Response) {
+  @HttpCode(HttpStatus.NO_CONTENT)
+  login(@Req() req: Request, @Res({ passthrough: true }) res: Response) {
     res.cookie('jwt', this.authService.login(req.user), { httpOnly: true });
-    res.json(req.user);
-  }
-
-  @Get('/test')
-  testLogin(@Res() res: Response) {
-    res.cookie('jwt', this.authService.login({ id: '1' }));
-    res.json('ok');
-  }
-
-  @UseGuards(JwtAuthGuard)
-  @Get('/test-jwt-guard')
-  async testJwtGuard() {
-    return 'ok';
   }
 
   @Get('/logout')
+  @HttpCode(HttpStatus.NO_CONTENT)
   async logout(@Req() req: Request, @Res({ passthrough: true }) res: Response) {
     res.clearCookie('jwt');
     req.session.destroy(() => {});
-    return { ok: true };
   }
 }

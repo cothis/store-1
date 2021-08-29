@@ -1,8 +1,8 @@
 import path from 'path';
 
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ElasticsearchService } from '@nestjs/elasticsearch';
+import { ElasticService, ProductIdAndTitle } from '@/elastic/elastic.service';
 import { EntityManager, TransactionManager } from 'typeorm';
 
 import { ProductRepository } from './product.repository';
@@ -14,10 +14,10 @@ import { BoardService } from '../board/board.service';
 
 import { Product } from './entities/product.entity';
 import { MainBlock, ProductBannerListBlock, ProductListBlock, SlideBannerBlock } from './dto/main-block.dto';
-import { ProductListPage } from './dto/product-list-page.dto';
+import { ProductListPageDto } from './dto/product-list-page.dto';
+import { LikeDto } from './dto/like.dto';
 import { SortType } from './enums/sort-type.enum';
 import { ProductTag } from './enums/product-tag.enum';
-import { ElasticService, ProductIdAndTitle } from '@/elastic/elastic.service';
 
 @Injectable()
 export class ProductService {
@@ -42,12 +42,12 @@ export class ProductService {
     keyword: string | null,
     sort: SortType = SortType.LATEST,
     page: number = 1,
-  ): Promise<ProductListPage> {
+  ): Promise<ProductListPageDto> {
     if (page < 1) {
       page = 1;
     }
 
-    const result = new ProductListPage();
+    const result = new ProductListPageDto();
 
     if (!categoryId && !keyword) {
       [result.products, result.totalCount] = await this.productRepository.findAllAndCount(sort, page);
@@ -83,8 +83,14 @@ export class ProductService {
     return result;
   }
 
-  async getById(id: string, manager?: EntityManager): Promise<Product> {
-    const product = await this.productRepository.findWithRecommends(id, manager);
+  async getById(id: string, userId?: string): Promise<Product>;
+  async getById(id: string, manager?: EntityManager): Promise<Product>;
+  async getById(id: string, userIdOrManager?: string | EntityManager): Promise<Product> {
+    const product = await this.productRepository.findWithRecommends(
+      id,
+      typeof userIdOrManager === 'string' ? userIdOrManager : null,
+      userIdOrManager instanceof EntityManager ? userIdOrManager : null,
+    );
     if (!product) {
       throw new NotFoundException('해당 상품이 존재하지 않습니다.');
     }
@@ -142,5 +148,28 @@ export class ProductService {
 
   getKeywords(query: string): Promise<ProductIdAndTitle[]> {
     return this.elasticService.getProducts(query);
+  }
+  async like(likeDto: LikeDto, userId: string): Promise<LikeDto> {
+    const product = await this.productRepository.findOne(likeDto.productId);
+    if (!product) {
+      throw new NotFoundException('해당 상품은 존재하지 않습니다.');
+    }
+
+    await this.productRepository.setLike(product.id, userId, likeDto.like);
+    return likeDto;
+  }
+
+  async getUsersLike(options: { userId: string; onePageCount?: number; page?: number }): Promise<ProductListPageDto> {
+    const { userId } = options;
+    let { page = 1, onePageCount = ONE_PAGE_COUNT } = options;
+    const [products, count] = await this.productRepository.findAllUserLikesAndCount(userId, page, onePageCount);
+
+    const dto = new ProductListPageDto();
+    dto.products = products;
+    dto.totalCount = count;
+    dto.totalPage = Math.ceil(count / onePageCount);
+    dto.currentPage = page;
+
+    return dto;
   }
 }

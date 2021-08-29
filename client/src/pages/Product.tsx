@@ -7,7 +7,7 @@ import Loading from '@components/Loading';
 import Count from '@components/common/Count';
 import ButtonNext from '@components/common/ButtonNext';
 import AddCartButton from '@components/AddCartButton';
-import HeartButton from '@components/common/HeartButton';
+import LikeButton from '@components/common/LikeButton';
 import ProductContent from '@components/ProductContent';
 import ZoomImage from '@components/ZoomImage';
 import { useCreateOrder } from '@hooks/query/orders/useTempOrders';
@@ -91,7 +91,7 @@ const Product = function () {
                 </TotalPriceArea>
                 <ButtonArea>
                   <MiniButtonArea>
-                    <HeartButton initialState={like} />
+                    <LikeButton like={like} productId={id} />
                     <AddCartButton
                       id={id}
                       title={title}

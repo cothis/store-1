@@ -12,24 +12,30 @@ import {
   Query,
   Req,
   SerializeOptions,
-  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { Request } from 'express';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './entities/user.entity';
-import { JwtAuthGuard } from 'src/auth/jwt.guard';
 import { BoardResponseDto } from '../board/dto/board-response.dto';
 import { BoardService } from '../board/board.service';
 import { ONE_PAGE_COUNT } from '../board/board.repository';
+import { ONE_PAGE_COUNT as PRODUCT_ONE_PAGE_COUNT } from '@/models/product/product.repository';
+import { ProductListPageDto } from '../product/dto/product-list-page.dto';
+import { ProductService } from '../product/product.service';
+import { ForUser } from '@/auth/decorators/for-user.decorator';
 
 @Controller('api/v1/users')
 @UseInterceptors(ClassSerializerInterceptor)
 export class UserController {
-  constructor(private readonly userService: UserService, private readonly boardService: BoardService) {}
+  constructor(
+    private readonly userService: UserService,
+    private readonly boardService: BoardService,
+    private readonly productService: ProductService,
+  ) {}
 
-  @UseGuards(JwtAuthGuard)
+  @ForUser()
   @SerializeOptions({ groups: ['me'] })
   @Get('/me')
   async getMe(@Req() req: Request): Promise<User> {
@@ -38,7 +44,7 @@ export class UserController {
     return user;
   }
 
-  @UseGuards(JwtAuthGuard)
+  @ForUser()
   @Get('me/reviews')
   @SerializeOptions({ groups: ['product'] })
   async getMyReviews(
@@ -55,7 +61,7 @@ export class UserController {
     });
   }
 
-  @UseGuards(JwtAuthGuard)
+  @ForUser()
   @Get('me/questions')
   @SerializeOptions({ groups: ['product'] })
   async getMyQuestions(
@@ -70,6 +76,17 @@ export class UserController {
       forProduct: true,
       onePageCount,
     });
+  }
+
+  @ForUser()
+  @Get('me/likes')
+  @SerializeOptions({ groups: ['product'] })
+  async getMyLikes(
+    @Req() req: Request,
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
+    @Query('onePageCount', new DefaultValuePipe(PRODUCT_ONE_PAGE_COUNT), ParseIntPipe) onePageCount: number,
+  ): Promise<ProductListPageDto> {
+    return this.productService.getUsersLike({ userId: req.user!.id, page, onePageCount });
   }
 
   @Get('/:id')

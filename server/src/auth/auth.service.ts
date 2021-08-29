@@ -67,10 +67,10 @@ export class AuthService {
     return { accessToken, oAuthId, email };
   }
 
-  async validateUser(loginId: string, password: string): Promise<Express.User | null> {
+  async validateUser(loginId: string, password: string): Promise<Omit<User, 'password'>> {
     const user = await this.userService.findByLoginId(loginId);
     if (user && (await bcrypt.compare(password, user.password))) {
-      return { id: user.id };
+      return user;
     }
     return null;
   }

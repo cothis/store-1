@@ -3,6 +3,8 @@ import { IMainBlock, IProductListItem, ProductIdAndTitle } from '@types';
 import { fetchProductList, fetchProductDetail, fetchMainPage, fetchProductTitle } from '@utils/product';
 import { Path } from '@lib/router/history';
 
+export const PRODUCT_DETAIL_QUERY_KEY = 'productDetail';
+
 type sortKeyword = 'popular' | 'latest' | 'low-price' | 'high-price ';
 
 interface ProductListPage {
@@ -26,8 +28,12 @@ export function useProductList(path: Path, categoryId?: string) {
   return useQuery<ProductListPage, Error>(['products', { path, categoryId }], fetchProductList);
 }
 
+export function productDetailQueryKey(params: string) {
+  return [PRODUCT_DETAIL_QUERY_KEY, { params }];
+}
+
 export function useProductDetail(params: string) {
-  return useQuery<ProductDetail, Error>(['productDetail', { params }], fetchProductDetail);
+  return useQuery<ProductDetail, Error>(productDetailQueryKey(params), fetchProductDetail);
 }
 
 export function useMainPage() {

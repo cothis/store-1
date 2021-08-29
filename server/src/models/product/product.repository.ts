@@ -6,6 +6,7 @@ import {
   SelectQueryBuilder,
   TransactionManager,
 } from 'typeorm';
+import { Like } from '../users/entities/like.entity';
 import { ProductBanner } from './entities/product-banner.entity';
 import { Product } from './entities/product.entity';
 import { ProductTag } from './enums/product-tag.enum';
@@ -79,14 +80,19 @@ export class ProductRepository extends Repository<Product> {
     return [products, count];
   }
 
-  findWithRecommends(id: string, @TransactionManager() manager?: EntityManager): Promise<Product> {
+  findWithRecommends(id: string, userId?: string, @TransactionManager() manager?: EntityManager): Promise<Product> {
     if (!manager) manager = getManager();
 
-    return manager
+    let query = manager
       .createQueryBuilder(Product, 'product')
       .where('product.id = :id', { id })
-      .leftJoinAndSelect('product.recommends', 'recommend')
-      .getOne();
+      .leftJoinAndSelect('product.recommends', 'recommend');
+
+    if (userId) {
+      query = query.leftJoinAndSelect('product.likes', 'like', 'like.user_id = :userId', { userId });
+    }
+
+    return query.getOne();
   }
 
   async viewCountUp(product: Product): Promise<void> {
@@ -119,5 +125,46 @@ export class ProductRepository extends Repository<Product> {
     }
 
     return products;
+  }
+
+  async setLike(productId: string, userId: string, like: boolean): Promise<void> {
+    const likeRepository = this.manager.getRepository(Like);
+    // WHERE (EXISTS)를 통한 검색 성능 향상
+    const existsQuery = likeRepository
+      .createQueryBuilder('like')
+      .select('like.id')
+      .where('like.product_id = :productId')
+      .andWhere('like.user_id = :userId')
+      .getQuery();
+    const existLike = await likeRepository
+      .createQueryBuilder('gogo')
+      .where(`EXISTS (${existsQuery})`, { productId, userId })
+      .getOne();
+    if (like) {
+      if (!existLike) {
+        await likeRepository.insert({ user: { id: userId }, product: { id: productId } });
+      }
+    } else {
+      if (existLike) {
+        await likeRepository.remove(existLike);
+      }
+    }
+  }
+
+  async findAllUserLikesAndCount(userId: string, page: number, onePageCount: number): Promise<[Product[], number]> {
+    const products = await this.createQueryBuilder('product')
+      .leftJoin('product.likes', 'like')
+      .where('like.user_id = :userId', { userId })
+      .orderBy('like.id', 'DESC')
+      .offset(onePageCount * (page - 1))
+      .limit(onePageCount)
+      .getMany();
+
+    const count = await this.createQueryBuilder('product')
+      .leftJoin('product.likes', 'like')
+      .where('like.user_id = :userId', { userId })
+      .getCount();
+
+    return [products, count];
   }
 }

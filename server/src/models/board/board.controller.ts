@@ -1,5 +1,4 @@
 import { Request } from 'express';
-import { JwtAuthGuard } from '@/auth/jwt.guard';
 import {
   Body,
   ClassSerializerInterceptor,
@@ -13,7 +12,6 @@ import {
   Post,
   Query,
   Req,
-  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { BoardService } from './board.service';
@@ -21,6 +19,7 @@ import { BoardResponseDto } from './dto/board-response.dto';
 import { CreateContentDto } from './dto/create-content.dto';
 import { BoardContent } from './entities/board-content.entity';
 import { ONE_PAGE_COUNT } from './board.repository';
+import { ForAdmin } from '@/auth/decorators/for-admin.decorator';
 
 @Controller('api/v1/boards')
 @UseInterceptors(ClassSerializerInterceptor)
@@ -36,7 +35,7 @@ export class BoardController {
     return this.boardService.getProductBoard({ slug, page, forProduct: false, onePageCount });
   }
 
-  @UseGuards(JwtAuthGuard)
+  @ForAdmin()
   @Post(':slug/contents')
   @HttpCode(HttpStatus.CREATED)
   postBoardContent(

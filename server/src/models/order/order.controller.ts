@@ -11,18 +11,17 @@ import {
   Put,
   Query,
   Req,
-  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { OrderService } from './order.service';
 import { Order } from './entities/order.entity';
-import { JwtAuthGuard } from 'src/auth/jwt.guard';
 import { OrderStatus } from './enums/order-status.enum';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
 import { Request } from 'express';
+import { ForUser } from '@/auth/decorators/for-user.decorator';
 
-@UseGuards(JwtAuthGuard)
+@ForUser()
 @Controller('api/v1/orders')
 @UseInterceptors(ClassSerializerInterceptor)
 export class OrderController {

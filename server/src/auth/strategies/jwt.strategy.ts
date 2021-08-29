@@ -1,10 +1,10 @@
 import { User } from '@models/users/entities/user.entity';
 import { Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
-import { ExtractJwt, Strategy } from 'passport-jwt';
+import { ExtractJwt, JwtFromRequestFunction, Strategy } from 'passport-jwt';
 import { JwtConfigService } from 'src/config/jwt.service';
 
-const cookieExtractor = function (req) {
+const cookieExtractor: JwtFromRequestFunction = (req) => {
   let token = null;
   if (req && req.cookies) {
     token = req.cookies['jwt'];
@@ -22,7 +22,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     });
   }
 
-  async validate(payload: Pick<User, 'id'>): Promise<Express.User> {
-    return { id: payload.id };
+  async validate(payload: Express.User): Promise<Express.User> {
+    return payload;
   }
 }

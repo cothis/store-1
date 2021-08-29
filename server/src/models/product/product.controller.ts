@@ -15,27 +15,26 @@ import {
   Query,
   Req,
   SerializeOptions,
-  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { Request } from 'express';
-
-import { JwtAuthGuard } from '@/auth/jwt.guard';
-
+import { ForUser } from '@/auth/decorators/for-user.decorator';
 import { ProductService } from './product.service';
 import { BoardService } from '../board/board.service';
+import { ProductIdAndTitle } from '@/elastic/elastic.service';
 
-import { ProductListPage } from './dto/product-list-page.dto';
+import { ONE_PAGE_COUNT } from '../board/board.repository';
+
+import { ProductListPageDto } from './dto/product-list-page.dto';
 import { MainBlock } from './dto/main-block.dto';
 import { BoardResponseDto } from '../board/dto/board-response.dto';
 import { CreateContentDto } from '../board/dto/create-content.dto';
+import { LikeDto } from './dto/like.dto';
 
 import { SortType } from './enums/sort-type.enum';
 
 import { Product } from './entities/product.entity';
 import { BoardContent } from '../board/entities/board-content.entity';
-import { ONE_PAGE_COUNT } from '../board/board.repository';
-import { ProductIdAndTitle } from '@/elastic/elastic.service';
 
 @UseInterceptors(ClassSerializerInterceptor)
 @Controller('api/v1/products')
@@ -53,7 +52,7 @@ export class ProductController {
     @Query('keyword') keyword: string,
     @Query('sort', new DefaultValuePipe(SortType.LATEST), new ParseEnumPipe(SortType)) sort: SortType,
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
-  ): Promise<ProductListPage> {
+  ): Promise<ProductListPageDto> {
     return this.productService.search(categoryId, keyword, sort, page);
   }
 
@@ -64,14 +63,15 @@ export class ProductController {
 
   @Get(':id')
   @SerializeOptions({ groups: ['detail'] })
-  get(@Param('id') id: string): Promise<Product> {
-    return this.productService.getById(id);
+  get(@Param('id') id: string, @Req() req: Request): Promise<Product> {
+    return this.productService.getById(id, req.user?.id);
   }
 
-  @UseGuards(JwtAuthGuard)
+  @ForUser()
   @Put(':id/like')
-  putLike(@Param('id') id: string): Promise<void> {
-    return;
+  putLike(@Param('id') id: string, @Body() like: LikeDto, @Req() req: Request): Promise<LikeDto> {
+    like.productId = id;
+    return this.productService.like(like, req.user!.id);
   }
 
   @Get(':id/reviews')
@@ -83,14 +83,14 @@ export class ProductController {
     return this.boardService.getProductBoard({ slug: 'review', productId: id, page, forProduct: true, onePageCount });
   }
 
-  @UseGuards(JwtAuthGuard)
+  @ForUser()
   @Post(':id/reviews')
   @HttpCode(HttpStatus.CREATED)
   postReview(@Param('id') id: string, @Body() review: CreateContentDto, @Req() req: Request): Promise<BoardContent> {
     return this.boardService.writeBoardContent('review', req.user!.id, review, id);
   }
 
-  @UseGuards(JwtAuthGuard)
+  @ForUser()
   @Put(':id/reviews/:reviewId')
   putReview(
     @Param('reviewId') reviewId: string,
@@ -100,7 +100,7 @@ export class ProductController {
     return this.boardService.editBoardContent(reviewId, req.user!.id, review);
   }
 
-  @UseGuards(JwtAuthGuard)
+  @ForUser()
   @Delete(':id/reviews/:reviewId')
   @HttpCode(HttpStatus.NO_CONTENT)
   deleteReview(@Param('reviewId') reviewId: string, @Req() req: Request): Promise<void> {
@@ -117,7 +117,7 @@ export class ProductController {
     return this.boardService.getProductBoard({ slug: 'question', productId: id, page, forProduct: true, onePageCount });
   }
 
-  @UseGuards(JwtAuthGuard)
+  @ForUser()
   @Post(':id/questions')
   @HttpCode(HttpStatus.CREATED)
   postQuestion(
@@ -128,7 +128,7 @@ export class ProductController {
     return this.boardService.writeBoardContent('question', req.user!.id, question, id);
   }
 
-  @UseGuards(JwtAuthGuard)
+  @ForUser()
   @Put(':id/questions/:questionId')
   putQuestion(
     @Param('questionId') questionId: string,
@@ -138,7 +138,7 @@ export class ProductController {
     return this.boardService.editBoardContent(questionId, req.user!.id, question);
   }
 
-  @UseGuards(JwtAuthGuard)
+  @ForUser()
   @Delete(':id/questions/:questionId')
   @HttpCode(HttpStatus.NO_CONTENT)
   deleteQuestion(@Param('questionId') questionId: string, @Req() req: Request): Promise<void> {

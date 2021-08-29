@@ -1,17 +1,10 @@
 import { Product } from '@models/product/entities/product.entity';
 import { Exclude, Expose } from 'class-transformer';
-import {
-  Entity,
-  Column,
-  PrimaryGeneratedColumn,
-  CreateDateColumn,
-  UpdateDateColumn,
-  ManyToMany,
-  JoinTable,
-} from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, OneToMany } from 'typeorm';
+import { Like } from './like.entity';
 
 @Entity()
-export class User {
+export class User implements Express.User {
   @PrimaryGeneratedColumn('increment', { type: 'bigint', unsigned: true })
   id: string;
 
@@ -52,12 +45,7 @@ export class User {
   addressDetail: string;
 
   @Expose({ groups: ['me'] })
-  @ManyToMany(() => Product, (product) => product.likingUsers)
-  @JoinTable({
-    name: 'like',
-    joinColumn: { name: 'user_id' },
-    inverseJoinColumn: { name: 'product_id' },
-  })
+  @OneToMany(() => Like, (like) => like.user)
   likes: Product[];
 
   @Exclude()
