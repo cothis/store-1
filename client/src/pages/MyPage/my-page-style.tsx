@@ -16,3 +16,14 @@ export const TitleWithBorder = styled.h1`
     border-bottom: none;
   }
 `;
+
+export const Container = styled.div`
+  padding: 0.5rem;
+
+  .products__content--empty {
+    padding: 0.5em 0;
+    ${({ theme }) => theme.flexCenter};
+    font-size: 7rem;
+    font-family: 'Do Hyeon', sans-serif;
+  }
+`;

@@ -1,4 +1,4 @@
-import { EntityManager, EntityRepository, getManager, Repository, TransactionManager } from 'typeorm';
+import { EntityManager, EntityRepository, getManager, Not, Repository, TransactionManager } from 'typeorm';
 import { Product } from '../product/entities/product.entity';
 import { User } from '../users/entities/user.entity';
 import { UpdateOrderDto } from './dto/update-order.dto';
@@ -46,6 +46,7 @@ export class OrderRepository extends Repository<Order> {
     return await this.findAndCount({
       where: {
         ...(status && { status }),
+        ...(!status && { status: Not(OrderStatus.TEMP) }),
       },
       order: {
         id: 'DESC',

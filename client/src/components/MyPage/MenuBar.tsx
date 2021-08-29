@@ -19,6 +19,11 @@ const MenuBar = function () {
           </NavLink>
         </MenuItem>
         <MenuItem>
+          <NavLink exact to="/my-page/orders" activeStyle={activeStyle}>
+            나의 주문목록
+          </NavLink>
+        </MenuItem>
+        <MenuItem>
           <NavLink exact to="/my-page/like" activeStyle={activeStyle}>
             내가 좋아한 상품
           </NavLink>
@@ -31,11 +36,6 @@ const MenuBar = function () {
         <MenuItem>
           <NavLink exact to="/my-page/qna" activeStyle={activeStyle}>
             나의 상품문의
-          </NavLink>
-        </MenuItem>
-        <MenuItem>
-          <NavLink exact to="/my-page/orders" activeStyle={activeStyle}>
-            나의 주문목록
           </NavLink>
         </MenuItem>
       </Menu>
