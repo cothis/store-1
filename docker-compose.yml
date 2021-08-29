@@ -1,4 +1,4 @@
-version: '3.8'
+version: "3.8"
 services:
   web:
     image: nginx:latest
@@ -8,7 +8,7 @@ services:
     depends_on:
       - app
     ports:
-      - '80:80'
+      - "80:80"
 
   app:
     build:
@@ -17,7 +17,7 @@ services:
     depends_on:
       - db
     environment:
-      TZ: 'Asia/Seoul'
+      TZ: "Asia/Seoul"
     working_dir: /app
     networks:
       default:
@@ -27,18 +27,60 @@ services:
   db:
     image: mysql:8.0.26
     environment:
-      MYSQL_DATABASE: 'store'
-      MYSQL_USER: 'woowa'
-      MYSQL_PASSWORD: 'woowa'
-      MYSQL_RANDOM_ROOT_PASSWORD: 'yes'
-      TZ: 'Asia/Seoul'
+      MYSQL_DATABASE: "store"
+      MYSQL_USER: "woowa"
+      MYSQL_PASSWORD: "woowa"
+      MYSQL_RANDOM_ROOT_PASSWORD: "yes"
+      TZ: "Asia/Seoul"
     cap_add:
       - SYS_NICE
-    volumes:
-      - ./deploy/data/mysql:/var/lib/mysql
-    ports:
-      - '33061:3306'
+    # volumes:
+    #   - ./deploy/data/mysql:/var/lib/mysql
     networks:
       default:
         aliases:
           - db
+
+  elasticsearch:
+    build:
+      context: ./elk/elasticsearch/
+      args:
+        ELK_VERSION: 7.14.0
+    volumes:
+      - type: bind
+        source: ./elk/elasticsearch/config/elasticsearch.yml
+        target: /usr/share/elasticsearch/config/elasticsearch.yml
+        read_only: true
+      - type: volume
+        source: elasticsearch
+        target: /usr/share/elasticsearch/data
+    environment:
+      ES_JAVA_OPTS: "-Xmx256m -Xms256m"
+      discovery.type: single-node
+      TZ: "Asia/Seoul"
+
+  logstash:
+    build:
+      context: ./elk/logstash/
+      args:
+        ELK_VERSION: 7.14.0
+    links:
+      - "elasticsearch"
+    volumes:
+      - type: bind
+        source: ./elk/logstash/config/logstash.yml
+        target: /usr/share/logstash/config/logstash.yml
+        read_only: true
+      - type: bind
+        source: ./elk/logstash/pipeline
+        target: /usr/share/logstash/pipeline
+        read_only: true
+    environment:
+      LS_JAVA_OPTS: "-Xmx256m -Xms256m"
+      TZ: "Asia/Seoul"
+    depends_on:
+      - elasticsearch
+      - db
+
+volumes:
+  elasticsearch:
