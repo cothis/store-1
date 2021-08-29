@@ -79,6 +79,17 @@ export function AuthenticatedContent({ username, setAuthToggle }: Props) {
         </Link>
       </div>
       <img src={DividerTwo} />
+      <div
+        className="box-content"
+        onClick={() => {
+          setAuthToggle(false);
+        }}
+      >
+        <Link to="/my-page/orders">
+          <p className="dohyeon">내 구매 목록</p>
+        </Link>
+      </div>
+      <img src={DividerTwo} />
     </>
   );
 }

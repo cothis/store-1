@@ -36,6 +36,11 @@ const MenuBar = function () {
             나의 상품문의
           </NavLink>
         </MenuItem>
+        <MenuItem>
+          <NavLink exact to="/my-page/orders" activeStyle={activeStyle}>
+            나의 주문목록
+          </NavLink>
+        </MenuItem>
       </Menu>
     </MenuTab>
   );

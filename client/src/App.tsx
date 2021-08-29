@@ -84,7 +84,7 @@ const App = () => {
                       <MyPageLayout component={MyBoard} />
                     </Route>
                     <Route exact path="/my-page/orders">
-                      <MyOrder />
+                      <MyPageLayout component={MyOrder} />
                     </Route>
                     <Route exact path="/signin">
                       <Signin />

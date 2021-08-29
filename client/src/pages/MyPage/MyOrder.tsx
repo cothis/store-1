@@ -2,6 +2,7 @@ import Loading from '@components/Loading';
 import { useOrders } from '@hooks/query/orders/useTempOrders';
 import { toAvailablePriceText, toPriceText } from '@utils/toPriceText';
 import { ChangeEventHandler, MouseEventHandler, useEffect, useState } from 'react';
+import { TitleWithBorder } from './my-page-style';
 
 interface StatusRadioGroup {
   null: boolean;
@@ -65,7 +66,8 @@ const MyOrder = () => {
 
   return (
     <div>
-      <h1>주문내역을 구경해요</h1>
+      <TitleWithBorder>내 주문목록</TitleWithBorder>
+
       <form>
         <h2>주문 종류</h2>
         <label>
