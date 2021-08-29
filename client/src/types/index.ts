@@ -57,6 +57,14 @@ export interface IOrder {
   paymentPrice: number;
 }
 
+export interface IOrderWithPage {
+  orders: IOrder[];
+  page: {
+    count: number;
+    totalPage: number;
+  };
+}
+
 export interface CreateOrderDto {
   products: {
     id: string;

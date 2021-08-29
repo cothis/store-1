@@ -11,6 +11,7 @@ import { ProductService } from '../product/product.service';
 import { UpdateOrderDto } from './dto/update-order.dto';
 import { PriceService } from './price.service';
 import { OrderHasProduct } from './entities/order-has-product.entity';
+import { OrderWithPage } from './dto/order-with-page.dto';
 
 @Injectable()
 export class OrderService {
@@ -28,10 +29,11 @@ export class OrderService {
     );
   }
 
-  async findAll(status?: OrderStatus): Promise<Order[]> {
-    const orders = await this.orderRepository.findAll(status);
+  async findAll(page: number, pageSize: number, status?: OrderStatus): Promise<OrderWithPage> {
+    const [orders, count] = await this.orderRepository.findAll(page, pageSize, status);
     orders.forEach((order) => this.prefixImageUrl(order));
-    return orders;
+    const totalPage = Math.ceil(count / pageSize);
+    return { orders, page: { count, totalPage } };
   }
 
   async findById(id: string): Promise<Order> {

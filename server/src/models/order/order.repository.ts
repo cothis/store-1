@@ -7,6 +7,7 @@ import { Order } from './entities/order.entity';
 import { OrderStatus } from './enums/order-status.enum';
 import { FinalPrices } from './price.service';
 
+export const ONE_PAGE_COUNT = 10;
 @EntityRepository(Order)
 export class OrderRepository extends Repository<Order> {
   async createOrderHasProduct(
@@ -41,11 +42,16 @@ export class OrderRepository extends Repository<Order> {
     return await manager.save<Order>(newOrder);
   }
 
-  async findAll(status?: OrderStatus): Promise<Order[]> {
-    return await this.find({
+  async findAll(page: number, pageSize: number, status?: OrderStatus): Promise<[Order[], number]> {
+    return await this.findAndCount({
       where: {
         ...(status && { status }),
       },
+      order: {
+        id: 'DESC',
+      },
+      skip: (page - 1) * pageSize,
+      take: pageSize,
     });
   }
 

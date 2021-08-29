@@ -7,6 +7,7 @@ import {
   Get,
   Param,
   ParseEnumPipe,
+  ParseIntPipe,
   Post,
   Put,
   Query,
@@ -20,6 +21,8 @@ import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
 import { Request } from 'express';
 import { ForUser } from '@/auth/decorators/for-user.decorator';
+import { ONE_PAGE_COUNT } from './order.repository';
+import { OrderWithPage } from './dto/order-with-page.dto';
 
 @ForUser()
 @Controller('api/v1/orders')
@@ -30,10 +33,12 @@ export class OrderController {
   @Get('/')
   async findAll(
     @Query('status', new DefaultValuePipe(OrderStatus.NULL), new ParseEnumPipe(OrderStatus)) status: OrderStatus,
-  ): Promise<Order[]> {
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
+    @Query('onePageCount', new DefaultValuePipe(ONE_PAGE_COUNT), ParseIntPipe) pageSize: number,
+  ): Promise<OrderWithPage> {
     if (status === OrderStatus.NULL) status = undefined;
 
-    return await this.orderService.findAll(status);
+    return await this.orderService.findAll(page, pageSize, status);
   }
 
   @Get('/:id')

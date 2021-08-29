@@ -1,7 +1,7 @@
 import Loading from '@components/Loading';
 import { useOrders } from '@hooks/query/orders/useTempOrders';
 import { toAvailablePriceText, toPriceText } from '@utils/toPriceText';
-import { ChangeEventHandler, useEffect, useState } from 'react';
+import { ChangeEventHandler, MouseEventHandler, useEffect, useState } from 'react';
 
 interface StatusRadioGroup {
   null: boolean;
@@ -27,7 +27,9 @@ const statusRadioGroupInit: StatusRadioGroup = {
 const MyOrder = () => {
   const [statusRadio, setStatusRadio] = useState(statusRadioGroupInit);
   const [status, setStatus] = useState('null');
-  const { data: orders, isLoading, isError, refetch } = useOrders(status);
+  const [currentPage, setCurrentPage] = useState(1);
+  const { data, isLoading, isError, refetch } = useOrders(status, currentPage);
+  const [pageButtons, setPageButtons] = useState<JSX.Element[]>([]);
 
   const handleChange: ChangeEventHandler<HTMLInputElement> = ({ target }) => {
     const newState = { ...statusRadioGroupInit };
@@ -35,11 +37,31 @@ const MyOrder = () => {
     newState[target.value] = target.checked;
     setStatusRadio(newState);
     setStatus(target.value);
+    setCurrentPage(1);
+  };
+
+  const handlePage: MouseEventHandler<HTMLButtonElement> = ({ target }) => {
+    const page = (target as HTMLButtonElement).textContent;
+    setCurrentPage(Number(page));
   };
 
   useEffect(() => {
     refetch();
-  }, [status]);
+  }, [status, currentPage]);
+
+  useEffect(() => {
+    if (data) {
+      const btnArray: JSX.Element[] = [];
+      for (let i = 0; i < data.page.totalPage; i++) {
+        btnArray.push(
+          <button key={i + 1} type="button" disabled={currentPage === i + 1} onClick={handlePage}>
+            {i + 1}
+          </button>,
+        );
+      }
+      setPageButtons(btnArray);
+    }
+  }, [data]);
 
   return (
     <div>
@@ -85,8 +107,8 @@ const MyOrder = () => {
       {isLoading && <Loading />}
       {isError && '에러에요'}
 
-      {orders && orders.length > 0
-        ? orders.map((order) => {
+      {data && data.orders && data.orders.length > 0
+        ? data.orders.map((order) => {
             return (
               <div key={order.id}>
                 <div className="order-info">
@@ -118,6 +140,7 @@ const MyOrder = () => {
             );
           })
         : '텅 비었어요'}
+      <div>{pageButtons}</div>
     </div>
   );
 };

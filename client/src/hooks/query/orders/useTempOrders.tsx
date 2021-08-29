@@ -1,4 +1,4 @@
-import { CreateOrderDto, IOrder } from '@types';
+import { CreateOrderDto, IOrder, IOrderWithPage } from '@types';
 import { createOrder, fetchMyOrders, fetchMyTempOrders, updateOrder } from '@utils/orders';
 import { useMutation, useQuery } from 'react-query';
 
@@ -14,6 +14,6 @@ export const useCreateOrder = () => {
   return useMutation((order: CreateOrderDto) => createOrder(order));
 };
 
-export const useOrders = (status: string) => {
-  return useQuery<IOrder[]>(['orders'], () => fetchMyOrders(status), { retry: false });
+export const useOrders = (status: string, page: number) => {
+  return useQuery<IOrderWithPage>(['orders'], () => fetchMyOrders(status, page), { retry: false });
 };
