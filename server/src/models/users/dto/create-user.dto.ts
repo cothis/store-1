@@ -1,13 +1,16 @@
-import { IsBoolean, IsByteLength, IsString, Length } from 'class-validator';
+import { IsBoolean, IsByteLength, IsOptional, IsString, Length } from 'class-validator';
 
 export class CreateUserDto {
   @IsString()
+  @IsOptional()
   loginId?: string;
 
   @IsString()
+  @IsOptional()
   oAuthId?: string;
 
   @IsBoolean()
+  @IsOptional()
   isAdmin?: boolean;
 
   @IsString()
