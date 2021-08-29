@@ -1,6 +1,6 @@
 import { useQuery } from 'react-query';
-import { IMainBlock, IProductListItem } from '@types';
-import { fetchProductList, fetchProductDetail, fetchMainPage } from '@utils/product';
+import { IMainBlock, IProductListItem, ProductIdAndTitle } from '@types';
+import { fetchProductList, fetchProductDetail, fetchMainPage, fetchProductTitle } from '@utils/product';
 import { Path } from '@lib/router/history';
 
 type sortKeyword = 'popular' | 'latest' | 'low-price' | 'high-price ';
@@ -32,4 +32,11 @@ export function useProductDetail(params: string) {
 
 export function useMainPage() {
   return useQuery<IMainBlock[], Error>('main-page', fetchMainPage);
+}
+
+export function useProductTitle(query: string) {
+  return useQuery<ProductIdAndTitle[], Error>(['productTitle', { query }], fetchProductTitle, {
+    cacheTime: Infinity,
+    refetchOnWindowFocus: false,
+  });
 }

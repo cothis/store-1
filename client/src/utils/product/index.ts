@@ -2,7 +2,7 @@ import { QueryFunctionContext } from 'react-query';
 import axios from '@utils/axios';
 import { Path } from '@lib/router/history';
 import { API_ENDPOINT } from '@config';
-import type { IMainBlock } from '@types';
+import type { IMainBlock, ProductIdAndTitle } from '@types';
 
 type ProductsQueryKey = [
   string,
@@ -54,4 +54,19 @@ export async function fetchProductDetail({ queryKey }: QueryFunctionContext) {
 export async function fetchMainPage(): Promise<IMainBlock[]> {
   const res = await axios.get(API_ENDPOINT + '/api/v1/products/main');
   return res.data;
+}
+
+type ProductTitleQueryKey = [
+  string,
+  {
+    query: string;
+  },
+];
+
+export async function fetchProductTitle({ queryKey }: QueryFunctionContext): Promise<ProductIdAndTitle[]> {
+  const [_key, { query }] = queryKey as ProductTitleQueryKey;
+  const url = PRODUCT_API_ENDPOINT + `/keywords?query=${query}`;
+
+  const result = await axios.get(url);
+  return result.data;
 }

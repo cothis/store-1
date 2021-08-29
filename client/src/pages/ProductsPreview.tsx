@@ -16,7 +16,7 @@ export default function ProductsPreview() {
   const path = usePath();
   const history = useHistory();
   const keyword = path.search.keyword;
-  if (keyword && (keyword.length < 2 || keyword.length > 20)) {
+  if (keyword && (keyword.length < 2 || keyword.length > 30)) {
     notify('error', SEARCH_INPUT_INVALID);
     return <Redirect to="/" />;
   }

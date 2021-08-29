@@ -1,7 +1,14 @@
 #!/bin/sh
-echo "before sleep"
-sleep 20s
-echo "awaken"
+while true
+do
+  curl -o /dev/null -s -XGET elasticsearch:9200
+  if [ $? -eq 0 ]
+  then
+      break
+  fi
+  sleep 1
+done
+
 curl -XPUT "elasticsearch:9200/store" -H 'Content-Type: application/json' -d'
 {
   "settings": {

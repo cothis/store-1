@@ -42,6 +42,11 @@ import { ProductIdAndTitle } from '@/elastic/elastic.service';
 export class ProductController {
   constructor(private readonly productService: ProductService, private readonly boardService: BoardService) {}
 
+  @Get('keywords')
+  getKeywords(@Query('query') query: string): Promise<ProductIdAndTitle[]> {
+    return this.productService.getKeywords(query);
+  }
+
   @Get()
   search(
     @Query('categoryId') categoryId: string,
@@ -138,10 +143,5 @@ export class ProductController {
   @HttpCode(HttpStatus.NO_CONTENT)
   deleteQuestion(@Param('questionId') questionId: string, @Req() req: Request): Promise<void> {
     return this.boardService.deleteBoardContent(questionId, req.user!.id);
-  }
-
-  @Get('/keywords')
-  getKeywords(@Param('query') query: string): Promise<ProductIdAndTitle[]> {
-    return this.productService.getKeywords(query);
   }
 }

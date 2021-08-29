@@ -145,3 +145,8 @@ export interface IMyBoard extends IBoard {
 export interface IMyBoardContent extends IBoardContent {
   product: IProductListItem;
 }
+
+export interface ProductIdAndTitle {
+  id: string;
+  title: string;
+}
