@@ -18,6 +18,7 @@ import { ProductListPageDto } from './dto/product-list-page.dto';
 import { LikeDto } from './dto/like.dto';
 import { SortType } from './enums/sort-type.enum';
 import { ProductTag } from './enums/product-tag.enum';
+import { Like } from '../users/entities/like.entity';
 
 @Injectable()
 export class ProductService {
@@ -163,6 +164,10 @@ export class ProductService {
     const { userId } = options;
     let { page = 1, onePageCount = ONE_PAGE_COUNT } = options;
     const [products, count] = await this.productRepository.findAllUserLikesAndCount(userId, page, onePageCount);
+    products.forEach((p) => {
+      p.image = path.join(this.s3, p.image);
+      p.likes = [{} as Like];
+    });
 
     const dto = new ProductListPageDto();
     dto.products = products;

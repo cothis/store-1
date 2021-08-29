@@ -153,8 +153,31 @@ export interface IBoardPostBody {
 }
 
 export type BoardType = 'reviews' | 'questions' | 'notice';
-
 export interface IRecentProduct {
   id: string;
   imageUrl: string;
+}
+
+export interface ProductIdAndTitle {
+  id: string;
+  title: string;
+}
+
+export type SortKeyword = 'popular' | 'latest' | 'low-price' | 'high-price ';
+
+export interface ProductListPage {
+  categoryId?: string;
+  sort?: SortKeyword;
+  keyword?: string;
+  totalPage: number;
+  currentPage: number;
+  totalCount: number;
+  categoryName?: string;
+  products: IProductListItem[];
+}
+
+export interface ProductDetail extends IProductListItem {
+  content: string[];
+  detailInfo: [string, string][];
+  recommends: IProductListItem[];
 }

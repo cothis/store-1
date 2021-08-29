@@ -2,11 +2,16 @@ import styled from '@lib/styled-components';
 import ProductItem from './ProductListItem';
 import { IProductListItem } from '@types';
 
-function ProductList({ products }: { products: IProductListItem[] }) {
+interface ProductListProps {
+  products: IProductListItem[];
+  withLike?: boolean;
+}
+
+function ProductList({ products, withLike = false }: ProductListProps) {
   return (
     <ProductsWrapper>
       {products.map((product, idx) => (
-        <ProductItem product={product} key={idx} />
+        <ProductItem product={product} withLike={withLike} key={idx} />
       ))}
     </ProductsWrapper>
   );

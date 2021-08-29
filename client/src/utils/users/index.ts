@@ -1,5 +1,4 @@
-import { API_ENDPOINT } from '@config';
-import { Term, User } from '@types';
+import { ProductListPage, Term, User } from '@types';
 import axios from '@utils/axios';
 
 export async function fetchTerm(term: Term): Promise<string> {
@@ -14,4 +13,9 @@ export async function fetchUser(): Promise<User> {
 
 export function fetchLogout(): Promise<void> {
   return axios.get('/api/v1/auth/logout');
+}
+
+export async function fetchUserLikes(page: number): Promise<ProductListPage> {
+  const res = await axios.get<ProductListPage>(`/api/v1/users/me/likes?page=${page}`);
+  return res.data;
 }

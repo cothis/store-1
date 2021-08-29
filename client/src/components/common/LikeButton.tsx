@@ -2,23 +2,24 @@ import styled from '@lib/styled-components';
 import notify from '@utils/toastify';
 import ax from 'axios';
 import axios from '@utils/axios';
-import { ERROR_MESSAGE_UNKNOWN, LOGIN_REQUIRED } from '@constants/message';
+import { ERROR_MESSAGE_UNKNOWN, LIKE_MESSAGE, LOGIN_REQUIRED, UNLIKE_MESSAGE } from '@constants/message';
 import { useCallback, useState } from 'react';
-import { useUser } from '@hooks/query/users';
+import { USER_LIKE_QUERY_KEY, useUser } from '@hooks/query/users';
 import { useMutation, useQueryClient } from 'react-query';
-import { productDetailQueryKey } from '@hooks/query/products';
+import { PRODUCT_DETAIL_QUERY_KEY } from '@hooks/query/products';
 import useHistory from '@hooks/useHistory';
 
 interface HeartButtonProps {
   like: boolean;
   productId: string;
+  className?: string;
 }
 
 interface DoLike {
   like: boolean;
 }
 
-export default function LikeButton({ like, productId }: HeartButtonProps) {
+export default function LikeButton({ like, productId, className }: HeartButtonProps) {
   const [internalLike, setInternalLike] = useState(like);
   const queryClient = useQueryClient();
   const { isError: anonymouse, data: user } = useUser();
@@ -35,8 +36,10 @@ export default function LikeButton({ like, productId }: HeartButtonProps) {
         {
           onSuccess: () => {
             // 상품 상세 cache clear
-            queryClient.invalidateQueries(productDetailQueryKey(productId));
+            queryClient.invalidateQueries(PRODUCT_DETAIL_QUERY_KEY);
             // 고객 좋아요 목록 cache clear
+            queryClient.invalidateQueries(USER_LIKE_QUERY_KEY);
+            notify(!internalLike ? 'success' : 'warning', !internalLike ? LIKE_MESSAGE : UNLIKE_MESSAGE);
           },
           onError: (e) => {
             setInternalLike(internalLike);
@@ -55,7 +58,7 @@ export default function LikeButton({ like, productId }: HeartButtonProps) {
   }, [user, anonymouse, internalLike, setInternalLike]);
 
   return (
-    <Button onClick={heartClickHandler}>
+    <Button className={className} onClick={heartClickHandler}>
       {internalLike ? <i className="fas fa-heart" /> : <i className="far fa-heart" />}
     </Button>
   );
@@ -65,9 +68,10 @@ const Button = styled.button`
   width: 45px;
   height: 45px;
   border: 1px solid #cccccc;
-  margin-right: 6px;
   margin-left: auto;
   border-radius: 6px;
+  background-color: #ffffff;
+
   > i {
     color: ${({ theme }) => theme.color.baeminPrimary};
   }
