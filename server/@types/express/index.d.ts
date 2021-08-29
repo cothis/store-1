@@ -1,5 +1,6 @@
 declare namespace Express {
-  export interface User {
+  interface User {
     id: string;
+    isAdmin: boolean;
   }
 }

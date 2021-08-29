@@ -1,14 +1,12 @@
-import { Controller, Get, Post, Req, Res, Session, UnauthorizedException, UseGuards } from '@nestjs/common';
+import { Controller, Get, HttpCode, HttpStatus, Post, Req, Res, Session, UseGuards } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { AuthGuard } from '@nestjs/passport';
 import { Request, Response } from 'express';
 import { AppConfigService } from 'src/config/app.service';
 import { UserService } from 'src/models/users/user.service';
 import { AuthService } from './auth.service';
-import { JwtAuthGuard } from './jwt.guard';
-import { LocalAuthGuard } from './local.guard';
+import { LocalAuthGuard } from './guards/local.guard';
 
-@Controller('/api/v1/auth')
+@Controller('api/v1/auth')
 export class AuthController {
   private clientUrl: string;
   constructor(
@@ -22,7 +20,7 @@ export class AuthController {
 
   @Get('kakao/')
   requestAuth(@Res() res: Response) {
-    res.redirect(this.authService.getKakoAuthUrl());
+    res.redirect(this.authService.getKakaoAuthUrl());
   }
 
   @Get('kakao/redirect')
@@ -34,7 +32,7 @@ export class AuthController {
       // 가입한 유저라면 jwt 발급하고 메인으로 redirect
       const user = await this.userService.findByOauthId(oAuthId);
       if (user) {
-        res.cookie('jwt', this.jwtService.sign({ userId: user.id }));
+        res.cookie('jwt', this.jwtService.sign({ id: user.id, isAdmin: user.isAdmin }));
         res.redirect(this.clientUrl);
       }
 
@@ -47,28 +45,16 @@ export class AuthController {
   }
 
   @UseGuards(LocalAuthGuard)
-  @Post('/login')
-  login(@Req() req: Request, @Res() res: Response) {
-    res.cookie('jwt', this.authService.login(req.user));
-    res.json(req.user);
-  }
-
-  @Get('/test')
-  testLogin(@Res() res: Response) {
-    res.cookie('jwt', this.authService.login({ id: '1' }));
-    res.json('ok');
-  }
-
-  @UseGuards(JwtAuthGuard)
-  @Get('/test-jwt-guard')
-  async testJwtGuard() {
-    return 'ok';
+  @Post('login')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  login(@Req() req: Request, @Res({ passthrough: true }) res: Response) {
+    res.cookie('jwt', this.authService.login(req.user), { httpOnly: true });
   }
 
   @Get('/logout')
+  @HttpCode(HttpStatus.NO_CONTENT)
   async logout(@Req() req: Request, @Res({ passthrough: true }) res: Response) {
     res.clearCookie('jwt');
     req.session.destroy(() => {});
-    return { ok: true };
   }
 }

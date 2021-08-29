@@ -8,6 +8,6 @@ module.exports = {
   password: 'woowa',
   database: 'store',
   entities: [`dist/**/*.entity{.ts,.js}`],
-  synchronize: false,
+  synchronize: !isProduction,
   logging: true,
 };

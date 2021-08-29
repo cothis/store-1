@@ -1,5 +1,5 @@
-import { User } from '@models/users/entities/user.entity';
-import { Exclude, Expose } from 'class-transformer';
+import { Like } from '@/models/users/entities/like.entity';
+import { Exclude, Expose, Transform } from 'class-transformer';
 import { Category } from 'src/models/category/entities/category.entity';
 import {
   Column,
@@ -7,6 +7,7 @@ import {
   Entity,
   JoinTable,
   ManyToMany,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -63,9 +64,10 @@ export class Product {
   @Column('int', { unsigned: true, default: 0 })
   viewCount: number;
 
-  @Exclude()
-  @ManyToMany(() => User, (user) => user.likes)
-  likingUsers: User[];
+  @Expose({ name: 'like' })
+  @Transform(({ value }) => value?.length > 0)
+  @OneToMany(() => Like, (like) => like.product)
+  likes: Like[];
 
   @Expose({ groups: ['detail'] })
   @Column('simple-json', { nullable: true })

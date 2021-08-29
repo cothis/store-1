@@ -5,23 +5,39 @@ import FormElement from '@components/common/FormElement';
 import Address from '@components/common/Address';
 import useHistory from '@hooks/useHistory';
 import Password from '@components/Signup/Password';
-import { ERROR_MESSAGE_ID, ERROR_MESSAGE_NAME, ERROR_MESSAGE_EMAIL } from '@constants/message';
+import {
+  ERROR_MESSAGE_ID,
+  ERROR_MESSAGE_NAME,
+  ERROR_MESSAGE_EMAIL,
+  ERROR_MESSAGE_UNKNOWN,
+  ERROR_DUPLICATED,
+  SUCCESS_SIGNUP,
+} from '@constants/message';
+import axios from '@utils/axios';
+import { useMutation } from 'react-query';
+import notify from '@utils/toastify';
+import { SIGNUP_ID_INPUT_NAME, SIGNUP_REALNAME_INPUT_NAME, SIGNUP_EMAIL_INPUT_NAME } from '@constants/signup';
+import ax from 'axios';
+import usePath from '@hooks/usePath';
+import FormElementWithoutInput from '@components/MyPage/FormElementWithoutInput';
 
 export default function Signup() {
+  const { search } = usePath();
+  const isOauth = search.email && search.email !== 'undefined' ? true : false;
   const form = useRef<HTMLFormElement>(null);
   const history = useHistory();
-  const [possibleId, setPossibleId] = useState(false);
+  const [possibleId, setPossibleId] = useState(isOauth);
   const idValidationFunction = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => /^[A-Za-z0-9]{8,16}$/.test(e.target.value),
     [],
   );
   const [possibleName, setPossibleName] = useState(false);
   const nameValidationFunction = useCallback(
-    (e: ChangeEvent<HTMLInputElement>) => e.target.value.length > 0 && e.target.value.length < 21,
+    (e: ChangeEvent<HTMLInputElement>) => e.target.value.length > 0 && e.target.value.length < 11,
     [],
   );
-  const [possiblePassword, setPossiblePassword] = useState(false);
-  const [possibleEmail, setPossibleEmail] = useState(false);
+  const [possiblePassword, setPossiblePassword] = useState(isOauth);
+  const [possibleEmail, setPossibleEmail] = useState(isOauth);
   const emailValidationFunction = useCallback(
     (e: ChangeEvent<HTMLInputElement>) =>
       e.target.value.length > 0 &&
@@ -31,51 +47,75 @@ export default function Signup() {
     [],
   );
   const [possibleAddress, setPossibleAddress] = useState(false);
+  const login = useMutation((data: { [key: string]: string }) => axios.post('/api/v1/users', data));
   const submitHandler: MouseEventHandler = (e) => {
     e.preventDefault();
-    // POST 처리
-    if (form.current) {
-      const data = new FormData(form.current);
-    }
+    if (!form.current) return;
 
-    history.push({ pathname: '/signin' });
+    const formData = new FormData(form.current);
+    const body: { [key: string]: string } = {};
+    formData.forEach((value, key) => {
+      body[key] = value as string;
+    });
+    if (isOauth) body.email = search.email;
+    login.mutate(body, {
+      onSuccess: () => {
+        notify('success', SUCCESS_SIGNUP);
+        history.push('/signin');
+      },
+      onError: (error) => {
+        if (ax.isAxiosError(error)) {
+          if (error.response?.status === 409) notify('error', ERROR_DUPLICATED);
+          else notify('error', ERROR_MESSAGE_UNKNOWN);
+        }
+      },
+    });
   };
   return (
     <Wrapper>
       <Title>회원 가입</Title>
       <P>기본정보</P>
       <Form ref={form}>
-        <FormElement
-          elementName="아이디"
-          inputName="loginid"
-          type="text"
-          isLong
-          validationFunction={idValidationFunction}
-          setPossible={setPossibleId}
-          errorMessage={ERROR_MESSAGE_ID}
-        />
-        <Password setPossible={setPossiblePassword} />
+        {isOauth ? (
+          <FormElementWithoutInput elementName="이메일" initialInputValue={search.email} />
+        ) : (
+          <FormElement
+            elementName="아이디"
+            inputName={SIGNUP_ID_INPUT_NAME}
+            type="text"
+            isLong
+            validationFunction={idValidationFunction}
+            setPossible={setPossibleId}
+            errorMessage={ERROR_MESSAGE_ID}
+          />
+        )}
+        {!isOauth && <Password setPossible={setPossiblePassword} />}
         <FormElement
           elementName="이름"
-          inputName="realname"
+          inputName={SIGNUP_REALNAME_INPUT_NAME}
           type="text"
           isLong
           validationFunction={nameValidationFunction}
           setPossible={setPossibleName}
           errorMessage={ERROR_MESSAGE_NAME}
         />
-        <FormElement
-          elementName="이메일"
-          inputName="email"
-          type="email"
-          validationFunction={emailValidationFunction}
-          setPossible={setPossibleEmail}
-          errorMessage={ERROR_MESSAGE_EMAIL}
-        />
+        {!isOauth && (
+          <FormElement
+            elementName="이메일"
+            inputName={SIGNUP_EMAIL_INPUT_NAME}
+            type="email"
+            validationFunction={emailValidationFunction}
+            setPossible={setPossibleEmail}
+            errorMessage={ERROR_MESSAGE_EMAIL}
+          />
+        )}
+
         <Address setPossible={setPossibleAddress} />
         <Agreement
           clickHandler={submitHandler}
-          possible={possibleId && possiblePassword && possibleName && possibleEmail && possibleAddress}
+          possible={
+            possibleId && possiblePassword && possibleName && possibleEmail && possibleAddress && !login.isLoading
+          }
         />
       </Form>
     </Wrapper>

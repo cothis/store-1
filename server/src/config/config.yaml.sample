@@ -3,6 +3,10 @@ app:
   client: http://localhost:9000
   server: http://localhost:8080
   s3: s3_url
+
+elasticsearch:
+  node: http://elasticsearch:9200
+  index: store
   
 jwt:
   # https://generate.plus/en/base64 여기서 생성 가능

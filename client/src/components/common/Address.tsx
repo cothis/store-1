@@ -2,12 +2,17 @@ import styled from '@lib/styled-components';
 import { ChangeEventHandler, useState, CSSProperties, Dispatch, SetStateAction, FocusEventHandler } from 'react';
 import DaumPostcode, { AddressData } from 'react-daum-postcode';
 import useModal from '@hooks/useModal';
+import {
+  SIGNUP_ADDRESS_DETAIL_INPUT_NAME,
+  SIGNUP_ADDRESS_INPUT_NAME,
+  SIGNUP_ZIPCODE_INPUT_NAME,
+} from '@constants/signup';
 
 interface AddressProps {
   initialZipcode?: string;
   initialAddress?: string;
   initialAddressDetail?: string;
-  setPossible: Dispatch<SetStateAction<boolean>>;
+  setPossible?: Dispatch<SetStateAction<boolean>>;
 }
 
 export default function Address({ initialZipcode, initialAddress, initialAddressDetail, setPossible }: AddressProps) {
@@ -24,7 +29,7 @@ export default function Address({ initialZipcode, initialAddress, initialAddress
     setAddress(data.roadAddress);
   };
   const blurHandler: FocusEventHandler<HTMLInputElement> = (e) => {
-    setPossible(zipcode.length > 0 && address.length > 0 && addressDetail.length > 0);
+    if (setPossible) setPossible(zipcode.length > 0 && address.length > 0 && addressDetail.length > 0);
   };
 
   return (
@@ -32,7 +37,7 @@ export default function Address({ initialZipcode, initialAddress, initialAddress
       <Span>주소</Span>
       <InputArea>
         <div>
-          <ShortInput name="zipcode" type="text" value={zipcode} readOnly />
+          <ShortInput name={SIGNUP_ZIPCODE_INPUT_NAME} type="text" value={zipcode} readOnly />
           <Button
             type="button"
             onClick={() => {
@@ -50,9 +55,9 @@ export default function Address({ initialZipcode, initialAddress, initialAddress
             />
           </Modal>
         </div>
-        <LongInput name="address" type="text" value={address} readOnly />
+        <LongInput name={SIGNUP_ADDRESS_INPUT_NAME} type="text" value={address} readOnly />
         <LongInput
-          name="address_detail"
+          name={SIGNUP_ADDRESS_DETAIL_INPUT_NAME}
           type="text"
           value={addressDetail}
           onChange={changeHandler}

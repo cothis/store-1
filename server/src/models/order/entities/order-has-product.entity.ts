@@ -1,3 +1,4 @@
+import { IsNumber } from 'class-validator';
 import { Order } from 'src/models/order/entities/order.entity';
 import { Product } from 'src/models/product/entities/product.entity';
 import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
@@ -15,6 +16,7 @@ export class OrderHasProduct {
   @JoinColumn()
   product: Product;
 
+  @IsNumber()
   @Column('int')
   quantity: number;
 }

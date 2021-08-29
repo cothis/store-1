@@ -5,9 +5,9 @@ import { JwtModule } from '@nestjs/jwt';
 import { UserModule } from 'src/models/users/user.module';
 import { RootConfigModule } from 'src/config/config.module';
 import { JwtConfigService } from 'src/config/jwt.service';
-import { JwtStrategy } from './jwt.strategy';
+import { JwtStrategy } from './strategies/jwt.strategy';
 import { PassportModule } from '@nestjs/passport';
-import { LocalStrategy } from './local.strategy';
+import { LocalStrategy } from './strategies/local.strategy';
 
 @Module({
   imports: [

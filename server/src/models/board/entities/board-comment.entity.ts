@@ -1,5 +1,6 @@
 import { BoardContent } from '@models/board/entities/board-content.entity';
 import { User } from '@models/users/entities/user.entity';
+import { Exclude, Expose, Transform, Type } from 'class-transformer';
 import {
   Column,
   CreateDateColumn,
@@ -22,13 +23,16 @@ export class BoardComment {
   @JoinColumn()
   user: User;
 
+  @Exclude()
   @ManyToOne(() => BoardContent, (content) => content.comments)
   @JoinColumn()
   boardContent: BoardContent;
 
+  @Exclude()
   @CreateDateColumn()
   createdAt: Date;
 
+  @Exclude()
   @UpdateDateColumn()
   updatedAt: Date;
 }

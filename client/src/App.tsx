@@ -10,6 +10,7 @@ import Route from '@lib/router/Route';
 
 // components
 import Nav from '@components/Nav/Nav';
+import SNB from '@components/SNB';
 import Error from '@components/Error';
 import ToastifyContainer from '@components/Toastify/ToastifyContainer';
 import Footer from '@components/Footer';
@@ -21,19 +22,23 @@ import SignupMethod from '@pages/Signup/SignupMethod';
 import Signup from '@pages/Signup/Signup';
 import Error404 from '@pages/Error404';
 import ProductsPreview from '@pages/ProductsPreview';
-import MyPage from '@pages/MyPage/MyPage';
 import MyPageEdit from '@pages/MyPage/MyPageEdit';
 import MyPageConfirm from '@pages/MyPage/MyPageConfirm';
 import Terms from '@pages/Terms';
 import Cart from '@pages/Cart';
 import Order from '@pages/Order/Order';
 import Product from '@pages/Product';
+import Notice from '@pages/Notice';
+import MyBoard from '@pages/MyPage/MyBoard';
+import MyPageLayout from '@components/MyPage/MyPageLayout';
+import MyLike from '@pages/MyPage/MyLike';
 
 // react-query
 import { QueryClient, QueryClientProvider, QueryErrorResetBoundary } from 'react-query';
 
 // react-error-boundary
 import { ErrorBoundary } from 'react-error-boundary';
+import MyOrder from '@pages/MyPage/MyOrder';
 
 const queryClient = new QueryClient();
 
@@ -57,19 +62,29 @@ const App = () => {
             >
               <BrowseRouter>
                 <Nav />
+                <SNB />
                 <AppContent>
                   <Switch>
                     <Route exact path="/">
                       <Home />
                     </Route>
-                    <Route exact path="/my-page">
-                      <MyPage />
-                    </Route>
                     <Route exact path="/my-page/confirm">
-                      <MyPageConfirm />
+                      <MyPageLayout component={MyPageConfirm} />
                     </Route>
                     <Route exact path="/my-page/edit">
-                      <MyPageEdit />
+                      <MyPageLayout component={MyPageEdit} />
+                    </Route>
+                    <Route exact path="/my-page/like">
+                      <MyPageLayout component={MyLike} />
+                    </Route>
+                    <Route exact path="/my-page/review">
+                      <MyPageLayout component={MyBoard} />
+                    </Route>
+                    <Route exact path="/my-page/qna">
+                      <MyPageLayout component={MyBoard} />
+                    </Route>
+                    <Route exact path="/my-page/orders">
+                      <MyPageLayout component={MyOrder} />
                     </Route>
                     <Route exact path="/signin">
                       <Signin />
@@ -88,6 +103,9 @@ const App = () => {
                     </Route>
                     <Route path="/products/:id">
                       <Product />
+                    </Route>
+                    <Route exact path="/notice">
+                      <Notice />
                     </Route>
                     <Route exact path="/agreement">
                       <Terms />

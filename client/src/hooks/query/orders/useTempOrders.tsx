@@ -1,15 +1,19 @@
-import { IOrder } from '@types';
-import axios from 'axios';
-import { useQuery } from 'react-query';
-
-const getMyTempOrders = async (id: string): Promise<IOrder> => {
-  const { data } = await axios.get<any>(`http://localhost:8080/api/v1/orders/${id}`, {
-    withCredentials: true,
-  });
-  if (!data) throw new Error('항목이 없습니다');
-  return data;
-};
+import { CreateOrderDto, IOrder, IOrderWithPage } from '@types';
+import { createOrder, fetchMyOrders, fetchMyTempOrders, updateOrder } from '@utils/orders';
+import { useMutation, useQuery } from 'react-query';
 
 export const useTempOrders = (id: string) => {
-  return useQuery(['orders', id], () => getMyTempOrders(id));
+  return useQuery<IOrder>(['orders', id], () => fetchMyTempOrders(id), { retry: false });
+};
+
+export const useUpdateOrder = () => {
+  return useMutation((order: IOrder) => updateOrder(order));
+};
+
+export const useCreateOrder = () => {
+  return useMutation((order: CreateOrderDto) => createOrder(order));
+};
+
+export const useOrders = (status: string, page: number) => {
+  return useQuery<IOrderWithPage>(['orders'], () => fetchMyOrders(status, page), { retry: false });
 };

@@ -1,15 +1,17 @@
+import { API_ENDPOINT } from '@config';
 import Link from '@lib/router/Link';
 import styled from '@lib/styled-components';
 
 const SignupMethod = () => {
+  const oauthClickHandler = () => {
+    location.href = API_ENDPOINT + '/api/v1/auth/kakao';
+  };
   return (
     <Wrapper>
       <Link to="/signup">
         <SignupButton>배민문방구로 회원가입</SignupButton>
       </Link>
-      <Link to="/oauth">
-        <OAuthSignupButton>카카오 회원가입</OAuthSignupButton>
-      </Link>
+      <OAuthSignupButton onClick={oauthClickHandler}>카카오 회원가입</OAuthSignupButton>
       <MemberGuide>
         <Span>이미 배민문방구 회원이신가요?</Span>
         <Link to="/signin">

@@ -1,6 +1,5 @@
 import ButtonNext from '@components/common/ButtonNext';
 import ButtonPrev from '@components/common/ButtonPrev';
-import MenuBar from '@components/MyPage/MenuBar';
 import useHistory from '@hooks/useHistory';
 import styled from '@lib/styled-components';
 import { ChangeEventHandler, MouseEventHandler, useState } from 'react';
@@ -25,59 +24,49 @@ const MyPageConfirm = function () {
     // toasify ui 등으로 처리 후 새로고침
   };
   return (
-    <Wrapper>
-      <Content>
-        <Title>회원정보 변경</Title>
-        <Description>회원님의 정보를 안전하게 보호하기 위해 비밀번호를 다시 한번 확인해 주세요.</Description>
-        <Form>
-          <InputArea>
-            <Span>비밀번호</Span>
-            <Input type="password" name="password" value={inputValue} onChange={changeHandler} />
-          </InputArea>
-          <ButtonArea>
-            <ButtonPrev clickHandler={cancelClickHandler} />
-            <ButtonNext clickHandler={submitClickHandler} $isPossible={inputValue.length > 0} text="인증하기" />
-          </ButtonArea>
-        </Form>
-      </Content>
-      <MenuBar />
-    </Wrapper>
+    <Container>
+      <Title>회원정보 변경</Title>
+      <Description>회원님의 정보를 안전하게 보호하기 위해 비밀번호를 다시 한번 확인해 주세요.</Description>
+      <Form>
+        <InputArea>
+          <Span>비밀번호</Span>
+          <Input type="password" name="password" value={inputValue} onChange={changeHandler} />
+        </InputArea>
+        <ButtonArea>
+          <ButtonPrev clickHandler={cancelClickHandler} />
+          <ButtonNext clickHandler={submitClickHandler} $isPossible={inputValue.length > 0} text="인증하기" />
+        </ButtonArea>
+      </Form>
+    </Container>
   );
 };
 
-const Wrapper = styled.div`
-  max-width: 1200px;
-  display: flex;
-  justify-content: center;
-  margin: 30px auto;
-  flex-direction: row-reverse;
-  padding: 1%;
-  @media (max-width: ${({ theme }) => theme.media.mobile}) {
-    flex-direction: column;
-    align-items: center;
-  }
-`;
-
-const Content = styled.div`
-  max-width: 960px;
-  width: 100%;
+const Container = styled.div`
+  padding: 0.5rem;
 `;
 
 const Title = styled.h1`
-  width: 100%;
-  height: 40px;
-  border-bottom: 1px solid gray;
-  padding-bottom: 10px;
-  margin-bottom: 5%;
-  font-size: 1.5rem;
+  font-size: 1.4rem;
   font-weight: bold;
+  @media (max-width: ${({ theme }) => theme.media.mobile}) {
+    font-size: 1.2rem;
+  }
 `;
 
 const Description = styled.h2`
-  width: 100%;
+  margin-top: 1.2rem;
+  padding-top: 1.2rem;
+  margin-bottom: 1.2rem;
+  border-top: 1px solid lightgray;
+
   text-align: center;
   font-size: 0.9rem;
-  margin-bottom: 5%;
+
+  @media (max-width: ${({ theme }) => theme.media.mobile}) {
+    margin-top: 0.8rem;
+    padding-top: 0.8rem;
+    margin-bottom: 1.6rem;
+  }
 `;
 
 const Form = styled.form`

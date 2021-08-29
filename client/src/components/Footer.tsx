@@ -15,11 +15,8 @@ export default function Footer() {
       <img className="footer__img--logo" src={baeminLogoImg} alt="배민 문방구 로고 이미지" />
       <div className="footer__content">
         <div className="footer__content--links">
-          <NavLink goTop to={{ pathname: '/board', search: { type: 'notice' } }}>
+          <NavLink goTop to={{ pathname: '/notice' }}>
             공지사항
-          </NavLink>
-          <NavLink goTop to={{ pathname: '/my-page/qna' }}>
-            1:1문의
           </NavLink>
           <NavLink goTop to={{ pathname: '/agreement' }}>
             이용약관

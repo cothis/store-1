@@ -4,7 +4,7 @@ import ButtonPrev from './common/ButtonPrev';
 import notify from '@utils/toastify';
 import { SUCCESS_ADD_CART } from '@constants/message';
 
-const AddCartButton = function ({ id, title, imageUrl, price, originalPrice, count }: ICart) {
+export default function AddCartButton({ id, title, imageUrl, price, originalPrice, count }: ICart) {
   const [cart, setCart] = useLocalStorage<ICart[]>('cart', []);
   const addCart = () => {
     const cartIds = cart.map((product) => product.id);
@@ -18,9 +18,7 @@ const AddCartButton = function ({ id, title, imageUrl, price, originalPrice, cou
       const newCart = [...cart, { id, title, imageUrl, price, originalPrice, count }];
       setCart(newCart);
     }
-    notify('success',SUCCESS_ADD_CART(title, count))
+    notify('success', SUCCESS_ADD_CART(title, count));
   };
   return <ButtonPrev clickHandler={addCart} text="장바구니" />;
-};
-
-export default AddCartButton;
+}

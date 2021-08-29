@@ -1,0 +1,20 @@
+[
+  {
+    "slug": "notice",
+    "title": "공지사항",
+    "forProduct": false,
+    "commentable": false
+  },
+  {
+    "slug": "review",
+    "title": "상품리뷰",
+    "forProduct": true,
+    "commentable": false
+  },
+  {
+    "slug": "question",
+    "title": "상품문의",
+    "forProduct": true,
+    "commentable": true
+  }
+]

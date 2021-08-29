@@ -13,6 +13,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { OrderStatus } from '../enums/order-status.enum';
+import { IsEnum, IsString } from 'class-validator';
 interface AA {
   number: number;
 }
@@ -21,41 +22,45 @@ export class Order {
   @PrimaryGeneratedColumn('increment', { type: 'bigint', unsigned: true })
   id: string;
 
+  @IsEnum(OrderStatus)
   @Column({ type: 'enum', enum: OrderStatus, default: OrderStatus.TEMP })
   status: OrderStatus;
 
-  @Column({ type: 'varchar', length: 30 })
-  senderName: string;
+  @IsString()
+  @Column({ type: 'varchar', length: 30, nullable: true })
+  senderName?: string;
+
+  @IsString()
+  @Column({ type: 'varchar', length: 30, nullable: true })
+  senderCall?: string;
+
+  @IsString()
+  @Column({ type: 'varchar', length: 20, nullable: true })
+  senderPhone?: string;
+
+  @Column({ type: 'varchar', length: 50, nullable: true })
+  senderMail?: string;
 
   @Column({ type: 'varchar', length: 30, nullable: true })
-  senderCall: string;
-
-  @Column({ type: 'varchar', length: 20 })
-  senderPhone: string;
-
-  @Column({ type: 'varchar', length: 50 })
-  senderMail: string;
-
-  @Column({ type: 'varchar', length: 30 })
-  receiverName: string;
+  receiverName?: string;
 
   @Column({ type: 'varchar', length: 30, nullable: true })
-  receiverCall: string;
+  receiverCall?: string;
 
-  @Column({ type: 'varchar', length: 20 })
-  receiverPhone: string;
+  @Column({ type: 'varchar', length: 20, nullable: true })
+  receiverPhone?: string;
 
-  @Column({ type: 'char', length: 5 })
-  zipcode: string;
-
-  @Column({ type: 'text' })
-  address: string;
+  @Column({ type: 'char', length: 5, nullable: true })
+  zipcode?: string;
 
   @Column({ type: 'text', nullable: true })
-  addressDetail: string;
+  address?: string;
 
   @Column({ type: 'text', nullable: true })
-  message: string;
+  addressDetail?: string;
+
+  @Column({ type: 'text', nullable: true })
+  message?: string;
 
   @OneToMany(() => OrderHasProduct, (orderhasProduct) => orderhasProduct.order, { eager: true })
   orderHasProducts: OrderHasProduct[];
@@ -74,22 +79,12 @@ export class Order {
   updatedAt: Date;
 
   /* 비즈니스 컬럼 */
+  @Column({ type: 'decimal' })
   productsPrice: number;
+
+  @Column({ type: 'decimal' })
   deliveryFee: number;
+
+  @Column({ type: 'decimal' })
   paymentPrice: number;
-
-  @AfterLoad()
-  setPrices = () => {
-    this.productsPrice = this.calculateProductPrice(this.orderHasProducts);
-    this.deliveryFee = 2500;
-    this.paymentPrice = this.productsPrice + this.deliveryFee;
-  };
-
-  calculateProductPrice = (orderHasProducts: OrderHasProduct[]) => {
-    console.log(orderHasProducts);
-    return orderHasProducts?.reduce<number>(
-      (price, { product }) => (price += product.price || product.originalPrice || 0),
-      0,
-    );
-  };
 }

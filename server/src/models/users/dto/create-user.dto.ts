@@ -1,17 +1,21 @@
-import { IsBoolean, IsByteLength, IsString } from 'class-validator';
+import { IsBoolean, IsByteLength, IsOptional, IsString, Length } from 'class-validator';
 
 export class CreateUserDto {
   @IsString()
+  @IsOptional()
   loginId?: string;
 
   @IsString()
+  @IsOptional()
   oAuthId?: string;
 
   @IsBoolean()
+  @IsOptional()
   isAdmin?: boolean;
 
   @IsString()
   @IsByteLength(0, 60)
+  @IsOptional()
   password: string;
 
   @IsString()
@@ -19,12 +23,12 @@ export class CreateUserDto {
   email: string;
 
   @IsString()
-  @IsByteLength(0, 10)
+  @Length(0, 10)
   realName: string;
 
   @IsString()
   @IsByteLength(0, 5)
-  zipCode: string;
+  zipcode: string;
 
   @IsString()
   address: string;

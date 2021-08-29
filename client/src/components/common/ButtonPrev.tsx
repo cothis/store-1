@@ -19,6 +19,7 @@ const Button = styled.button`
   height: 45px;
   border: 1px solid #cccccc;
   color: #3e3d3c;
+  margin-left: 6px;
   border-radius: 6px;
   @media (max-width: ${({ theme }) => theme.media.mobileSmall}) {
     font-size: 0.7rem;

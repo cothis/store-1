@@ -1,19 +1,22 @@
 import styled from '@lib/styled-components';
-import { SyntheticEvent, useRef, useEffect, MouseEvent, useCallback } from 'react';
+import { SyntheticEvent, useRef, useEffect, MouseEvent, useCallback, useState, ChangeEventHandler } from 'react';
 import ExitBtn from '@components/ExitBtn';
 import useLocalStorage from '@hooks/useLocalStorage';
 import useModal from '@hooks/useModal';
 import useHistory from '@hooks/useHistory';
 import notify from '@utils/toastify';
 import { SEARCH_INPUT_INVALID } from '@constants/message';
+import AutoComplete from './AutoComplete';
 
 const SEARCH_MIN_LENGTH = 2;
-const SEARCH_MAX_LENGTH = 20;
+const SEARCH_MAX_LENGTH = 30;
+export const QUICK_SEARCH_MAX_LENGTH = 8;
 
 export default function SearchModal() {
   const searchInput = useRef<HTMLInputElement>(null);
   const [queryArr, setQueryArr] = useLocalStorage<string[]>('query', []);
   const [modal, setModal] = useModal();
+  const [inputValue, setInputValue] = useState<string>('');
   const history = useHistory();
 
   useEffect(() => {
@@ -35,7 +38,7 @@ export default function SearchModal() {
     const nextQueryArr = arr.concat([]);
     if (nextQueryArr.includes(keyword)) {
       nextQueryArr.splice(nextQueryArr.indexOf(keyword), 1);
-    } else if (nextQueryArr.length >= 20) {
+    } else if (nextQueryArr.length >= QUICK_SEARCH_MAX_LENGTH) {
       nextQueryArr.pop();
     }
     nextQueryArr.unshift(keyword);
@@ -49,7 +52,9 @@ export default function SearchModal() {
     const { search } = e.target as HTMLFormElement;
     const keyword = search.value;
     if (!searchValidation(keyword, queryArr)) return;
+    search.value = '';
     history.push({ pathname: '/search', search: { keyword } });
+    resetInput();
     offHandler();
   };
 
@@ -60,6 +65,7 @@ export default function SearchModal() {
     if (!parent || !keyword) return;
     if (!searchValidation(keyword, queryArr)) return;
     history.push({ pathname: '/search', search: { keyword } });
+    resetInput();
     offHandler();
   };
 
@@ -70,6 +76,14 @@ export default function SearchModal() {
     if (!parent) return;
     const nextQueryArr = queryArr.filter((query) => query !== parent.dataset.query);
     setQueryArr(nextQueryArr);
+  };
+
+  const changeHandler: ChangeEventHandler<HTMLInputElement> = (e) => {
+    setInputValue(e.target.value);
+  };
+
+  const resetInput = () => {
+    setInputValue('');
   };
 
   return (
@@ -96,7 +110,9 @@ export default function SearchModal() {
                 type="text"
                 placeholder="검색어를 입력해주세요."
                 ref={searchInput}
+                onChange={changeHandler}
                 autoComplete="off"
+                value={inputValue}
               ></input>
               <button type="submit">
                 <i className="fas fa-search"></i>
@@ -115,28 +131,36 @@ export default function SearchModal() {
             />
           </form>
         </SearchFormWrapper>
-        <QuickSearchWrapper className={queryArr.length ? '' : 'empty'}>
-          {queryArr.length ? (
-            queryArr.map((query) => (
-              <div onClick={quickHandler} key={query} data-query={query} className="quick-content">
-                <p>{query}</p>
-                <ExitBtn
-                  absolute
-                  right="0"
-                  top="50%"
-                  transform="translateY(-50%)"
-                  width="20px"
-                  height="20px"
-                  color="black"
-                  strokeWidth="6"
-                  onClick={queryDelete}
-                />
-              </div>
-            ))
-          ) : (
-            <p>최근 검색어가 없습니다.</p>
-          )}
-        </QuickSearchWrapper>
+
+        {inputValue.length >= 1 ? (
+          <AutoComplete query={inputValue} setModal={setModal} resetInput={resetInput} />
+        ) : (
+          <QuickSearchWrapper className={queryArr.length ? '' : 'empty'}>
+            {queryArr.length ? (
+              <>
+                <p className="quick-search-header">최근 검색어</p>
+                {queryArr.map((query) => (
+                  <div onClick={quickHandler} key={query} data-query={query} className="quick-content">
+                    <p>{query}</p>
+                    <ExitBtn
+                      absolute
+                      right="0"
+                      top="50%"
+                      transform="translateY(-50%)"
+                      width="20px"
+                      height="20px"
+                      color="black"
+                      strokeWidth="6"
+                      onClick={queryDelete}
+                    />
+                  </div>
+                ))}
+              </>
+            ) : (
+              <p>최근 검색어가 없습니다.</p>
+            )}
+          </QuickSearchWrapper>
+        )}
         <ModalBackground onClick={offHandler}></ModalBackground>
       </div>
     </>
@@ -204,14 +228,18 @@ const QuickSearchWrapper = styled.div`
       opacity: 1;
     }
   }
+  .quick-search-header {
+    font-weight: bold;
+    margin-bottom: 1em;
+  }
   position: absolute;
   z-index: 2;
   width: 90vw;
-  height: 80vh;
+  height: 50vh;
   max-width: 700px;
   top: 100%;
   left: 50%;
-  background-color: white;
+  background-color: #fcfcf7;
   transform: translateX(-50%);
   border-bottom-left-radius: 10px;
   border-bottom-right-radius: 10px;

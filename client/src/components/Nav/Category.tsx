@@ -13,6 +13,7 @@ const Category = () => {
 
   const history = useHistory();
   const updateDebouncer = debouncer<void>();
+  const hoverDebouncer = debouncer<void>();
 
   const resetActive = () => {
     setParentActive(-1);
@@ -24,7 +25,9 @@ const Category = () => {
 
     updateDebouncer(() => {
       const target = e.target as HTMLElement;
-      updateParentActive(target);
+      const dataTarget = target.closest('.parent-item') as HTMLElement;
+      if (!dataTarget) return;
+      updateParentActive(dataTarget);
     }, 100);
   };
 
@@ -115,7 +118,7 @@ const Category = () => {
     <CategoryWrapper
       onMouseEnter={() => {
         if (window.innerWidth <= size.mobile) return;
-        setCategoryToggle(true);
+        hoverDebouncer(setCategoryToggle, 200, true);
       }}
       onClick={() => {
         if (window.innerWidth > size.mobile) return;
@@ -123,7 +126,7 @@ const Category = () => {
       }}
       onMouseLeave={() => {
         if (window.innerWidth <= size.mobile) return;
-        setCategoryToggle(false);
+        hoverDebouncer(setCategoryToggle, 0, false);
       }}
     >
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -150,14 +153,8 @@ const Category = () => {
           {categories &&
             categories.map((category) => {
               return (
-                <li
-                  className={parentActive === +category.id ? 'active' : ''}
-                  key={category.id}
-                  data-id={category.id}
-                  onMouseEnter={parentHover}
-                  onClick={parentClick}
-                >
-                  <div className="parent-item">
+                <li className={parentActive === +category.id ? 'active' : ''} key={category.id}>
+                  <div className="parent-item" data-id={category.id} onMouseEnter={parentHover} onClick={parentClick}>
                     <p>{category.title}</p>
                     <i className="fas fa-chevron-down"></i>
                   </div>
@@ -195,10 +192,16 @@ const CategoryWrapper = styled.div`
       stroke-linecap: round;
       stroke-linejoin: round;
     }
+    &:hover {
+      cursor: pointer;
+    }
   }
   > p {
     height: 100%;
     text-align: center;
+    &:hover {
+      cursor: pointer;
+    }
   }
   @media (max-width: ${({ theme }) => theme.media.mobile}) {
     position: static;
@@ -235,14 +238,16 @@ const CategoryMenu = styled.div`
     width: 200px;
     border-radius: 6px;
     color: white;
-    > li {
-      padding: 1em;
-    }
+    overflow-y: hidden;
   }
   > .parent {
     background-color: ${({ theme }) => theme.color.baeminPrimary};
     > li {
+      &:hover {
+        background-color: ${({ theme }) => theme.color.baeminDark};
+      }
       .parent-item {
+        padding: 1em;
         display: flex;
         justify-content: space-between;
         align-items: center;
@@ -259,10 +264,12 @@ const CategoryMenu = styled.div`
         height: 100%;
         left: 100%;
         top: 0;
+        li {
+          padding: 1em;
+        }
       }
     }
     > li.active {
-      background-color: ${({ theme }) => theme.color.baeminDark};
       > .child:not(.none) {
         display: block;
         background-color: ${({ theme }) => theme.color.baeminDark};

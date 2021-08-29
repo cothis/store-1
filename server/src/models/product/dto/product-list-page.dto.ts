@@ -3,7 +3,7 @@ import { Product } from '@models/product/entities/product.entity';
 import { Exclude, Expose } from 'class-transformer';
 import { SortType } from '../enums/sort-type.enum';
 
-export class ProductListPage {
+export class ProductListPageDto {
   @Exclude()
   category?: Category;
 

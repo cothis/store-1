@@ -1,12 +1,14 @@
 import styled from '@lib/styled-components';
 import Link from '@lib/router/Link';
 import { IProductListItem } from '@types';
+import LikeButton from './common/LikeButton';
 
 interface IThumbnail {
   imageUrl: string;
   title: string;
   tags?: string[];
 }
+
 function Thumbnail({ imageUrl, title, tags }: IThumbnail) {
   return (
     <div className="img-container">
@@ -30,10 +32,16 @@ function Thumbnail({ imageUrl, title, tags }: IThumbnail) {
   );
 }
 
-function ProductItem({ product }: { product: IProductListItem }) {
-  const { id, imageUrl, title, tags, price, originalPrice, priceText } = product;
+interface ProductItemProps {
+  product: IProductListItem;
+  withLike?: boolean;
+}
+
+function ProductItem({ product, withLike = false }: ProductItemProps) {
+  const { id, imageUrl, title, tags, price, originalPrice, priceText, like } = product;
   return (
     <Product>
+      {withLike && <LikeButton like={like} productId={id} className="like-button" />}
       <Link to={`/products/${id}`}>
         <Thumbnail imageUrl={imageUrl} title={title} tags={tags} />
         <div className="product-info">
@@ -53,6 +61,15 @@ function ProductItem({ product }: { product: IProductListItem }) {
 }
 
 const Product = styled.li`
+  position: relative;
+
+  .like-button {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    z-index: 3;
+  }
+
   &:hover {
     .thumbnail {
       transform: scale(1.1);
