@@ -216,21 +216,20 @@ export const Row = styled.div`
       padding: 10px;
     }
 
-    > .input-wrapper {
+    .input-wrapper {
       width: 100%;
       display: flex;
-      align-items: center;
       justify-content: flex-start;
       gap: 5px;
       padding: 10px 0;
-    }
 
-    input {
-      width: 40%;
-      font-size: 1em;
+      input {
+        width: 40%;
+        font-size: 1em;
 
-      &.full-width {
-        width: 100%;
+        &.full-width {
+          width: 100%;
+        }
       }
     }
 
@@ -263,18 +262,20 @@ export const Row = styled.div`
     > .content {
       width: 60%;
 
-      input {
-        width: 100%;
-        font-size: 1em;
-      }
-
       .input-wrapper {
         width: 100%;
         padding: 20px 0;
-        flex-direction: column;
-        justify-content: center;
-        align-items: flex-start;
         position: relative;
+
+        input {
+          flex-basis: 100%;
+          font-size: 1em;
+          flex-grow: 1;
+        }
+
+        button {
+          width: 20%;
+        }
 
         .error-message {
           position: absolute;
@@ -342,5 +343,35 @@ export const ErrorMessage = styled.div`
 
   &.show {
     display: block;
+  }
+`;
+
+export const DeliveryInfoDiv = styled.div`
+  h2 {
+    button {
+      font-size: 1.1rem;
+      margin-left: 10px;
+      padding: 10px;
+      width: 180px;
+    }
+  }
+
+  .address-search {
+    .input-wrapper {
+      padding: 10px 0;
+      padding-bottom: 0;
+    }
+  }
+
+  @media screen and (max-width: ${({ theme }) => theme.media.medium}) {
+    .address {
+      .input-wrapper {
+        padding: 0 0 10px;
+      }
+
+      .input-wrapper:first-child {
+        padding: 0;
+      }
+    }
   }
 `;

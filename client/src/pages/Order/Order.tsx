@@ -23,6 +23,7 @@ import {
   Button,
   ButtonWrapper,
   DaumPostcodeStyle,
+  DeliveryInfoDiv,
   ErrorMessage,
   H1,
   H2,
@@ -211,6 +212,8 @@ interface InputWithErroMessageProp {
   regex?: RegExp;
   $key: string;
   onChange?: ChangeEventHandler;
+  required?: boolean;
+  component?: JSX.Element;
 }
 const InputWithErrorMessage: React.FC<InputWithErroMessageProp> = (props) => {
   const useValid = useContext(ValidationContext);
@@ -232,6 +235,10 @@ const InputWithErrorMessage: React.FC<InputWithErroMessageProp> = (props) => {
       return;
     }
 
+    if (!props.required && target.toString().length === 0) {
+      useValid(props.$key, true);
+      return;
+    }
     const isPass = props.regex.test(target.toString());
     useValid(props.$key, isPass);
   }, [props]);
@@ -265,6 +272,7 @@ const InputWithErrorMessage: React.FC<InputWithErroMessageProp> = (props) => {
         readOnly={props.readOnly}
         onChange={handleChange}
       />
+      {props.component}
       {props.regex && (
         <ErrorMessage className={'error-message ' + (isValid ? '' : 'show')}>{props.children}</ErrorMessage>
       )}
@@ -352,6 +360,7 @@ const UserInfo: React.FC<OrderInfoProp & SetOrderInfoProp> = (props) => {
               value={props.name}
               onChange={handleChangeName}
               regex={/^[0-9a-zㄱ-킼]{1,10}$/i}
+              required={true}
             >
               이름은 한글, 영어, 숫자 1 ~ 10글자로 입력해주세요.
             </InputWithErrorMessage>
@@ -384,6 +393,7 @@ const UserInfo: React.FC<OrderInfoProp & SetOrderInfoProp> = (props) => {
               value={props.phone}
               onChange={handleChangePhone}
               regex={/^\d{3}-\d{3,4}-\d{4}$/}
+              required={true}
             >
               휴대번호 형식은 010-1234-5678 형태로 입력해주세요.
             </InputWithErrorMessage>
@@ -400,6 +410,7 @@ const UserInfo: React.FC<OrderInfoProp & SetOrderInfoProp> = (props) => {
               value={props.mail}
               onChange={handleChangeMail}
               regex={/^[0-9a-zㄱ-킼]([-_.]?[0-9a-zㄱ-킼])*@[0-9a-z]([-_.]?[0-9a-z])*.[a-z]{2,3}$/i}
+              required={true}
             >
               이메일형식에 맞게 작성해주세요.
             </InputWithErrorMessage>
@@ -437,7 +448,7 @@ const DeliveryInfo: React.FC<OrderInfoProp & GetOrderInfoProp> = (props) => {
   };
 
   return (
-    <div className="delivery-info">
+    <DeliveryInfoDiv>
       <H2>
         배송정보
         <Button type="button" onClick={handleClick}>
@@ -456,6 +467,7 @@ const DeliveryInfo: React.FC<OrderInfoProp & GetOrderInfoProp> = (props) => {
               value={deliveryInfo.name}
               onChange={handleChangeName}
               regex={/^[0-9a-zㄱ-킼]{1,10}$/i}
+              required={true}
             >
               이름은 한글, 영어, 숫자 1 ~ 10글자로 입력해주세요.
             </InputWithErrorMessage>
@@ -466,17 +478,20 @@ const DeliveryInfo: React.FC<OrderInfoProp & GetOrderInfoProp> = (props) => {
           <div className="content address-wrapper">
             <div className="address-search">
               <InputWithErrorMessage
-                className="full-width"
                 name="zipcode"
                 id="zipcode"
                 $key="zipcode"
                 placeholder="zipcode"
                 readOnly={true}
                 value={deliveryInfo.zipcode}
+                required={true}
+                component={
+                  <Button type="button" onClick={() => setModal(true)}>
+                    우편번호검색
+                  </Button>
+                }
               />
-              <Button type="button" onClick={() => setModal(true)}>
-                우편번호검색
-              </Button>
+
               <Modal $modal={modal}>
                 <DaumPostcode style={DaumPostcodeStyle} onComplete={handleComplete} />
                 <ModalBackground onClick={() => setModal(false)} />
@@ -490,6 +505,7 @@ const DeliveryInfo: React.FC<OrderInfoProp & GetOrderInfoProp> = (props) => {
                 $key="address"
                 readOnly={true}
                 value={deliveryInfo.address}
+                required={true}
               />
 
               <InputWithErrorMessage
@@ -534,6 +550,7 @@ const DeliveryInfo: React.FC<OrderInfoProp & GetOrderInfoProp> = (props) => {
               value={deliveryInfo.phone}
               regex={/^\d{3}-\d{3,4}-\d{4}$/}
               onChange={handleChangePhone}
+              required={true}
             >
               휴대번호 형식은 010-1234-5678 형태로 입력해주세요.
             </InputWithErrorMessage>
@@ -555,7 +572,7 @@ const DeliveryInfo: React.FC<OrderInfoProp & GetOrderInfoProp> = (props) => {
           </div>
         </Row>
       </Table>
-    </div>
+    </DeliveryInfoDiv>
   );
 };
 
@@ -587,8 +604,14 @@ const OrderInfo: React.FC<OrderProp> = ({ order }) => {
 
 const Agreement: React.FC = () => {
   const useValid = useContext(ValidationContext);
+  const [isValid, setIsValid] = useState(false);
+
+  useEffect(() => {
+    useValid('agreement', isValid);
+  }, [isValid]);
 
   const handleChange: ChangeEventHandler<HTMLInputElement> = (e) => {
+    setIsValid(e.target.checked);
     useValid('agreement', e.target.checked);
   };
 
