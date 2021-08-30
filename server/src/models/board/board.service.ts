@@ -1,6 +1,6 @@
 import { AppConfigService } from '@/config/app.service';
+import { attachPath } from '@/utils';
 import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
-import path from 'path';
 import { Product } from '../product/entities/product.entity';
 import { User } from '../users/entities/user.entity';
 import { BoardRepository, ONE_PAGE_COUNT } from './board.repository';
@@ -45,7 +45,7 @@ export class BoardService {
     });
     contents.forEach((content) => {
       if (content.product) {
-        content.product.image = path.join(this.s3, content.product.image);
+        content.product.image = attachPath(this.s3, content.product.image);
       }
     });
     board.contents = contents;

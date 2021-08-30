@@ -1,5 +1,3 @@
-import path from 'path';
-
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ElasticService, ProductIdAndTitle } from '@/elastic/elastic.service';
@@ -19,6 +17,7 @@ import { LikeDto } from './dto/like.dto';
 import { SortType } from './enums/sort-type.enum';
 import { ProductTag } from './enums/product-tag.enum';
 import { Like } from '../users/entities/like.entity';
+import { attachPath } from '@/utils';
 
 @Injectable()
 export class ProductService {
@@ -78,7 +77,7 @@ export class ProductService {
     result.currentPage = page > result.totalPage ? result.totalPage : page;
 
     result.products.forEach((product) => {
-      product.image = path.join(this.s3, product.image);
+      product.image = attachPath(this.s3, product.image);
     });
 
     return result;
@@ -97,11 +96,11 @@ export class ProductService {
     }
     await this.productRepository.viewCountUp(product);
 
-    product.image = path.join(this.s3, product.image);
-    product.content = product.content.map((i) => path.join(this.s3, i));
+    product.image = attachPath(this.s3, product.image);
+    product.content = product.content.map((i) => attachPath(this.s3, i));
 
     product.recommends?.forEach((recommend) => {
-      recommend.image = path.join(this.s3, recommend.image);
+      recommend.image = attachPath(this.s3, recommend.image);
       // serializer group이 recursive하게 먹혀서 강제 제거
       recommend.content = undefined;
       recommend.detailInfo = undefined;
@@ -113,7 +112,7 @@ export class ProductService {
   async getMain(): Promise<MainBlock[]> {
     const banners = await this.productRepository.findAllBanner();
     banners.forEach((b) => {
-      b.imageUrl = path.join(this.s3, b.imageUrl);
+      b.imageUrl = attachPath(this.s3, b.imageUrl);
     });
 
     const slideBanner = new SlideBannerBlock();
@@ -123,14 +122,14 @@ export class ProductService {
     best.title = '잘나가요';
     best.products = await this.productRepository.findByTag(ProductTag.BEST, 4);
     best.products.forEach((p) => {
-      p.image = path.join(this.s3, p.image);
+      p.image = attachPath(this.s3, p.image);
     });
 
     const news = new ProductListBlock();
     news.title = '새로 나왔어요';
     news.products = await this.productRepository.findByTag(ProductTag.NEW, 8);
     news.products.forEach((p) => {
-      p.image = path.join(this.s3, p.image);
+      p.image = attachPath(this.s3, p.image);
     });
 
     const productBanner = new ProductBannerListBlock();
@@ -141,7 +140,7 @@ export class ProductService {
     sale.title = '지금은 할인 중';
     sale.products = await this.productRepository.findByTag(ProductTag.SALE, 8);
     sale.products.forEach((p) => {
-      p.image = path.join(this.s3, p.image);
+      p.image = attachPath(this.s3, p.image);
     });
 
     return [slideBanner, best, news, productBanner, sale];
@@ -165,7 +164,7 @@ export class ProductService {
     let { page = 1, onePageCount = ONE_PAGE_COUNT } = options;
     const [products, count] = await this.productRepository.findAllUserLikesAndCount(userId, page, onePageCount);
     products.forEach((p) => {
-      p.image = path.join(this.s3, p.image);
+      p.image = attachPath(this.s3, p.image);
       p.likes = [{} as Like];
     });
 

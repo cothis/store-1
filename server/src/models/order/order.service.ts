@@ -4,14 +4,13 @@ import { OrderRepository } from './order.repository';
 import { Order } from './entities/order.entity';
 import { OrderStatus } from './enums/order-status.enum';
 import { AppConfigService } from 'src/config/app.service';
-import path from 'path';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { EntityManager, getManager } from 'typeorm';
 import { ProductService } from '../product/product.service';
 import { UpdateOrderDto } from './dto/update-order.dto';
 import { PriceService } from './price.service';
-import { OrderHasProduct } from './entities/order-has-product.entity';
 import { OrderWithPage } from './dto/order-with-page.dto';
+import { attachPath } from '@/utils';
 
 @Injectable()
 export class OrderService {
@@ -25,7 +24,7 @@ export class OrderService {
   private prefixImageUrl(order: Order) {
     order.orderHasProducts.forEach(
       (orderHasProduct) =>
-        (orderHasProduct.product.image = path.join(this.appConfigService.s3, orderHasProduct.product.image)),
+        (orderHasProduct.product.image = attachPath(this.appConfigService.s3, orderHasProduct.product.image)),
     );
   }
 
