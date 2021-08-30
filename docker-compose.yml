@@ -1,4 +1,4 @@
-version: '3.8'
+version: "3.8"
 services:
   web:
     image: nginx:latest
@@ -20,7 +20,7 @@ services:
     depends_on:
       - db
     environment:
-      TZ: 'Asia/Seoul'
+      TZ: "Asia/Seoul"
     working_dir: /app
     networks:
       default:
@@ -30,11 +30,11 @@ services:
   db:
     image: mysql:8.0.26
     environment:
-      MYSQL_DATABASE: 'store'
-      MYSQL_USER: 'woowa'
-      MYSQL_PASSWORD: 'woowa'
-      MYSQL_RANDOM_ROOT_PASSWORD: 'yes'
-      TZ: 'Asia/Seoul'
+      MYSQL_DATABASE: "store"
+      MYSQL_USER: "woowa"
+      MYSQL_PASSWORD: "woowa"
+      MYSQL_RANDOM_ROOT_PASSWORD: "yes"
+      TZ: "Asia/Seoul"
     cap_add:
       - SYS_NICE
     # volumes:
@@ -58,9 +58,9 @@ services:
         source: elasticsearch
         target: /usr/share/elasticsearch/data
     environment:
-      ES_JAVA_OPTS: '-Xmx256m -Xms256m'
+      ES_JAVA_OPTS: "-Xmx256m -Xms256m"
       discovery.type: single-node
-      TZ: 'Asia/Seoul'
+      TZ: "Asia/Seoul"
 
   logstash:
     build:
@@ -79,8 +79,8 @@ services:
         target: /usr/share/logstash/pipeline
         read_only: true
     environment:
-      LS_JAVA_OPTS: '-Xmx256m -Xms256m'
-      TZ: 'Asia/Seoul'
+      LS_JAVA_OPTS: "-Xmx256m -Xms256m"
+      TZ: "Asia/Seoul"
     depends_on:
       - elasticsearch
       - db
