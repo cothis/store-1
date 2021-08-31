@@ -10,8 +10,8 @@ interface ProductListProps {
 function ProductList({ products, withLike = false }: ProductListProps) {
   return (
     <ProductsWrapper>
-      {products.map((product, idx) => (
-        <ProductItem product={product} withLike={withLike} key={idx} />
+      {products.map((product) => (
+        <ProductItem product={product} withLike={withLike} key={product.id} />
       ))}
     </ProductsWrapper>
   );

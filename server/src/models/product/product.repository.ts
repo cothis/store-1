@@ -131,13 +131,14 @@ export class ProductRepository extends Repository<Product> {
     const likeRepository = this.manager.getRepository(Like);
     // WHERE (EXISTS)를 통한 검색 성능 향상
     const existsQuery = likeRepository
-      .createQueryBuilder('like')
-      .select('like.id')
-      .where('like.product_id = :productId')
-      .andWhere('like.user_id = :userId')
+      .createQueryBuilder('like2')
+      .select('1')
+      .where('like1.id = like2.id')
+      .andWhere('like2.product_id = :productId')
+      .andWhere('like2.user_id = :userId')
       .getQuery();
     const existLike = await likeRepository
-      .createQueryBuilder('gogo')
+      .createQueryBuilder('like1')
       .where(`EXISTS (${existsQuery})`, { productId, userId })
       .getOne();
     if (like) {
