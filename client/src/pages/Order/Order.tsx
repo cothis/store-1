@@ -291,54 +291,79 @@ const OrderDetail: React.FC<OrderProp> = ({ order }) => {
   return (
     <OrderDetailDiv>
       <H2>주문상세내역</H2>
-      <Product>
-        <div className="product-info-header">상품정보</div>
-        <div className="product-quantity">수량</div>
-        <div className="product-price">단가</div>
-        <div className="product-total-price">금액</div>
-      </Product>
-      {order.orderHasProducts.map((orderHasProduct) => (
-        <Product key={`product${orderHasProduct.id}`}>
-          <div className="product-image-wrapper">
-            <Link to={`/products/${orderHasProduct.product.id}`}>
-              <img className="product-image" src={orderHasProduct.product.imageUrl} alt="상품이미지" />
-            </Link>
-          </div>
-          <div className="product-title">
-            <Link to={`/products/${orderHasProduct.product.id}`}>
-              <span>{orderHasProduct.product.title}</span>
-            </Link>
-          </div>
-          <div className="product-quantity">
-            <div>{orderHasProduct.quantity.toLocaleString()}개</div>
-          </div>
-          <div className="product-price">
-            <div>{toPriceText(orderHasProduct.product.price || orderHasProduct.product.originalPrice)}</div>
-          </div>
-          <div className="product-total-price">
-            <div>
-              {orderHasProduct.product.price && toPriceText(orderHasProduct.product.price * orderHasProduct.quantity)}
-              {orderHasProduct.product.originalPrice &&
-                toPriceText(orderHasProduct.product.originalPrice * orderHasProduct.quantity)}
-            </div>
-          </div>
+      <div className="product-wrapper">
+        <Product>
+          <div className="product-info-header">상품정보</div>
+          <div className="product-quantity">수량</div>
+          <div className="product-price">단가</div>
+          <div className="product-total-price">금액</div>
         </Product>
-      ))}
+        {order.orderHasProducts.map((orderHasProduct) => (
+          <Product key={`product${orderHasProduct.id}`}>
+            <div className="product-image-wrapper">
+              <img className="product-image" src={orderHasProduct.product.imageUrl} alt="상품이미지" />
+            </div>
+            <div className="product-title">
+              <span>{orderHasProduct.product.title}</span>
+            </div>
+            <div className="product-quantity none-mobile">
+              <div>{orderHasProduct.quantity.toLocaleString()}개</div>
+            </div>
+            <div className="product-price none-mobile">
+              <div>{toPriceText(orderHasProduct.product.price || orderHasProduct.product.originalPrice)}</div>
+            </div>
+            <div className="mobile-price">
+              {orderHasProduct.quantity.toLocaleString() +
+                '개' +
+                ' x ' +
+                toPriceText(orderHasProduct.product.price || orderHasProduct.product.originalPrice)}
+            </div>
+            <div className="product-total-price">
+              <div>
+                {orderHasProduct.product.price && toPriceText(orderHasProduct.product.price * orderHasProduct.quantity)}
+                {orderHasProduct.product.originalPrice &&
+                  toPriceText(orderHasProduct.product.originalPrice * orderHasProduct.quantity)}
+              </div>
+            </div>
+          </Product>
+        ))}
+      </div>
     </OrderDetailDiv>
   );
 };
 
 const UserInfo: React.FC<OrderInfoProp & SetOrderInfoProp> = (props) => {
+  const getPhoneValue = useCallback((numbers: string) => {
+    const charArr = numbers.split('');
+    const numArr = charArr.filter((char) => {
+      if (isNaN(+char)) return false;
+      return true;
+    });
+    if (numArr.length > 11) {
+      numArr.pop();
+    }
+
+    return numArr.reduce((prestr, numChar, idx, { length }) => {
+      let plusChar = numChar;
+      if (idx === 3 || (idx === 6 && length !== 11) || (idx === 7 && length === 11)) plusChar = '-' + plusChar;
+      return prestr + plusChar;
+    }, '');
+  }, []);
+
   const handleChangeName: ChangeEventHandler<HTMLInputElement> = (e) => {
     props.handleUpdate({ ...props, name: e.target.value });
   };
 
   const handleChangeCall: ChangeEventHandler<HTMLInputElement> = (e) => {
-    props.handleUpdate({ ...props, call: e.target.value });
+    const phoneValue = getPhoneValue(e.target.value);
+    e.target.value = phoneValue;
+    props.handleUpdate({ ...props, call: phoneValue });
   };
 
   const handleChangePhone: ChangeEventHandler<HTMLInputElement> = (e) => {
-    props.handleUpdate({ ...props, phone: e.target.value });
+    const phoneValue = getPhoneValue(e.target.value);
+    e.target.value = phoneValue;
+    props.handleUpdate({ ...props, phone: phoneValue });
   };
 
   const handleChangeMail: ChangeEventHandler<HTMLInputElement> = (e) => {
@@ -486,7 +511,7 @@ const DeliveryInfo: React.FC<OrderInfoProp & GetOrderInfoProp> = (props) => {
                 value={deliveryInfo.zipcode}
                 required={true}
                 component={
-                  <Button type="button" onClick={() => setModal(true)}>
+                  <Button type="button" className="address-btn" onClick={() => setModal(true)}>
                     우편번호검색
                   </Button>
                 }

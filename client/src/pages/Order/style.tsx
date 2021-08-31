@@ -25,6 +25,7 @@ export const AgreementWrapper = styled.section`
 
 export const OrderWrapper = styled.div`
   max-width: ${({ theme }) => theme.media.desktop};
+  padding: 1rem;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
@@ -45,7 +46,12 @@ export const DaumPostcodeStyle: CSSProperties = {
 };
 
 export const OrderDetailDiv = styled.div`
-  padding: 10px 0;
+  .product-wrapper {
+    padding: 0.5rem 1rem;
+    background-color: white;
+    border-radius: 6px;
+    box-shadow: rgb(0 0 0 / 15%) 0px 0px 10px;
+  }
 `;
 
 export const OrderForm = styled.form`
@@ -70,101 +76,73 @@ export const ModalBackground = styled.div`
 `;
 
 export const H1 = styled.h1`
-  font-size: 1.5rem;
-  margin: 5px 0;
+  font-size: 1.2rem;
+  margin: 1em 0;
+  font-weight: bold;
 `;
 
 export const H2 = styled.h2`
-  font-size: 1.3rem;
-  padding: 15px 0;
+  font-size: 1.2rem;
+  padding: 1em 0;
 `;
 
 export const Product = styled.div`
-  display: flex;
-  gap: 10px;
-  padding: 10px 0;
-  border-bottom: 1px solid black;
+  display: grid;
+  grid-template-columns: 1fr 3fr 1fr 1fr 1fr;
+  grid-gap: 0.5rem;
+  align-items: center;
+  padding: 0.5rem 0;
   user-select: none;
-  font-size: 20px;
 
   &:first-of-type {
-    border-top: 1px solid black;
+    border-bottom: 1px solid #555;
   }
-
+  &:nth-child(n + 3) {
+    border-top: 1px solid #ddd;
+  }
+  .mobile-price {
+    display: none;
+  }
   > .product-info-header {
-    flex-basis: 80%;
+    grid-column-start: 1;
+    grid-column-end: 3;
   }
 
   > .product-image-wrapper {
-    flex-basis: 10%;
     overflow: hidden;
-    cursor: pointer;
-    box-shadow: 0 0 5px 0 ${({ theme }) => theme.color.lightblack};
+    border-radius: 6px;
 
-    > a {
+    .product-image {
       width: 100%;
-      overflow: hidden;
-
-      > .product-image {
-        width: 100%;
-        object-fit: cover;
-
-        &:hover {
-          transform: scale(1.1);
-          transition: 200ms;
-        }
-      }
-    }
-
-    &:hover {
-      box-shadow: 0 0 5px 0 ${({ theme }) => theme.color.baeminDark};
-
-      & ~ .product-title span {
-        color: ${({ theme }) => theme.color.baeminPrimary};
-      }
-    }
-  }
-
-  > .product-title {
-    flex-basis: 70%;
-    display: flex;
-    align-items: center;
-
-    span {
-      transition: 200ms;
-      cursor: pointer;
-    }
-
-    span:hover {
-      color: ${({ theme }) => theme.color.baeminPrimary};
+      object-fit: cover;
     }
   }
 
   > .product-quantity {
-    flex-basis: 10%;
-    text-align: center;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-left: 1px solid #d0d0d0;
+    grid-column-start: 3;
   }
-
-  > .product-price {
-    flex-basis: 10%;
-    text-align: center;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-left: 1px solid #d0d0d0;
-  }
-
-  > .product-total-price {
-    flex-basis: 10%;
-    text-align: center;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-left: 1px solid #d0d0d0;
+  @media (max-width: ${({ theme }) => theme.media.mobile}) {
+    grid-template-columns: repeat(4, 1fr);
+    &:first-of-type {
+      display: none;
+    }
+    .none-mobile {
+      display: none !important;
+    }
+    .product-title {
+      grid-column-start: 2;
+      grid-column-end: 5;
+    }
+    .mobile-price {
+      display: block;
+      grid-column-start: 1;
+      grid-column-end: 3;
+    }
+    .product-total-price {
+      text-align: right;
+      grid-column-start: 3;
+      grid-column-end: 5;
+    }
   }
 `;
 
@@ -177,17 +155,16 @@ export const Row = styled.div`
   display: flex;
   flex-direction: row;
   min-height: 60px;
-  border-bottom: 1px solid #3d3d3d;
-  font-size: 18px;
+  border-bottom: 1px solid #ddd;
 
   &:first-child {
-    border-top: 1px solid #3d3d3d;
+    border-top: 1px solid #ddd;
   }
 
   > .description {
     width: 20%;
     padding-left: 15px;
-    background-color: #bababa;
+    background-color: #fcfcf7;
     display: flex;
     align-items: center;
     position: relative;
@@ -239,8 +216,6 @@ export const Row = styled.div`
       gap: 10px;
 
       button {
-        width: 100px;
-        padding: 0;
         font-size: 12px;
       }
     }
@@ -264,7 +239,7 @@ export const Row = styled.div`
 
       .input-wrapper {
         width: 100%;
-        padding: 20px 0;
+        padding: 2em 0;
         position: relative;
 
         input {
@@ -273,15 +248,12 @@ export const Row = styled.div`
           flex-grow: 1;
         }
 
-        button {
-          width: 20%;
-        }
-
         .error-message {
+          height: 2em;
           position: absolute;
-          bottom: 7px;
+          bottom: 0;
           font-size: 0.9em;
-          left: 2px;
+          left: 0;
         }
       }
 
@@ -289,6 +261,9 @@ export const Row = styled.div`
         flex-basis: 100%;
         display: flex;
         gap: 10px;
+        input {
+          width: 100%;
+        }
 
         button {
           font-size: 10px;
@@ -313,26 +288,20 @@ export const Row = styled.div`
 export const ButtonWrapper = styled.section`
   display: flex;
   justify-content: center;
+  > button {
+    width: 100%;
+    max-width: 300px;
+  }
 `;
 
 export const Button = styled.button`
-  width: 30%;
   background-color: ${({ theme }) => theme.color.baeminPrimary};
-  padding: 20px;
-  border: 1px solid ${({ theme }) => theme.color.inputBorder};
-  border-radius: 3px;
-  transition: 200ms;
+  padding: 0.6em;
+  color: white;
+  border-radius: 6px;
 
   &:hover {
-    background-color: #9ed3fe;
-  }
-
-  @media screen and (max-width: ${({ theme }) => theme.media.medium}) {
-    width: 70%;
-  }
-
-  @media screen and (max-width: ${({ theme }) => theme.media.mobile}) {
-    width: 90%;
+    opacity: 0.8;
   }
 `;
 
@@ -342,17 +311,15 @@ export const ErrorMessage = styled.div`
   font-size: 12px;
 
   &.show {
-    display: block;
+    ${({ theme }) => theme.flexCenter};
   }
 `;
 
 export const DeliveryInfoDiv = styled.div`
   h2 {
     button {
-      font-size: 1.1rem;
+      font-size: 0.8rem;
       margin-left: 10px;
-      padding: 10px;
-      width: 180px;
     }
   }
 
@@ -364,6 +331,11 @@ export const DeliveryInfoDiv = styled.div`
   }
 
   @media screen and (max-width: ${({ theme }) => theme.media.medium}) {
+    .address-search {
+      .input-wrapper {
+        flex-direction: column;
+      }
+    }
     .address {
       .input-wrapper {
         padding: 0 0 10px;
